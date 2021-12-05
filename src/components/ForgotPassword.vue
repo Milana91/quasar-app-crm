@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {ref} from 'vue'
+import {ref, reactive} from 'vue'
 
 export default {
   name: 'ForgotPassword',

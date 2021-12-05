@@ -1,9 +1,10 @@
 <template>
   <div>
-    <template v-if="tab === 'register'">
+    <!-- <template v-if="tab === 'register'">
       <div class="text-center q-mb-lg">Sign up with</div>
-    </template>
-    <template v-else>
+    </template> -->
+    <!-- v-else -->
+    <template>
       <div class="text-center q-mb-lg">Sign in with</div>
     </template>
     <div class="flex flex-center">
@@ -11,10 +12,11 @@
         @click="signInWithGoogle" 
       />
     </div>
-    <template v-if="tab === 'register'">
+    <!-- <template v-if="tab === 'register'">
       <p class="text-center">Sign up with credentials</p>
-    </template>
-    <template v-else>
+    </template> -->
+    
+    <template>
       <p class="text-center">Sign in with credentials</p>
     </template>
 
@@ -23,12 +25,12 @@
       <q-input outlined class="q-mb-md" type="password" label="Password" v-model="formData.password" />
       <div class="row">
         <q-space />
-        <q-btn type="submit" color="primary" :label="tab" />
+        <q-btn type="submit" color="primary" label="Войти" />
       </div>
     </q-form>
     <div class="text-center q-my-md">
       <q-btn flat label="Forgot Password?" color="green" class="text-capitalize rounded-borders"
-        v-if="tab !== 'register'" @click="forgotPassword" />
+        @click="forgotPassword" />
     </div>
     <q-dialog v-model="resetPassword">
       <ForgotPassword />
@@ -38,11 +40,10 @@
 
 <script>
 import {ref, reactive} from 'vue'
-import ForgotPassword from "@/components/ForgotPassword.vue"
+import ForgotPassword from "components/ForgotPassword.vue"
 
 export default {
   name: "AuthComponent",
-  props: ['tab'],
   setup() {
     const formData = reactive({
           email: '',
@@ -51,11 +52,7 @@ export default {
     const resetPassword = ref(false)
 
     const submitForm = function () {
-      if (this.tab === 'login') {
          this.signInExistingUser(this.formData.email, this.formData.password)
-      } else {
-        this.createUser(this.formData.email, this.formData.password)
-      }
     }
 
     const signInWithGoogle = function () {
@@ -63,10 +60,6 @@ export default {
     }
 
     const signInExistingUser = function (email, password) {
-      console.log(email, password)
-    }
-
-    const createUser = function (email, password) {
       console.log(email, password)
     }
 
@@ -79,10 +72,13 @@ export default {
       resetPassword,
       submitForm,
       signInExistingUser,
-      createUser,
-      forgotPassword
+      forgotPassword,
+      signInWithGoogle
     }
   },
   components: { ForgotPassword }
 }
 </script>
+
+
+
