@@ -17,6 +17,13 @@
 <script>
 export default {
   name: "Home",
+  setup() {
+      
+
+      return {
+
+      }
+  },
   data () {
     return {}
   },
