@@ -1,0 +1,9 @@
+{
+  "tailwindcss2": {
+    "prefix": "qa-",
+    "parts": [
+      "base",
+      "utilities"
+    ]
+  }
+}
