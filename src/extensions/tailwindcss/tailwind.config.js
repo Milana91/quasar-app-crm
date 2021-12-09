@@ -1,7 +1,7 @@
 module.exports = {
   mode: 'jit',
   darkMode: 'class', // or 'media' or false
-  prefix: 'qa-',
+  prefix: '',
   purge: {
     enable: process.env.NODE_ENV === 'production',
     content: ['./src/index.template.html', './src/**/*.{vue,ts,tsx}'],

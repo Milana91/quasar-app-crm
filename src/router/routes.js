@@ -2,11 +2,19 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/AuthLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/Index.vue') },
-      { path: '/auth', component: () => import('src/pages/Auth.vue') },
-      { path: '/home', component: () => import('src/pages/Home.vue') }
+      { path: '', alias: '/auth', component: () => import('src/pages/Index.vue'),
+        meta: {
+            layout: 'auth',
+            auth: false
+      } },
+      { path: '/home', 
+        component: () => import('src/pages/Home.vue'), 
+        meta: {
+          layout: 'main',
+          auth: true
+      } }
     ]
   },
 

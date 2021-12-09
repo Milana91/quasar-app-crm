@@ -1,25 +1,5 @@
 <template>
   <div>
-    <!-- <template v-if="tab === 'register'">
-      <div class="text-center q-mb-lg">Sign up with</div>
-    </template> -->
-    <!-- v-else -->
-    <template>
-      <div class="text-center q-mb-lg">Sign in with</div>
-    </template>
-    <div class="flex flex-center">
-      <q-btn class="flex flex-center q-px-lg q-py-sm q-mb-md" color="primary" size="md"  label="Google" 
-        @click="signInWithGoogle" 
-      />
-    </div>
-    <!-- <template v-if="tab === 'register'">
-      <p class="text-center">Sign up with credentials</p>
-    </template> -->
-    
-    <template>
-      <p class="text-center">Sign in with credentials</p>
-    </template>
-
     <q-form @submit="submitForm">
       <q-input outlined class="q-mb-md" type="email" label="Email" v-model="formData.email" />
       <q-input outlined class="q-mb-md" type="password" label="Password" v-model="formData.password" />
@@ -41,30 +21,48 @@
 <script>
 import {ref, reactive} from 'vue'
 import ForgotPassword from "components/ForgotPassword.vue"
+import firebase from 'firebase/compat/app'
+import {useRouter} from 'vue-router'
+import { useQuasar } from 'quasar'
+import {error} from 'src/utils/error'
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth"
 
 export default {
   name: "AuthComponent",
   setup() {
+    const auth = getAuth()
+    const $q = useQuasar()
+    const router = useRouter()
+
     const formData = reactive({
           email: '',
           password: ''
         })
     const resetPassword = ref(false)
 
-    const submitForm = function () {
-         this.signInExistingUser(this.formData.email, this.formData.password)
-    }
-
-    const signInWithGoogle = function () {
-      console.log('google login & signup')
-    }
 
     const signInExistingUser = function (email, password) {
-      console.log(email, password)
+        console.log(email, password)
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user
+          $q.notify({message: 'Вход осуществлен'})
+          router.push('/home')
+          console.log(user)
+        })
+      .catch(e => { 
+          const errorCode = e.code;
+          console.log(errorCode)
+          $q.notify({message: error(errorCode)})}
+        )
+    }
+
+    const submitForm = function () {
+        signInExistingUser(formData.email, formData.password)
     }
 
     const forgotPassword = function () {
-      this.resetPassword = true
+      resetPassword.value = true
     }
 
     return {
@@ -73,12 +71,14 @@ export default {
       submitForm,
       signInExistingUser,
       forgotPassword,
-      signInWithGoogle
     }
   },
   components: { ForgotPassword }
 }
 </script>
 
-
+<style lang="sass" scoped>
+.btn-fixed-width
+  width: 220px
+</style>
 

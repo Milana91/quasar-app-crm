@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex q-pa-md">
-    Welcome Home
+    Добро пожаловать
     <q-space />
     <div>
       <q-btn
@@ -15,22 +15,32 @@
 </template>
 
 <script>
+import firebase from 'firebase/compat/app'
+import { getAuth, signOut } from "firebase/auth"
+import { useQuasar } from 'quasar'
+import {useRouter} from 'vue-router'
+
 export default {
   name: "Home",
   setup() {
-      
+      const auth = getAuth()
+      const $q = useQuasar()
+      const router = useRouter()
+
+
+      const logout = function() {
+        signOut(auth).then(() => {
+          $q.notify({message: 'Выход осуществлен'})
+          router.push('/auth')
+        }).catch(e => { 
+          const errorCode = e.code;
+          $q.notify({message: error(errorCode)})}
+        )
+      }
 
       return {
-
+          logout
       }
   },
-  data () {
-    return {}
-  },
-  methods: {
-    logout() {
-      console.log('logged out')
-    }
-  }
 }
 </script>
