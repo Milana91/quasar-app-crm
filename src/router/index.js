@@ -1,6 +1,8 @@
 import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
+import store from '../store'
+
 
 /*
  * If not building with SSR mode, you can
@@ -24,6 +26,30 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE)
+  })
+
+  // проверяем, есть ли у страниц требование "быть авторизованным"
+    Router.beforeEach((to, from, next) => {
+    const requiredAuth = to.meta.auth
+
+    const toggleClassBody = () => {
+        if(to.path == '/' || to.path == '/auth' ) {
+          document.body.className = 'home';
+        }
+        else {
+          document.body.className = 'other';
+        }
+      }
+    toggleClassBody()
+    // если для перехода у роута есть требование авторизации и пользователь авторизован, осуществляем переход
+    if (requiredAuth && store().getters['authenticate/isAuthenticated']){
+        next()
+        console.log(store().getters['authenticate/token'])
+      } else if (requiredAuth && !store().getters['authenticate/isAuthenticated']) {
+        next('/auth?message=auth')
+      } else {
+        next()
+      }
   })
 
   return Router

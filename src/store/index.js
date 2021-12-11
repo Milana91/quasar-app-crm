@@ -1,6 +1,6 @@
 import { store } from 'quasar/wrappers'
-import { createStore } from 'vuex'
-
+import { createStore, createLogger } from 'vuex'
+import authenticate from './authenticate'
 // import example from './module-example'
 
 /*
@@ -12,12 +12,19 @@ import { createStore } from 'vuex'
  * with the Store instance.
  */
 
+const plugins = []
+
+if(process.env.NODE_ENV !== "production") {
+  plugins.push(createLogger())
+}
+
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
+    plugins,
     modules: {
-      // example
+      authenticate
     },
-
+    namespaced: true,
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
     strict: process.env.DEBUGGING

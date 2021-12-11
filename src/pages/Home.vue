@@ -15,27 +15,18 @@
 </template>
 
 <script>
-import firebase from 'firebase/compat/app'
-import { getAuth, signOut } from "firebase/auth"
-import { useQuasar } from 'quasar'
-import {useRouter} from 'vue-router'
+import { useStore } from 'vuex'
+import { useRouter }  from 'vue-router'
 
 export default {
   name: "Home",
   setup() {
-      const auth = getAuth()
-      const $q = useQuasar()
+      const store = useStore()
       const router = useRouter()
 
-
       const logout = function() {
-        signOut(auth).then(() => {
-          $q.notify({message: 'Выход осуществлен'})
-          router.push('/auth')
-        }).catch(e => { 
-          const errorCode = e.code;
-          $q.notify({message: error(errorCode)})}
-        )
+        store.dispatch('authenticate/logout')
+        router.push('/auth')
       }
 
       return {
