@@ -2,8 +2,7 @@ import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
 import store from '../store'
-
-
+import { Notify } from 'quasar'
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -43,9 +42,11 @@ export default route(function (/* { store, ssrContext } */) {
     toggleClassBody()
     // если для перехода у роута есть требование авторизации и пользователь авторизован, осуществляем переход
     if (requiredAuth && store().getters['authenticate/isAuthenticated']){
-        next()
-        console.log(store().getters['authenticate/token'])
+      console.log('переход', store().getters['authenticate/isAuthenticated'])  
+      next()
       } else if (requiredAuth && !store().getters['authenticate/isAuthenticated']) {
+        console.log('ошибка', store().getters['authenticate/isAuthenticated']) 
+        Notify.create('Пожалуйста, войдите в систему')
         next('/auth?message=auth')
       } else {
         next()

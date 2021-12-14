@@ -5,7 +5,8 @@ const ERROR_CODES = {
     'auth/internal-error': 'Отсутствует связь с сервером',
      auth: 'Пожалуйста, войдите в систему',
     'auth/invalid-email': 'Неверный почтовый адрес',
-    'auth/too-many-requests': 'Cлишком много попыток. Повторите позже'
+    'auth/too-many-requests': 'Cлишком много попыток. Повторите позже',
+    'ReferenceError: user is not defined': 'Пользователь не определен',
 }
 
 export function error(code) {

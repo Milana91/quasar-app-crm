@@ -8,7 +8,6 @@ import { Notify } from 'quasar'
 export function getToken ({commit}) {
     const auth = getAuth()
     const user = auth.currentUser
-    console.log(user)
     if (user !== null) {
         user.getIdToken(true)
         .then(function(idToken) {
@@ -34,3 +33,4 @@ export function logout ({commit}) {
         Notify.create(e)
     })
 }
+
