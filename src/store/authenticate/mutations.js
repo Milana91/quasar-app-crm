@@ -8,3 +8,11 @@ export function removeToken(state) {
         state.token = null
         localStorage.removeItem('jwt-token')    
 }
+
+export function loadingActive(state) {
+        state.loading = true
+}
+
+export function loaded(state) {
+        state.loading = null
+}

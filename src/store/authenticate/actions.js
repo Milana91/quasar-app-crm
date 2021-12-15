@@ -1,4 +1,4 @@
-import { getAuth, signOut } from "firebase/auth"
+import { getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth"
 import {error} from 'src/utils/error'
 import {Quasar} from 'quasar'
 import { Notify } from 'quasar'
@@ -34,3 +34,27 @@ export function logout ({commit}) {
     })
 }
 
+
+
+export function signIn ({commit, dispatch}, payload) {
+        const auth = getAuth()
+        signInWithEmailAndPassword(auth, payload.email, payload.password)
+        .then(async (userCredential) => {
+          commit('loadingActive')
+          const user = userCredential.user
+          await dispatch('getToken').then(() => {
+            setTimeout(() => {
+              commit('loaded')
+              Notify.create({
+                message:  'Вход осуществлен'
+              })
+              this.$router.push('/home')
+            }, 1500);
+          });
+        })
+        .catch(e => { 
+            Notify.create({
+              message: error(e.code)
+            })}
+          )
+    }

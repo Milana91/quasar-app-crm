@@ -1,5 +1,6 @@
 export default function () {
   return {
-    token: localStorage.getItem('jwt-token')
+    token: localStorage.getItem('jwt-token'),
+    loading: null
   }
 }

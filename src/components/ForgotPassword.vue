@@ -3,7 +3,7 @@
     <q-card style="width: 500px; max-width: 40vw;">
       <q-card-section class="row items-center q-pb-none">
         <div class="text-h6">
-          Reset Password
+          Сброс пароля
         </div>
         <q-space />
         <q-btn icon="close" flat round dense v-close-popup />
@@ -15,7 +15,7 @@
             v-model="form.email"
             label="Email *"
             lazy-rules
-            :rules="[val => (val && val.length > 0) || 'Пожалуйста, введите свой email']"
+            :rules="[val => (!!val && val.length > 0) || 'Пожалуйста, введите свой email']"
           />
         </q-form>
         <q-card-actions align="right">
