@@ -1,16 +1,26 @@
 
+import store from '../store'
+
 const routes = [
   {
     path: '/',
     component: () => import('layouts/AuthLayout.vue'),
     children: [
-      { path: '', alias: '/auth', component: () => import('src/pages/Index.vue'),
+      { path: '', 
+        alias: '/auth', 
+        component: () => import('src/pages/Auth.vue'),
         meta: {
             layout: 'auth',
             auth: false
       } },
       { path: '/home', 
         component: () => import('src/pages/Home.vue'), 
+        meta: {
+          layout: 'main',
+          auth: true
+      } },
+      { path: '/services', 
+        component: () => import('src/pages/Services.vue'), 
         meta: {
           layout: 'main',
           auth: true

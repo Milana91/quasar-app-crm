@@ -47,17 +47,18 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import {useRouter} from 'vue-router'
 
 const linksList = [
   {
-    title: 'Docs',
+    title: 'Главная',
     icon: 'school',
-    link: 'https://quasar.dev'
+    link: '/home'
   },
   {
-    title: 'Github',
+    title: 'Услуги',
     icon: 'code',
-    link: 'https://github.com/quasarframework'
+    link: '/services'
   },
   {
     title: 'Discord Chat Channel',
@@ -98,9 +99,12 @@ export default defineComponent({
   setup () {
     const leftDrawerOpen = ref(false)
 
+    const router = useRouter()
+
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
+      router,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }

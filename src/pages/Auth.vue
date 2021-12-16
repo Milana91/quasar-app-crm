@@ -15,7 +15,6 @@
 <script>
 import { defineComponent } from 'vue'
 import AuthComponent from 'components/AuthComponent'
-import {ref} from 'vue'
 
 export default defineComponent({
   name: 'Auth',

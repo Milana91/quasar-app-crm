@@ -41,7 +41,11 @@ export default route(function (/* { store, ssrContext } */) {
       }
     toggleClassBody()
     // если для перехода у роута есть требование авторизации и пользователь авторизован, осуществляем переход
-    if (requiredAuth && store().getters['authenticate/isAuthenticated']){
+    
+    if (to.path == '/' && store().getters['authenticate/isAuthenticated']){
+      console.log('переход', store().getters['authenticate/isAuthenticated'])  
+      Router.push('/home')}  
+    else if (requiredAuth && store().getters['authenticate/isAuthenticated']){
       console.log('переход', store().getters['authenticate/isAuthenticated'])  
       next()
       } else if (requiredAuth && !store().getters['authenticate/isAuthenticated']) {

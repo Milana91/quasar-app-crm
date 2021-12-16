@@ -49,7 +49,7 @@ export function signIn ({commit, dispatch}, payload) {
                 message:  'Вход осуществлен'
               })
               this.$router.push('/home')
-            }, 1500);
+            }, 2000);
           });
         })
         .catch(e => { 
