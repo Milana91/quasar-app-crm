@@ -11,7 +11,7 @@
       <q-input outlined class="q-mb-md" type="email" :rules="[val => !!val || 'Введите email']" label="Email" v-model="formData.email" />
       <q-input outlined class="q-mb-md" type="password" :rules="[val => !!val || 'Введите пароль']" label="Пароль" v-model="formData.password" />
       <div class="column items-center">
-            <q-btn type="submit" color="primary" label="Войти" class="btn-fixed-width"/>
+            <AppButton  type="submit" label="Войти"/>
       </div>
     </q-form>
     <div class="text-center q-my-md">
@@ -26,12 +26,13 @@
 
 <script>
 import {ref, computed, reactive} from 'vue'
-import ForgotPassword from "components/ForgotPassword.vue"
+import ForgotPassword from "pages/Auth/ForgotPassword"
 import firebase from 'firebase/compat/app'
 import {useRouter} from 'vue-router'
 import { useQuasar } from 'quasar'
 import {error} from 'src/utils/error'
 import { useStore } from 'vuex'
+import AppButton from 'components/ui/AppButton'
 
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth"
 
@@ -70,16 +71,14 @@ export default {
       submitForm,
       signInExistingUser,
       forgotPassword,
-      loading
+      loading,
     }
   },
-  components: { ForgotPassword }
+  components: { ForgotPassword, AppButton }
 }
 </script>
 
 <style lang="sass" scoped>
-.btn-fixed-width
-  width: 140px
-  height: 40px
+
 </style>
 

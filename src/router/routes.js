@@ -8,19 +8,19 @@ const routes = [
     children: [
       { path: '', 
         alias: '/auth', 
-        component: () => import('src/pages/Auth.vue'),
+        component: () => import('src/pages/Auth/index.vue'),
         meta: {
             layout: 'auth',
             auth: false
       } },
       { path: '/home', 
-        component: () => import('src/pages/Home.vue'), 
+        component: () => import('src/pages/Home/index.vue'), 
         meta: {
           layout: 'main',
           auth: true
       } },
       { path: '/services', 
-        component: () => import('src/pages/Services.vue'), 
+        component: () => import('src/pages/Services/index.vue'), 
         meta: {
           layout: 'main',
           auth: true

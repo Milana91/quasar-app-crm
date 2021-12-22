@@ -30,4 +30,4 @@ export default boot(({ app }) => {
   });
 })
 
-export { api }
+export { api, axios }
