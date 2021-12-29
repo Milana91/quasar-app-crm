@@ -1,9 +1,6 @@
-import store from '../store'
-
-
 export const tableRows = [
     {
-      name: store().state['services/services'],
+      name: 'Frozen Yogurt',
       calories: 159,
       fat: 6.0,
       carbs: 24,

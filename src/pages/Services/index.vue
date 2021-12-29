@@ -18,7 +18,7 @@
 import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import AppPage from 'components/ui/AppPage'
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
 import AppButton from 'components/ui/AppButton'
 import AppModal from 'components/ui/AppModal'
 import ServicesModal from 'pages/Services/ServicesModal'
@@ -32,25 +32,24 @@ export default defineComponent({
     const serviceTitle = ref('')
     const serviceCost = ref('')
 
-    onMounted(async ()=>{
-        // loading.value = true
-        await store.dispatch('services/loadService')
-        //  loading.value = false
-      })
-
     // const title = computed(() => store.state.services.titleService)
 
 
     const createService = async () => {
             const data = {serviceTitle: serviceTitle.value , serviceCost: serviceCost.value}
             await store.dispatch('services/createService', data)
+            serviceTitle.value = ''
+            serviceCost.value = ''
+            // loading.value = true
+            await store.dispatch('services/loadServices')
+            // loading.value = false
         }
-
+        
     return {
       modal,
       createService,
       serviceTitle,
-      serviceCost
+      serviceCost,
     }
   },
   components: { AppPage, AppButton, AppModal, ServicesModal, ServicesTable }

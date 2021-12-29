@@ -24,20 +24,19 @@ export default {
      components: {AppInput},
      props: {
         title: [String, Number],
-        cost: [Number]
+        cost: [String, Number]
     },
      setup(props){
         const MyRule = function (val) {
             return new Promise((resolve, reject) => {
             setTimeout(() => {
-                resolve( !!val && val.length > 5 || 'Значение должно быть больше 0')
+                resolve( !!val && val.length > 4 || 'Недостаточно символов')
             }, 3000)
             })
          }
 
          const serviceTitle = ref('')
 
-         watch()
 
         return {
             MyRule,

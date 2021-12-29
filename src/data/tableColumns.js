@@ -1,41 +1,45 @@
 export const tableColumns = [
     { 
-        name: 'desc', 
+        name: 'title', 
         align: 'left', 
         label: 'Название услуги', 
-        field: 'name',
+        field: 'title',
         sortable: true,
         sortOrder: 'ad'
      },
     { 
-        name: 'calories', 
-        align: 'center', 
-        label: 'Кол-во заказов', 
-        field: 'calories',
-        sortable: true
-    },
-    { 
-        name: 'fat', 
-        label: 'Дата создания', 
-        field: 'fat',
-        sortable: true
-    },
-    { 
-        name: 'carbs', 
-        label: 'Дата обновления', 
-        field: 'carbs',
-        sortable: true
-    },
-    { 
-        name: 'protein', 
+        name: 'cost', 
+        align: 'left', 
         label: 'Цена', 
-        field: 'protein',
+        field: 'cost',
+        sortable: true
+    },
+    { 
+        name: 'dateCreate', 
+        align: 'left',
+        label: 'Дата создания', 
+        field: 'dateCreate',
+        sortable: true
+    },
+    { 
+        name: 'dateUpdate', 
+        align: 'left',
+        label: 'Дата обновления', 
+        field: 'dateUpdate',
+        sortable: true
+    },
+    { 
+        name: 'numberOrders', 
+        align: 'left',
+        label: 'Количество заказов', 
+        field: 'numberOrders',
         sortable: true 
     },
     { 
-        name: 'sodium', 
-        label: 'Sodium (mg)', 
-        field: 'sodium',
+        name: 'actions',
+        align: 'center', 
+        label: 'Действия', 
+        field: 'actions',
         sortable: true 
     }
 ]

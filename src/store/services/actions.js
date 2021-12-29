@@ -30,7 +30,9 @@ export async function createService({ state, commit, rootGetters}, payload) {
         
         const token = rootGetters['authenticate/token']
         const {data} = await api.post(`/services.json?auth=${token}`, payload)
-        // commit('addService', {...payload,  id: data.name})
+        console.log(state.services)
+        commit('addService', {...payload,  id: data.name})
+        console.log('sag', state.services)
         Notify.create('Услуга создана')
     } catch (e) {
         console.log(e)
@@ -38,12 +40,12 @@ export async function createService({ state, commit, rootGetters}, payload) {
     }
 }
 
-export async function loadService({ state, commit, rootGetters}, payload) {
+export async function loadServices({ state, commit, rootGetters}) {
     try {
         const token = rootGetters['authenticate/token']
         const {data} = await api.get(`/services.json?auth=${token}`)
-        // const services = Object.keys(data).map(id => ({...data[id], id}))
-        const services = data
+        const services = Object.keys(data).map(id => ({...data[id], id}))
+        // const services = {...data, data[id]}
         console.log(services)
         commit('setServices', services)
     } catch (e) {
@@ -53,3 +55,29 @@ export async function loadService({ state, commit, rootGetters}, payload) {
         })    
     }
 }
+
+export async function postServices({ commit, rootGetters}, payload) {
+    try {
+        // console.log(services)
+        commit('setServices', payload)
+        const token = rootGetters['authenticate/token']
+        console.log(payload)
+        const services = payload.reduce((acc, current, index) => {
+            acc[current.id] = current;
+            return acc;
+          }, {});
+        console.log('получилось', services)
+          
+        const {data} = await api.put(`/services.json?auth=${token}`, services)
+        // const services = Object.keys(data).map(id => ({...data[id], id}))
+        // // const services = {...data, data[id]}
+        // console.log(services)
+        // commit('setServices', services)
+    } catch (e) {
+        console.log(e)
+        Notify.create({
+            message: error(e)
+        })    
+    }
+}
+
