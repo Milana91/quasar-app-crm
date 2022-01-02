@@ -28,7 +28,7 @@
             </q-card-section>
             
             <q-card-actions align="right">
-              <q-btn flat label="OK" color="primary" v-close-popup></q-btn>
+              <q-btn flat label="OK" color="primary" v-close-popup @click="updateRow"></q-btn>
             </q-card-actions>
           </q-card>
       </q-dialog>
@@ -117,10 +117,15 @@ export default {
 
     // следить за изменениями массива services в store
     // делать копию при изменении и передавать в rows, на основе которых отрисовывается таблица
-    watch(getStore, val => {
-      const copyStore = JSON.parse(JSON.stringify(getStore.value))
+    watch(getStore, (val) => {
+      const copyStore = JSON.parse(JSON.stringify(val))
       rows.value = copyStore
     })
+
+    // watch(getStore, (val) => {
+    //   console.log('копия', getStore.value)
+    //   console.log('оригинал', rows.value)
+    // })
 
     // следить за редактированием пользователем значений в таблице 
     watch(updated, (val) => {
@@ -132,17 +137,26 @@ export default {
     })
 
     const editItem = (item) => {
-                // this.modalShow = true;
                 editedIndex = rows.value.indexOf(item)
-                console.log(editedIndex)
-                console.log(item)
                 editedItem = Object.assign({}, item)
                 title.value = editedItem.serviceTitle
                 cost.value =  editedItem.serviceCost
                 createDate.value = editedItem.creationDate
                 updateDate.value = editedItem.updateDate
                 numbers.value = editedItem.numberOrders
-                console.log(showDialog.value)
+                rows.value[editedIndex] = editedItem
+    }
+
+    // Если пользователь обновляет title и cost, 
+    // обновляется копия объекта editedItem (данные для попапа)
+    watch([title, cost], ([title, cost]) => {
+      editedItem.serviceTitle = title
+      editedItem.serviceCost = cost
+    });
+
+    const updateRow = async() => {
+      const data = {idx: editedIndex, editedItem}
+      await store.dispatch('services/postByID', data)
     }
 
 
@@ -159,7 +173,8 @@ export default {
       numbers,
       createDate,
       updateDate,
-      cost
+      cost,
+      updateRow
     }
   },
   components: {   }

@@ -62,6 +62,9 @@ export async function postServices({ commit, rootGetters}, payload) {
         commit('setServices', payload)
         const token = rootGetters['authenticate/token']
         console.log(payload)
+
+        // при редактировании значений в таблице пересобрать объект из массива store
+        //  с id в виде ключей
         const services = payload.reduce((acc, current, index) => {
             acc[current.id] = current;
             return acc;
@@ -81,3 +84,23 @@ export async function postServices({ commit, rootGetters}, payload) {
     }
 }
 
+
+export async function postByID({ state, commit, rootGetters}, payload) {
+    try {
+        // console.log(services)
+        commit('updateServices',  {
+            idx: payload.idx,
+            service: payload.editedItem
+          })
+        commit('setUpdateDate', payload.idx)
+        const token = rootGetters['authenticate/token']
+        const {data} = await api.put(`/services/${payload.editedItem.id}.json?auth=${token}`, payload.editedItem)
+        console.log(data)
+        console.log(state.services)
+    } catch (e) {
+        console.log(e)
+        Notify.create({
+            message: error(e)
+        })    
+    }
+}
