@@ -30,7 +30,7 @@ export const tableColumns = [
     },
     { 
         name: 'numberOrders', 
-        align: 'left',
+        align: 'center',
         label: 'Количество заказов', 
         field: 'numberOrders',
         sortable: true 

@@ -92,7 +92,7 @@ export async function postByID({ state, commit, rootGetters}, payload) {
             idx: payload.idx,
             service: payload.editedItem
           })
-        commit('setUpdateDate', payload.idx)
+        commit('updateDate', payload.idx)
         const token = rootGetters['authenticate/token']
         const {data} = await api.put(`/services/${payload.editedItem.id}.json?auth=${token}`, payload.editedItem)
         console.log(data)

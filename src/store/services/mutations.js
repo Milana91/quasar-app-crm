@@ -18,7 +18,12 @@ export function setCreationDate (state, creationDate) {
     state.creationDate = creationDate
 }
 
-export function setUpdateDate (state, idx) {
+export function setUpdateDate (state, updateDate) {
+    state.updateDate = updateDate
+}
+
+
+export function updateDate (state, idx) {
     const dateNow = new Date().toLocaleDateString("ru", {
         year: 'numeric',
         month: 'long',
@@ -27,6 +32,7 @@ export function setUpdateDate (state, idx) {
     })
     state.services[idx].updateDate = dateNow
 }
+
 
 // export function setCost (state, cost) {
 //     state.services.serviceCost = cost

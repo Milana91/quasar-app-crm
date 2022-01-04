@@ -1,5 +1,6 @@
 <template>
   <div class="q-pa-md">
+  <ServicesSearch v-model="search"/>
    <q-table
       ref="tableRef"
       v-model:pagination="pagination"
@@ -21,9 +22,9 @@
               <div class="row">
                 <q-input v-model="title" label="Название услуги"></q-input>
                 <q-input v-model="cost" label="Стоимость"></q-input>
-                <q-input v-model="createDate" label="Дата создания"></q-input>
-                <q-input v-model="updateDate" label="Дата обновления"></q-input>
-                <q-input v-model="numbers" label="Количество заказов"></q-input>
+                <q-input v-model="createDate" disable label="Дата создания"></q-input>
+                <q-input v-model="updateDate" disable label="Дата обновления"></q-input>
+                <q-input v-model="numbers" disable label="Количество заказов"></q-input>
               </div>
             </q-card-section>
             
@@ -59,10 +60,14 @@
             {{ props.row.updateDate }}
           </q-td>
           <q-td key="numberOrders" :props="props">
-            {{ props.row.numberOrders }}
+              {{ props.row.numberOrders }}
           </q-td>
           <q-td key="actions" :props="props">
-            <q-btn color="blue" label="Update" @click="showDialog = true, editItem(props.row)" size=sm no-caps></q-btn>
+            <div class="row q-gutter-sm justify-center">
+              <q-btn color="blue" label="Редактировать" @click="showDialog = true, editItem(props.row)" size=sm no-caps></q-btn>
+              <q-btn color="red" label="Удалить"  @click="confirm(props.row)" size=sm no-caps></q-btn>
+            </div>
+            <!-- <q-btn label="Confirm" color="primary" @click="deleteItem(props.row)" /> -->
             <!-- {{ props.row.sodium }}
             <q-popup-edit  disable v-model.number="props.row.sodium" buttons v-slot="scope">
               <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
@@ -76,8 +81,10 @@
 
 <script>
 import { tableColumns } from 'src/data/tableColumns'
+import ServicesSearch from 'pages/Services/ServicesSearch'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
+import { useQuasar } from 'quasar'
 
 export default {
    setup(){
@@ -88,7 +95,13 @@ export default {
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
     // получить services из store
-    const getStore = computed(() => store.state.services.services)
+    const getStore = computed(() => store.state.services.services
+            .filter(service => {
+                if (search.value.searchText) {
+                    return service['serviceTitle'].toLowerCase().includes(search.value.searchText)
+                }
+                return service
+            }))
     let editedIndex = ref(-1)
     let editedItem = reactive({})
     let showDialog = ref(false)
@@ -97,6 +110,9 @@ export default {
     const numbers = ref(null)
     const createDate = ref(null)
     const updateDate =  ref(null)
+    let deleteIndex = ref(null)
+    const $q = useQuasar()
+    const search = ref({})
 
 
     // обновить услуги в БД
@@ -122,15 +138,16 @@ export default {
       rows.value = copyStore
     })
 
-    // watch(getStore, (val) => {
-    //   console.log('копия', getStore.value)
-    //   console.log('оригинал', rows.value)
-    // })
-
     // следить за редактированием пользователем значений в таблице 
     watch(updated, (val) => {
         updateServicesFB(rows.value)
     } )
+
+    // watch(search, (val) => {
+    //     console.log('Поисковая строка', val)
+    //     console.log('Копия услуг из хранилища', getStore)
+    //     console.log('Значения для таблицы', rows.value)
+    // } )
 
      const pagination = ref({
       sortBy: 'desc',
@@ -147,6 +164,32 @@ export default {
                 rows.value[editedIndex] = editedItem
     }
 
+    const deleteItem = (item) => {
+      deleteIndex = rows.value.indexOf(item)
+      rows.value.splice(deleteIndex, 1)
+    }
+
+    const confirm = (item) => {
+      $q.dialog({
+        title: 'Подтверждение',
+        message: 'Вы хотите удалить услугу?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        deleteItem(item)
+        console.log(rows)
+        store.commit('services/setServices', rows.value)
+        updateServicesFB(rows.value)
+      }).onOk(() => {
+        // console.log('>>>> second OK catcher')
+      }).onCancel(() => {
+        // console.log('>>>> Cancel')
+      }).onDismiss(() => {
+        // console.log('I am triggered on both OK and Cancel')
+      })
+    }
+
+
     // Если пользователь обновляет title и cost, 
     // обновляется копия объекта editedItem (данные для попапа)
     watch([title, cost], ([title, cost]) => {
@@ -158,6 +201,40 @@ export default {
       const data = {idx: editedIndex, editedItem}
       await store.dispatch('services/postByID', data)
     }
+
+    // watch(filter, val => {
+    //   rows.value.filter(service => {
+    //             if (filter.value.searchText) {
+    //                 return service['serviceTitle'].includes(filter.value.searchText)
+    //             }
+    //             return 0
+    //         })
+    //   console.log(rows.value)
+    //   console.log(filter.value.searchText)
+    // })
+
+    // Поиск
+
+    //        rows.value.filter(service => {
+    //             if (filter.value.title) {
+    //                 return challenge['challenge-title'].includes(filter.value.title)
+    //             }
+    //             return challenge
+    //         })
+    // const services = computed(()=>store.state.services.services)
+    //         .filter(service => {
+    //             if (filter.value.title) {
+    //                 return challenge['challenge-title'].includes(filter.value.title)
+    //             }
+    //             return challenge
+    //         })
+    //         .filter(challenge => {
+    //             if (filter.value.status && filter.value.status != 'defVal') {
+    //                 return filter.value.status === challenge.status
+    //             }
+    //             return challenge
+    //         })
+    //     )
 
 
     return {
@@ -174,9 +251,12 @@ export default {
       createDate,
       updateDate,
       cost,
-      updateRow
+      updateRow,
+      deleteItem,
+      confirm,
+      search
     }
   },
-  components: {   }
+  components: { ServicesSearch }
 }
 </script>
