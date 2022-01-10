@@ -12,7 +12,9 @@ export const tableColumns = [
         align: 'left', 
         label: 'Цена', 
         field: 'cost',
-        sortable: true
+        sortable: true,
+        sort: (a, b) => a-b,
+        sortOrder: 'ad'
     },
     { 
         name: 'dateCreate', 

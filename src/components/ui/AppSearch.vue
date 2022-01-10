@@ -1,5 +1,5 @@
 <template>
-    <q-input  class="q-mb-md" v-model="searchText" label="Label" :dense="dense">
+    <q-input  class="q-mb-md" v-model="searchText" label="Поиск" :dense="dense">
         <template v-slot:append>
             <q-icon v-if="searchText !== ''" name="close" @click="searchText = ''" class="cursor-pointer" />
             <q-icon name="search" />

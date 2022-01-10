@@ -3,13 +3,13 @@
         <div class="q-gutter-y-md column" style="max-width: 300px">
           <AppInput filled v-model="serviceTitle" label="Название" 
           :rules="[MyRule, val =>  !!val || 'Введите название']" 
-          autofocus @keyup.enter="prompt = false" 
+          autofocus  
           :modelValue="title"
           @update:modelValue="event => $emit('update:title', event)"/>
           <AppInput filled label="Цена" type="number" autofocus  
           :rules="[val => !!val &&
            (val >= 0 || 'Значение должно быть больше 0') || 
-           'Введите цену']" @keyup.enter="prompt = false" 
+           'Введите цену']" 
            :modelValue="cost" 
            @update:modelValue="event => $emit('update:cost', event)" />
         </div>

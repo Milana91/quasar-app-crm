@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
-  <ServicesSearch v-model="search"/>
-   <q-table
+  <AppSearch v-model="search"/>
+   <q-table 
       ref="tableRef"
       v-model:pagination="pagination"
       :rows="rows"
@@ -11,46 +11,33 @@
       row-key="title"
       :loading="loading"
     >
-<template v-slot:top><div class="q-pa-md q-gutter-sm">
-      <q-dialog v-model="showDialog">
-          <q-card>
-            <q-card-section>
-              <div class="text-h6">Редактировать услугу</div>
-            </q-card-section>
-
-            <q-card-section>
-              <div class="row">
-                <q-input v-model="title" label="Название услуги"></q-input>
-                <q-input v-model="cost" label="Стоимость"></q-input>
-                <q-input v-model="createDate" disable label="Дата создания"></q-input>
-                <q-input v-model="updateDate" disable label="Дата обновления"></q-input>
-                <q-input v-model="numbers" disable label="Количество заказов"></q-input>
-              </div>
-            </q-card-section>
-            
-            <q-card-actions align="right">
-              <q-btn flat label="OK" color="primary" v-close-popup @click="updateRow"></q-btn>
-            </q-card-actions>
-          </q-card>
-      </q-dialog>
-    </div></template>
-
-    <slot name="loading"></slot>
-    <template v-slot:loading>
-        <q-inner-loading showing color="primary" />
+    <template v-slot:top>
+      <app-modal-edit :modelValue="showDialog" title="Редактировать услугу" @submitUpdate="updateRow">
+          <ServicesEditModalFields 
+              v-model:titleVal="title" 
+              v-model:costVal="cost" 
+              v-model:createDateVal="createDate" 
+              v-model:updateDateVal="updateDate"
+              v-model:numbersVal="numbers"
+          />
+      </app-modal-edit>
     </template>
+
+      <template v-slot:loading>
+        <AppTableLoader/>
+      </template>
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="title" :props="props">
             {{ props.row.serviceTitle }}
-            <q-popup-edit v-model="props.row.serviceTitle" buttons v-slot="scope">
+            <q-popup-edit v-model="props.row.serviceTitle" buttons v-slot="scope"  @save="() => UpdateDocument()">
               <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="cost" :props="props">
             {{ props.row.serviceCost }}
-            <q-popup-edit v-model.number="props.row.serviceCost" v-slot="scope" @save="(val, initialValue) => UpdateDocument(val, initialValue, props.row)"  buttons>
-              <q-input type="number"  v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+            <q-popup-edit v-model.number="props.row.serviceCost" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+              <q-input  type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="dateCreate" :props="props">
@@ -64,14 +51,9 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="row q-gutter-sm justify-center">
-              <q-btn color="blue" label="Редактировать" @click="showDialog = true, editItem(props.row)" size=sm no-caps></q-btn>
-              <q-btn color="red" label="Удалить"  @click="confirm(props.row)" size=sm no-caps></q-btn>
+              <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton>
+              <AppButton color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
             </div>
-            <!-- <q-btn label="Confirm" color="primary" @click="deleteItem(props.row)" /> -->
-            <!-- {{ props.row.sodium }}
-            <q-popup-edit  disable v-model.number="props.row.sodium" buttons v-slot="scope">
-              <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit> -->
           </q-td>
         </q-tr>
       </template>
@@ -81,7 +63,11 @@
 
 <script>
 import { tableColumns } from 'src/data/tableColumns'
-import ServicesSearch from 'pages/Services/ServicesSearch'
+import AppSearch from 'components/ui/AppSearch'
+import AppTableLoader from 'components/ui/AppTableLoader'
+import AppModalEdit from 'components/ui/AppModalEdit'
+import AppButton from 'components/ui/AppButton'
+import ServicesEditModalFields from 'pages/Services/ServicesEditModalFields'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
@@ -114,21 +100,12 @@ export default {
     const $q = useQuasar()
     const search = ref({})
 
-
-    // обновить услуги в БД
-    const updateServicesFB = async(rows) => {
-      await store.dispatch('services/postServices', rows)
-    }
-
-    const UpdateDocument = (val, initialValue, tableString) => {
-      updated.value = !(updated.value)
-    }
-
     // при загрузке страницы загружить все услуги из БД
     onMounted(async ()=>{
       loading.value = true
       await store.dispatch('services/loadServices')
       loading.value = false
+      console.log(typeof(rows.value[0].serviceCost))
     })
 
     // следить за изменениями массива services в store
@@ -138,21 +115,25 @@ export default {
       rows.value = copyStore
     })
 
+    const UpdateDocument = () => {
+      updated.value = !(updated.value)
+    }
     // следить за редактированием пользователем значений в таблице 
     watch(updated, (val) => {
         updateServicesFB(rows.value)
+        console.log(getStore.value)
     } )
 
-    // watch(search, (val) => {
-    //     console.log('Поисковая строка', val)
-    //     console.log('Копия услуг из хранилища', getStore)
-    //     console.log('Значения для таблицы', rows.value)
-    // } )
+    // обновить услуги в БД и хранилище
+    const updateServicesFB = async(rows) => {
+      await store.dispatch('services/postServices', rows)
+    }
 
-     const pagination = ref({
+    const pagination = ref({
       sortBy: 'desc',
     })
 
+    // update in actions (table)
     const editItem = (item) => {
                 editedIndex = rows.value.indexOf(item)
                 editedItem = Object.assign({}, item)
@@ -189,8 +170,7 @@ export default {
       })
     }
 
-
-    // Если пользователь обновляет title и cost, 
+    // Если пользователь обновляет  редиктируемые поля, 
     // обновляется копия объекта editedItem (данные для попапа)
     watch([title, cost], ([title, cost]) => {
       editedItem.serviceTitle = title
@@ -200,42 +180,8 @@ export default {
     const updateRow = async() => {
       const data = {idx: editedIndex, editedItem}
       await store.dispatch('services/postByID', data)
+      showDialog.value = false
     }
-
-    // watch(filter, val => {
-    //   rows.value.filter(service => {
-    //             if (filter.value.searchText) {
-    //                 return service['serviceTitle'].includes(filter.value.searchText)
-    //             }
-    //             return 0
-    //         })
-    //   console.log(rows.value)
-    //   console.log(filter.value.searchText)
-    // })
-
-    // Поиск
-
-    //        rows.value.filter(service => {
-    //             if (filter.value.title) {
-    //                 return challenge['challenge-title'].includes(filter.value.title)
-    //             }
-    //             return challenge
-    //         })
-    // const services = computed(()=>store.state.services.services)
-    //         .filter(service => {
-    //             if (filter.value.title) {
-    //                 return challenge['challenge-title'].includes(filter.value.title)
-    //             }
-    //             return challenge
-    //         })
-    //         .filter(challenge => {
-    //             if (filter.value.status && filter.value.status != 'defVal') {
-    //                 return filter.value.status === challenge.status
-    //             }
-    //             return challenge
-    //         })
-    //     )
-
 
     return {
       rows,
@@ -254,9 +200,9 @@ export default {
       updateRow,
       deleteItem,
       confirm,
-      search
+      search,
     }
   },
-  components: { ServicesSearch }
+  components: { AppSearch, AppTableLoader, ServicesEditModalFields, AppModalEdit, AppButton }
 }
 </script>

@@ -8,7 +8,7 @@
     <!-- Вынесем модальное окно в отдельный блок -->
     <teleport to="body">
       <app-modal @submitForm="createService" v-model="modal" title="Добавить услугу">
-        <ServicesModal v-model:title="serviceTitle" v-model:cost="serviceCost" @created="modal = false" />
+        <ServicesModal v-model:title="serviceTitle" v-model:cost.number="serviceCost" @created="modal = false" />
       </app-modal>
     </teleport>
    </app-page>
@@ -32,17 +32,12 @@ export default defineComponent({
     const serviceTitle = ref('')
     const serviceCost = ref('')
 
-    // const title = computed(() => store.state.services.titleService)
-
-
     const createService = async () => {
             const data = {serviceTitle: serviceTitle.value , serviceCost: serviceCost.value}
             await store.dispatch('services/createService', data)
             serviceTitle.value = ''
             serviceCost.value = ''
-            // loading.value = true
             await store.dispatch('services/loadServices')
-            // loading.value = false
         }
         
     return {

@@ -24,6 +24,12 @@ const routes = [
         meta: {
           layout: 'main',
           auth: true
+      } },
+      { path: '/customers', 
+        component: () => import('src/pages/Customers/index.vue'), 
+        meta: {
+          layout: 'main',
+          auth: true
       } }
     ]
   },
