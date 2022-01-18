@@ -2,23 +2,29 @@
   <div class="q-pa-md">
   <AppSearch v-model="search"/>
    <q-table 
-      ref="tableRef"
       v-model:pagination="pagination"
       :rows="rows"
-     
+      dense
       :columns="columns"
       :rows-per-page-options="[10, 15]"
-      row-key="title"
+      row-key="name"
       :loading="loading"
+      no-data-label="I didn't find anything for you"
+      no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @submitUpdate="updateRow">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента"  @submitUpdate="updateRow; showDialog=false">
           <CustomersEditModalFields 
               v-model:nameVal="name" 
-              v-model:costVal="cost" 
-              v-model:createDateVal="createDate" 
+              v-model:emailVal="email" 
+              v-model:phoneVal="phone" 
+              v-model:companyVal="company"
+              v-model:commentVal="comment"
+              v-model:sumCostVal="totalCost"
+              v-model:statusVal="status"
+              v-model:createDateVal="createDate"
               v-model:updateDateVal="updateDate"
-              v-model:numbersVal="numbers"
+              :optionsVal="statusOptions"
           />
       </app-modal-edit>
     </template>
@@ -37,7 +43,7 @@
           <q-td key="email" :props="props">
             {{ props.row.customerEmail }}
             <q-popup-edit v-model="props.row.customerEmail" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+              <q-input type="email" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="phone" :props="props">
@@ -52,22 +58,26 @@
               <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="comment" :props="props">
-            {{ props.row.customerComment }}
+           <q-td auto-width key="comment" :props="props">
+            <div>
+              {{ props.row.customerComment }}
+            </div>
             <q-popup-edit v-model="props.row.customerComment" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+              <q-input  type="textarea" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
+          </q-td>
+          <q-td key="totalCost" :props="props">
+            {{ props.row.totalCost }}
           </q-td>
           <q-td key="status" :props="props">
-            {{ props.row.customerStatus }}
+            <div>{{ props.row.customerStatus }}<AppIcon name="arrow_drop_down" /></div>
             <q-popup-edit v-model="props.row.customerStatus" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+               <div class="q-pa-md" style="max-width: 200px">
+                 <div class="q-gutter-md">
+              <AppSelect behavior="menu" :options="statusOptions" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
+                </div> </div>
             </q-popup-edit>
-          </q-td>
-          <q-td key="sumCost" :props="props">
-            {{ props.row.customerSumCost }}
-          </q-td>
-
+          </q-td> 
           <q-td key="dateCreate" :props="props">
               {{ props.row.creationDate }}
           </q-td>
@@ -92,6 +102,8 @@ import AppSearch from 'components/ui/AppSearch'
 import AppTableLoader from 'components/ui/AppTableLoader'
 import AppModalEdit from 'components/ui/AppModalEdit'
 import AppButton from 'components/ui/AppButton'
+import AppSelect from 'components/ui/AppSelect'
+import AppIcon from 'components/ui/AppIcon'
 import CustomersEditModalFields from 'pages/Customers/CustomersEditModalFields'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
@@ -120,14 +132,15 @@ export default {
     const email = ref('')
     const phone = ref('')
     const company = ref('')
-    const sumCost = ref('')
     const comment = ref('')
     const status = ref('')
     const createDate = ref(null)
     const updateDate =  ref(null)
+    const totalCost =  ref(null)
     let deleteIndex = ref(null)
     const $q = useQuasar()
     const search = ref({})
+    const statusOptions = ref(["Активен", "Не активен"])
 
     // при загрузке страницы загружить все услуги из БД
     onMounted(async ()=>{
@@ -141,7 +154,8 @@ export default {
     watch(getStoreCustomers, (val) => {
       const copyStore = JSON.parse(JSON.stringify(val))
       rows.value = copyStore
-      console.log(rows.value)
+      console.log(rows)
+      console.log(getStoreCustomers)
     })
 
     const UpdateDocument = () => {
@@ -171,10 +185,10 @@ export default {
                 phone.value =  editedItem.customerPhone
                 company.value =  editedItem.customerCompany
                 comment.value =  editedItem.customerComment
-                sumCost.value =  editedItem.customerSumCost
                 status.value =  editedItem.customerStatus
-                createDate.value = editedItem.createDate
-                updateDate.value = editedItem.updateDate
+                totalCost.value =  editedItem.totalCost
+                createDate.value =  editedItem.creationDate
+                updateDate.value =  editedItem.updateDate
                 rows.value[editedIndex] = editedItem
     }
 
@@ -191,7 +205,6 @@ export default {
         persistent: true
       }).onOk(() => {
         deleteItem(item)
-        console.log(rows)
         store.commit('customers/setCustomers', rows.value)
         updateCustomersFB(rows.value)
       }).onOk(() => {
@@ -234,16 +247,22 @@ export default {
       phone,
       company,
       comment,
-      sumCost,
       status,
+      totalCost,
       createDate,
       updateDate,
       updateRow,
       deleteItem,
       confirm,
       search,
+      statusOptions,
+      // separator: ref('vertical'),
     }
   },
-  components: { AppSearch, AppTableLoader, CustomersEditModalFields, AppModalEdit, AppButton}
+  components: { AppSearch, AppTableLoader, CustomersEditModalFields, AppModalEdit, AppButton, AppSelect, AppIcon}
 }
 </script>
+
+<style lang="sass">
+
+</style>

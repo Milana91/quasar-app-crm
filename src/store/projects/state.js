@@ -1,7 +1,7 @@
 export default function () {
   return {
-    customers: [],
-    totalCost: null,
+    projects: [],
+    projectsSum: null,
     creationDate: null,
     updateDate: null,
   }

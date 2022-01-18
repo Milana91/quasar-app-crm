@@ -3,6 +3,7 @@ import { createStore, createLogger } from 'vuex'
 import authenticate from './authenticate'
 import services from './services'
 import customers from './customers'
+import projects from './projects'
 // import example from './module-example'
 
 /*
@@ -24,7 +25,7 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     plugins,
     modules: {
-      authenticate, services, customers
+      authenticate, services, customers, projects
     },
     namespaced: true,
     // enable strict mode (adds overhead!)

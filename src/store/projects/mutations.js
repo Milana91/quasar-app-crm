@@ -1,17 +1,17 @@
-export function setCustomers (state, customers) {
-        state.customers = customers
+export function setProjects (state, projects) {
+        state.projects = projects
 }
 
-export function updateCustomers (state, payload) {
-    state.customers[payload.idx] = payload.customer
+export function updateProjects (state, payload) {
+    state.projects[payload.idx] = payload.project
 }
 
-export function addCustomer (state, customer) {
-    state.customers.push(customer)
+export function addProject (state, project) {
+    state.projects.push(project)
 }
 
-export function udateTotalСost (state, totalSum) {
-    state.totalCost = totalSum
+export function udateProjectsSum (state, totalSum) {
+    state.projectsSum = totalSum
 }
 
 export function setCreationDate (state, creationDate) {
@@ -30,5 +30,5 @@ export function updateDate (state, idx) {
         day: 'numeric',
         timezone: 'UTC'
     })
-    state.customers[idx].updateDate = dateNow
+    state.projects[idx].updateDate = dateNow
 }

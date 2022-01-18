@@ -34,10 +34,11 @@ export default defineComponent({
     const customerPhone = ref('')
     const customerCompany = ref('')
     const customerComment = ref('')
+    const customerStatus = ref('Активен')
 
 
     const createCustomer = async () => {
-            const data = {customerName: customerName.value , customerEmail: customerEmail.value, customerCompany: customerCompany.value, customerComment: customerComment.value, customerPhone: customerPhone.value }
+            const data = {customerName: customerName.value , customerEmail: customerEmail.value, customerCompany: customerCompany.value, customerComment: customerComment.value, customerPhone: customerPhone.value, customerStatus: customerStatus.value }
             await store.dispatch('customers/createCustomer', data)
             customerName.value = ''
             customerEmail.value = ''
@@ -54,7 +55,7 @@ export default defineComponent({
       customerEmail,
       customerComment,
       customerCompany,
-      customerPhone
+      customerPhone,
     }
   },
   components: { AppPage, AppButton, AppModal, CustomersModal, CustomersTable }

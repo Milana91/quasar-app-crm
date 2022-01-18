@@ -1,34 +1,19 @@
-export const tableColumnsCustomers = [
+export const tableColumnsProjects = [
     { 
-        name: 'name', 
+        name: 'customer', 
         align: 'left', 
-        label: 'ФИО', 
+        label: 'Клиент', 
         field: row => row.name,
         format: val => `${val}`,
         sortable: true,
         sortOrder: 'ad'
      },
     { 
-        name: 'email', 
+        name: 'services', 
+        style: 'width: 250px; max-height: 300px; white-space: normal; overflow: hidden', 
         align: 'left', 
-        label: 'Email', 
-        field: 'email',
-        sortable: true,
-        sortOrder: 'ad'
-    },
-    { 
-        name: 'phone', 
-        align: 'left', 
-        label: 'Телефон', 
-        field: 'phone',
-        sortable: true,
-        sortOrder: 'ad'
-    },
-    { 
-        name: 'company', 
-        align: 'left', 
-        label: 'Компания', 
-        field: 'company',
+        label: 'Услуги', 
+        field: 'services',
         sortable: true,
         sortOrder: 'ad'
     },
@@ -41,18 +26,40 @@ export const tableColumnsCustomers = [
         sortable: true 
     },
     { 
-        name: 'totalCost', 
+        name: 'status', 
+        align: 'left', 
+        label: 'Статус', 
+        field: 'status',
+        sortable: true,
+        sortOrder: 'ad'
+    },
+    { 
+        name: 'projectSum', 
         align: 'center',
-        label: 'Стоимость услуг', 
-        field: 'totalCost',
+        label: 'Стоимость', 
+        field: 'projectSum',
         sortable: true 
     },
     { 
-        name: 'status', 
+        name: 'payment', 
         align: 'center',
-        label: 'Активность', 
-        field: 'status',
+        label: 'Оплачено', 
+        field: 'payment',
         sortable: true 
+    },
+    { 
+        name: 'paymentStatus', 
+        align: 'left',
+        label: 'Статус оплаты', 
+        field: 'paymentStatus',
+        sortable: true
+    },
+    { 
+        name: 'deadline', 
+        align: 'left',
+        label: 'Дедлайн', 
+        field: 'deadline',
+        sortable: true
     },
     { 
         name: 'dateCreate', 

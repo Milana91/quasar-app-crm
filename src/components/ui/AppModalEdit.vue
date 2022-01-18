@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md q-gutter-sm">
-        <q-dialog :modelValue="modelValue"  >
+        <q-dialog :modelValue="modelValue" persistent >
             <q-card>
               <q-card-section>
                 <div class="text-h6">{{title}}</div>

@@ -3,9 +3,8 @@ import {error} from 'src/utils/error'
 import { Notify } from 'quasar'
 import {computed} from 'vue'
 
-export async function createCustomer({ state, commit, rootGetters}, payload) {
+export async function createProject({ state, commit, rootGetters}, payload) {
     try {
-        const totalSum = 0
         const dateOfCreate = new Date().toLocaleDateString("ru", {
             year: 'numeric',
             month: 'long',
@@ -18,33 +17,29 @@ export async function createCustomer({ state, commit, rootGetters}, payload) {
             day: 'numeric',
             timezone: 'UTC'
         })
-        commit('udateTotalСost', totalSum)
         commit('setCreationDate', dateOfCreate)
         commit('setUpdateDate', dateOfUpdate)
 
-        const totalCost = computed(() => state.totalCost)
         const creationDate = computed(() => state.creationDate)
         const updateDate = computed(() => state.updateDate)
 
-        payload = {...payload, totalCost: totalCost.value, creationDate: creationDate.value, updateDate: updateDate.value}
-        console.log(payload)
-        console.log('ssx', totalCost)
+        payload = {...payload, creationDate: creationDate.value, updateDate: updateDate.value}
         const token = rootGetters['authenticate/token']
-        const {data} = await api.post(`/customers.json?auth=${token}`, payload)
-        commit('addCustomer', {...payload,  id: data.name})
-        Notify.create('Клиент создан')
+        const {data} = await api.post(`/projects.json?auth=${token}`, payload)
+        commit('addProject', {...payload,  id: data.name})
+        Notify.create('Проект создан')
     } catch (e) {
         console.log(e)
         Notify.create(e.message)
     }
 }
 
-export async function loadCustomers({ state, commit, rootGetters}) {
+export async function loadProjects({ state, commit, rootGetters}) {
     try {
         const token = rootGetters['authenticate/token']
-        const {data} = await api.get(`/customers.json?auth=${token}`)
-        const customers = Object.keys(data).map(id => ({...data[id], id}))
-        commit('setCustomers', customers)
+        const {data} = await api.get(`/projects.json?auth=${token}`)
+        const projects = Object.keys(data).map(id => ({...data[id], id}))
+        commit('setProjects', projects)
     } catch (e) {
         console.log(e)
         Notify.create({
@@ -53,20 +48,20 @@ export async function loadCustomers({ state, commit, rootGetters}) {
     }
 }
 
-export async function postCustomers({ commit, rootGetters}, payload) {
+export async function postProjects({ commit, rootGetters}, payload) {
     try {
-        commit('setCustomers', payload)
+        commit('setProjects', payload)
         const token = rootGetters['authenticate/token']
         console.log(payload)
 
         // при редактировании значений в таблице пересобрать объект из массива store
         //  с id в виде ключей
-        const customers = payload.reduce((acc, current, index) => {
+        const projects = payload.reduce((acc, current, index) => {
             acc[current.id] = current;
             return acc;
           }, {});
           
-        const {data} = await api.put(`/customers.json?auth=${token}`, customers)
+        const {data} = await api.put(`/projects.json?auth=${token}`, projects)
     } catch (e) {
         console.log(e)
         Notify.create({
@@ -78,16 +73,16 @@ export async function postCustomers({ commit, rootGetters}, payload) {
 
 export async function postByID({ state, commit, rootGetters}, payload) {
     try {
-        commit('updateCustomers',  {
+        commit('updateProjects',  {
             idx: payload.idx,
-            customer: payload.editedItem
+            project: payload.editedItem
           })
         commit('updateDate', payload.idx)
         const token = rootGetters['authenticate/token']
         // payload.editedItem.id - id клиента на сервере, обновленная строка payload.editedItem
-        const {data} = await api.put(`/customers/${payload.editedItem.id}.json?auth=${token}`, payload.editedItem)
+        const {data} = await api.put(`/projects/${payload.editedItem.id}.json?auth=${token}`, payload.editedItem)
         console.log(data)
-        console.log(state.customers)
+        console.log(state.projects)
     } catch (e) {
         console.log(e)
         Notify.create({

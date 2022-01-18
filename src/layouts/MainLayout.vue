@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout  view="hHh Lpr lFf">
+    <q-header elevated >
       <q-toolbar>
         <q-btn
           flat
@@ -20,11 +20,15 @@
     </q-header>
 
     <q-drawer
+    class="menuleft bg-grey-3"
       v-model="leftDrawerOpen"
       show-if-above
+      :mini="!leftDrawerOpen || miniState"
+      @click.capture="drawerClick"
       bordered
+      :width="250"
     >
-      <q-list>
+      <q-list padding>
         <q-item-label
           header
         >
@@ -37,6 +41,16 @@
           v-bind="link"
         />
       </q-list>
+      <div class="q-mini-drawer-hide absolute" style="top: 15px; right: -17px">
+          <q-btn
+            dense
+            round
+            unelevated
+            color="primary"
+            icon="chevron_left"
+            @click="miniState = true"
+          ></q-btn>
+        </div>
     </q-drawer>
 
     <q-page-container>
@@ -54,6 +68,11 @@ const linksList = [
     title: 'Главная',
     icon: 'school',
     link: '/home'
+  },
+    {
+    title: 'Проекты',
+    icon: 'chat',
+    link: '/projects'
   },
   {
     title: 'Услуги',
@@ -98,6 +117,7 @@ export default defineComponent({
 
   setup () {
     const leftDrawerOpen = ref(false)
+    const miniState = ref(false)
 
     const router = useRouter()
 
@@ -107,8 +127,24 @@ export default defineComponent({
       router,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
+      },
+      miniState,
+
+      drawerClick (e) {
+        // if in "mini" state and user
+        // click on drawer, we switch it to "normal" mode
+        if (miniState.value) {
+          miniState.value = false
+
+          // notice we have registered an event with capture flag;
+          // we need to stop further propagation as this click is
+          // intended for switching drawer to "normal" mode only
+          e.stopPropagation()
+        }
       }
     }
   }
 })
 </script>
+<style lang="sass">
+</style>

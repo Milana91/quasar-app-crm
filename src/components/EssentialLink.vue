@@ -4,6 +4,7 @@
     :to="link"
     exact
   >
+  <q-item clickable v-ripple>
     <q-item-section
       v-if="icon"
       avatar
@@ -16,7 +17,8 @@
       <!-- <q-item-label caption>
         {{ caption }}
       </q-item-label> -->
-    </q-item-section>
+      </q-item-section>
+    </q-item>
   </q-item>
 </template>
 

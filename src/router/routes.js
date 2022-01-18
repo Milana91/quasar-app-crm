@@ -19,6 +19,12 @@ const routes = [
           layout: 'main',
           auth: true
       } },
+      { path: '/projects', 
+        component: () => import('src/pages/Projects/index.vue'), 
+        meta: {
+        layout: 'main',
+        auth: true
+      } },
       { path: '/services', 
         component: () => import('src/pages/Services/index.vue'), 
         meta: {
