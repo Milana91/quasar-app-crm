@@ -205,8 +205,11 @@ export default defineComponent({
           date: this.getCurrentDay(this.numberOfDay),
           time: this.time,
           bgcolor: this.bgcolor,
-          icon: this.icon,
       })
+      this.title = ''
+      this.details = ''
+      this.time = ''
+      this.bgcolor = ''
     },
     // // postEvents(data) {
     // //     // const events = this.eventsMap
