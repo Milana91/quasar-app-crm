@@ -36,6 +36,12 @@ const routes = [
         meta: {
           layout: 'main',
           auth: true
+      } },
+      { path: '/calendar', 
+        component: () => import('src/pages/Calendar/index.vue'), 
+        meta: {
+          layout: 'main',
+          auth: true
       } }
     ]
   },

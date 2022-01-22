@@ -34,7 +34,7 @@ export default defineComponent({
     const projectComment = ref('')
     const projectStatus = ref('Активен')
 
-    const projectSum = computed(() => selectedServicesCost.value.reduce((sum, current) => sum + current, 0))
+    let projectSum = ref(0)
     const projectPayment = ref('-')
     const projectPaymentStatus = ref('Не оплачен')
      const deadlineDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString("ru", {
@@ -70,8 +70,17 @@ export default defineComponent({
       selectedServicesCost.value.push(val.serviceCost)
     }
 
-     watch(projectServices, val=>{
-       if (val) {
+    const servicesSum = (arr) => arr.reduce((sum, current) => sum + current, 0)
+
+    // При изм массива цен выбр услуг, рассчитать сумму выбранных услуг (Проекты - Стоимость)
+    watch(selectedServicesCost, val => {
+      console.log('стоимость выбранных услуг', selectedServicesCost)
+      projectSum.value = servicesSum(val)
+      console.log('сумма выбранных услуг', projectSum.value)
+    })
+
+    watch(projectServices, val=>{
+      if (val) {
         selectedServices.value = []
         servicesId.value = []
         selectedServicesCost.value = []
@@ -90,7 +99,7 @@ export default defineComponent({
       //     projectServicesData[item.id] = item[i].id
       //     console.log(projectServicesData.value)
       // })
-     })
+    })
 
 
     onMounted(async()=>{

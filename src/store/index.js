@@ -4,6 +4,7 @@ import authenticate from './authenticate'
 import services from './services'
 import customers from './customers'
 import projects from './projects'
+import calendar from './calendar'
 // import example from './module-example'
 
 /*
@@ -25,7 +26,7 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     plugins,
     modules: {
-      authenticate, services, customers, projects
+      authenticate, services, customers, projects, calendar
     },
     namespaced: true,
     // enable strict mode (adds overhead!)

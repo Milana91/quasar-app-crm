@@ -85,9 +85,9 @@ const linksList = [
     link: '/customers'
   },
   {
-    title: 'Forum',
+    title: 'Календарь',
     icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    link: '/calendar'
   },
   {
     title: 'Twitter',

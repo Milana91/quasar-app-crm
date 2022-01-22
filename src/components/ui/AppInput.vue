@@ -1,5 +1,6 @@
 <template>
-   <q-input :modelValue="modelValue" @update:modelValue="event => $emit('update:modelValue', event)"/>
+   <q-input :modelValue="modelValue" @update:modelValue="event => $emit('update:modelValue', event)">
+   </q-input>
 </template>
 
 <script>
@@ -9,7 +10,7 @@ export default {
     name: 'app-input',
     // emits: ['updateInput'],
     props: {
-        modelValue: [String, Number]
+        modelValue: [String, Number],
     },
     setup (props, { emit }) {
       // const updateInput = (event) => {

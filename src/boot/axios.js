@@ -11,7 +11,7 @@ const api = axios.create({ baseURL: process.env.VUE_APP_FB_URL })
 
 
 
-export default boot(({ app }) => {
+export default boot(({ app, router }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios

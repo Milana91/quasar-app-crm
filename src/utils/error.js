@@ -7,6 +7,7 @@ const ERROR_CODES = {
     'auth/invalid-email': 'Неверный почтовый адрес',
     'auth/too-many-requests': 'Cлишком много попыток. Повторите позже',
     'ReferenceError: user is not defined': 'Пользователь не определен',
+    'Error: Request failed with status code 401': 'Ошибка авторизации'
 }
 
 export function error(code) {

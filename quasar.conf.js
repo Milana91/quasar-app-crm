@@ -10,6 +10,8 @@
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { configure } = require('quasar/wrappers');
 
+const webpack = require('webpack')
+
 module.exports = configure(function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
@@ -22,12 +24,13 @@ module.exports = configure(function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      'axios', 'firebase'
+      'axios', 'firebase', 'routes-guard', 'calendarPlugin'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
-      'app.sass'
+      'app.sass',
+      // '~quasar-ui-qcalendar/src/css/calendar-day.sass'
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -48,6 +51,10 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env: require('dotenv').config().parsed,
+      transpile: true,
+      transpileDependencies: [
+        /quasar-ui-qcalendar[\\/]src/
+      ],
 
       // transpile: false,
       publicPath: process.env.NODE_ENV === "production" ? "/quasar-app-crm/" : "/",
@@ -71,6 +78,10 @@ module.exports = configure(function (ctx) {
       chainWebpack (chain) {
         chain.plugin('eslint-webpack-plugin')
           .use(ESLintPlugin, [{ extensions: [ 'js', 'vue' ] }])
+        chain.plugin('define-ui')
+        .use(webpack.DefinePlugin, [{
+          __UI_VERSION__: `'${ require('@quasar/quasar-ui-qcalendar/package.json').version }'`
+        }])
       },
     },
 
@@ -85,6 +96,7 @@ module.exports = configure(function (ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
+      lang: 'ru',
       config: {
 
       },
