@@ -61,6 +61,21 @@ export async function editEvent({ state, commit, rootGetters}, payload) {
     }
 }
 
+export async function editReminderStatusEvent({ state, commit, rootGetters}, payload) {
+    try {
+        const token = rootGetters['authenticate/token']
+        const {data} = await api.put(`/events/${payload.id}.json?auth=${token}`, {...payload.selectedEvent, reminderStatus: payload.reminderStatus})
+        commit('changeEvent', {...payload.selectedEvent, reminderStatus: payload.reminderStatus, id: payload.id})
+        Notify.create('Просмотрено. Напоминание больше не будет показано')
+    } catch (e) {
+        console.log(e)
+        Notify.create(e.message)
+    }
+}
+
+
+
+
 
 
 // export async function postEvents({ commit, rootGetters}, payload) {

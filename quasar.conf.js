@@ -159,6 +159,7 @@ module.exports = configure(function (ctx) {
         name: `Quasar App`,
         short_name: `Quasar App`,
         description: `A Quasar Framework app`,
+        "gsm_sender_id": "103953800507",
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

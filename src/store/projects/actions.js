@@ -48,6 +48,18 @@ export async function loadProjects({ state, commit, rootGetters}) {
     }
 }
 
+export async function editReminderStatusDeadline({ state, commit, rootGetters}, payload) {
+    try {
+        const token = rootGetters['authenticate/token']
+        const {data} = await api.put(`/events/${payload.id}.json?auth=${token}`, {...payload.selectedProject, reminderStatus: payload.reminderStatus})
+        commit('changeProject', {...payload.selectedProject, reminderStatus: payload.reminderStatus, id: payload.id})
+        Notify.create('Просмотрено. Напоминание больше не будет показано')
+    } catch (e) {
+        console.log(e)
+        Notify.create(e.message)
+    }
+}
+
 export async function postProjects({ commit, rootGetters}, payload) {
     try {
         commit('setProjects', payload)

@@ -115,12 +115,12 @@ export default defineComponent({
       selectedDate: today(),
       // events: events,
       modal: false,
-      title: 'sdh',
+      title: '',
       details: '',
       // .toLocaleString("ru", this.options)
       date: this.getCurrentDay(this.numberOfDay),
       time: '',
-      bgcolor: '',
+      bgcolor: '#148fb8',
       icon: '',
       daysData: {},
       numberOfDay: null,
@@ -205,6 +205,7 @@ export default defineComponent({
           date: this.getCurrentDay(this.numberOfDay),
           time: this.time,
           bgcolor: this.bgcolor,
+          reminderStatus: 'no'
       })
       this.title = ''
       this.details = ''
@@ -313,6 +314,7 @@ export default defineComponent({
             date: this.clickEvent.date,
             time: this.eventTime,
             bgcolor: this.eventBgColor,
+            reminderStatus: 'no'
           },
           id: this.clickEvent.eventId       
       })

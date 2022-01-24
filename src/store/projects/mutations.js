@@ -32,3 +32,12 @@ export function updateDate (state, idx) {
     })
     state.projects[idx].updateDate = dateNow
 }
+
+
+export function changeProject (state, project) {
+    const index = state.projects.findIndex(item => item.id === project.id);
+    if (index !== -1) {
+      state.events[index] = project
+    }
+    console.log('проекты в store после изменения', state.projects)
+}

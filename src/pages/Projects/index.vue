@@ -110,10 +110,27 @@ export default defineComponent({
 
     // watch(modal, val=>console.log(val, customerOpt1))
 
+    const getFormatDate = (date)=>{
+      new Date(date).toLocaleDateString("ru", {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  timezone: 'UTC'
+              })
 
+    }
 
     const createProject = async () => {
-            const data = {customerId: customerInfo.value.id, projectCustomer: projectCustomer.value, projectServices: projectServices.value, projectComment: projectComment.value, projectStatus: projectStatus.value, projectSum: projectSum.value, projectPayment: projectPayment.value, paymentStatus: projectPaymentStatus.value, projectDeadline: projectDeadline.value}
+      console.log('дата для таблицы', projectDeadline.value)
+            const formatDate = new Date(projectDeadline.value).toLocaleDateString("ru", {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  timezone: 'UTC'
+              })
+
+             console.log('дата формат', formatDate)
+            const data = {customerId: customerInfo.value.id, projectCustomer: projectCustomer.value, projectServices: projectServices.value, projectComment: projectComment.value, projectStatus: projectStatus.value, projectSum: projectSum.value, projectPayment: projectPayment.value, paymentStatus: projectPaymentStatus.value, projectDeadline: formatDate}
             await store.dispatch('projects/createProject', data)
             projectCustomer.value = null
             projectServices.value = null
