@@ -23,7 +23,7 @@ export async function createProject({ state, commit, rootGetters}, payload) {
         const creationDate = computed(() => state.creationDate)
         const updateDate = computed(() => state.updateDate)
 
-        payload = {...payload, creationDate: creationDate.value, updateDate: updateDate.value}
+        payload = {...payload, creationDate: creationDate.value, updateDate: updateDate.value, reminderStatus: 'no'}
         const token = rootGetters['authenticate/token']
         const {data} = await api.post(`/projects.json?auth=${token}`, payload)
         commit('addProject', {...payload,  id: data.name})
@@ -34,7 +34,7 @@ export async function createProject({ state, commit, rootGetters}, payload) {
     }
 }
 
-export async function loadProjects({ state, commit, rootGetters}) {
+export async function loadProjects({ commit, rootGetters}) {
     try {
         const token = rootGetters['authenticate/token']
         const {data} = await api.get(`/projects.json?auth=${token}`)
@@ -51,9 +51,13 @@ export async function loadProjects({ state, commit, rootGetters}) {
 export async function editReminderStatusDeadline({ state, commit, rootGetters}, payload) {
     try {
         const token = rootGetters['authenticate/token']
-        const {data} = await api.put(`/events/${payload.id}.json?auth=${token}`, {...payload.selectedProject, reminderStatus: payload.reminderStatus})
+        const {data} = await api.put(`/projects/${payload.id}.json?auth=${token}`, {...payload.selectedProject, reminderStatus: payload.reminderStatus})
         commit('changeProject', {...payload.selectedProject, reminderStatus: payload.reminderStatus, id: payload.id})
-        Notify.create('Просмотрено. Напоминание больше не будет показано')
+        if (payload.reminderStatus == "done"){
+            Notify.create('Просмотрено. Напоминание больше не будет показано')
+        } else if(payload.reminderStatus == "remindLater") {
+            Notify.create('Напоминание будет показано завтра')
+        }
     } catch (e) {
         console.log(e)
         Notify.create(e.message)

@@ -97,9 +97,9 @@
           </q-td> 
           <q-td key="deadline" :props="props">
             {{ props.row.projectDeadline }}
-            <q-popup-edit v-model="props.row.projectDeadline" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+            <!-- <q-popup-edit v-model="props.row.projectDeadline" v-slot="scope" @save="() => UpdateDocument()"  buttons>
               <q-input type="date" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit>
+            </q-popup-edit> -->
           </q-td>
           <q-td key="dateCreate" :props="props">
               {{ props.row.creationDate }}

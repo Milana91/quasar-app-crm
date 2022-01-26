@@ -10,8 +10,8 @@
         </q-card-section>-->
 
         <q-card-actions align="right" class="text-primary">
-          <AppButton flat label="Отмена" v-close-popup />
-          <AppButton flat label="Создать" v-close-popup @click = "$emit('submitForm')" />
+          <AppButton flat :label="leftBtn" v-close-popup @click = "$emit('leftBtnAct')"/>
+          <AppButton flat :label="rightBtn" v-close-popup @click = "$emit('submitForm')" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -23,12 +23,14 @@ import AppButton from 'components/ui/AppButton'
 
 export default {
   // name: 'ComponentName',
-  emit: ['submitForm'],
+  emit: ['submitForm', 'leftBtnAct'],
   props: {
     title: {
       type: String,
       required: true
-    }
+    },
+    leftBtn: String,
+    rightBtn: String
   },
   setup () {
     return {}

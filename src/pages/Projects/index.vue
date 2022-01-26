@@ -7,7 +7,7 @@
 
     <!-- Вынесем модальное окно в отдельный блок -->
     <teleport to="body">
-      <app-modal @submitForm="createProject" v-model="modal" title="Добавить проект">
+      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="createProject" v-model="modal" title="Добавить проект">
         <ProjectsModal v-model:customer="projectCustomer" v-model:services="projectServices" v-model:comment="projectComment" v-model:deadline="projectDeadline" v-model:customerOptions="customerOpt" v-model:servicesOptions="servicesOpt" @created="modal = false" />
       </app-modal>
     </teleport>
