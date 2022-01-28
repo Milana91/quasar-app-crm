@@ -22,7 +22,7 @@
             </div>  
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" @clickAction="$emit('clickAct')" v-close-popup />
+          <AppButton flat label="OK" color="primary" @clickAction="$emit('clickAct')" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

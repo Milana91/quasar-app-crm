@@ -49,16 +49,16 @@
   </div>
   <teleport to="body">
      <!-- @submitForm="createEvent" -->
-      <app-modal @submitForm="addEvent" v-model="modal" title="Добавить событие">
+      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="addEvent" v-model="modal" title="Добавить событие">
         <CalendarModal :colorIcon="colorIcon" v-model:titleEvent="title" v-model:detailsEvent="details" v-model:dateEvent="clickDateModal" v-model:timeEvent="time" v-model:modelValue="bgcolor"  @created="modal = false" />
       </app-modal>
   </teleport>
   <teleport to="body">
-     <CalendarPopupDescription :eventDate="eventDate" :eventTime="eventTime" :eventBgColor="eventBgColor" :eventDescription="eventDescription" :eventTitle="eventTitle" v-model="popupShow" @clickAct="popupShow = false" @deleteEvent="deleteEvent" @editEvent="editEvent"/>
+     <CalendarPopupDescription   :eventDate="eventDate" :eventTime="eventTime" :eventBgColor="eventBgColor" :eventDescription="eventDescription" :eventTitle="eventTitle" v-model="popupShow" @clickAct="popupShow = false" @deleteEvent="deleteEvent" @editEvent="editEvent"/>
   </teleport>
   <teleport to="body">
      <!-- @submitForm="createEvent" -->
-      <app-modal @submitForm="changeEvent" v-model="modalEditable" title="Редактировать событие">
+      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="changeEvent" v-model="modalEditable" title="Редактировать событие">
         <CalendarModal :colorIcon="colorIcon" v-model:titleEvent="eventTitle" v-model:detailsEvent="eventDescription" v-model:dateEvent="eventDate" v-model:timeEvent="eventTime" v-model:modelValue="eventBgColor"  @created="modalEditable = false" />
       </app-modal>
   </teleport>

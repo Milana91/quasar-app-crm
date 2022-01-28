@@ -7,7 +7,7 @@
 
     <!-- Вынесем модальное окно в отдельный блок -->
     <teleport to="body">
-      <app-modal @submitForm="createService" v-model="modal" title="Добавить услугу">
+      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="createService" v-model="modal" title="Добавить услугу">
         <ServicesModal v-model:title="serviceTitle" v-model:cost.number="serviceCost" @created="modal = false" />
       </app-modal>
     </teleport>

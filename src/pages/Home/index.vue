@@ -1,17 +1,22 @@
 <template>
+  <CustomersCount/>
+  <SalesAmountChart/>
   <q-page class="flex q-pa-md">
     Добро пожаловать
     <q-space />
-    <div>
+    <!-- <div>
       <AppButton label="Выйти" @clickAction="logout"/>
-    </div>
+    </div> -->
   </q-page>
 </template>
 
 <script>
 import { useStore } from 'vuex'
 import { useRouter }  from 'vue-router'
-import AppButton from 'components/ui/AppButton'
+// import AppButton from 'components/ui/AppButton'
+import CustomersCount from 'components/CustomersCount'
+import SalesAmountChart from 'components/SalesAmountChart'
+import {onMounted} from "vue"
 
 export default {
   name: "Home",
@@ -25,9 +30,12 @@ export default {
       }
 
       return {
-          logout
+          logout,
       }
   },
-  components: { AppButton }
+  components: { CustomersCount, SalesAmountChart}
 }
 </script>
+
+<style lang="sass">
+</style>

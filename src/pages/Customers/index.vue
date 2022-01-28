@@ -7,7 +7,7 @@
 
     <!-- Вынесем модальное окно в отдельный блок -->
     <teleport to="body">
-      <app-modal @submitForm="createCustomer" v-model="modal" title="Добавить клиента">
+      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="createCustomer" v-model="modal" title="Добавить клиента">
         <CustomersModal v-model:comment="customerComment" v-model:company="customerCompany" v-model:phone="customerPhone" v-model:name="customerName" v-model:email.number="customerEmail" @created="modal = false" />
       </app-modal>
     </teleport>

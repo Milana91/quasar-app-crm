@@ -185,7 +185,7 @@ export default {
       const copyStore = JSON.parse(JSON.stringify(val))
       rows.value = copyStore
       console.log(rows)
-      console.log(getStoreProjects)
+      console.log("vdxbxsb", getStoreProjects)
     })
 
     const UpdateDocument = () => {
