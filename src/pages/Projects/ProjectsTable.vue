@@ -86,8 +86,8 @@
             </q-popup-edit>
           </q-td>
           <q-td key="paymentStatus" :props="props">
-          <div>{{ props.row.paymentStatus }}<AppIcon name="arrow_drop_down" /></div>
-            <q-popup-edit v-model="props.row.paymentStatus" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+          <div>{{ props.row.projectPaymentStatus }}<AppIcon name="arrow_drop_down" /></div>
+            <q-popup-edit v-model="props.row.projectPaymentStatus" v-slot="scope" @save="() => UpdateDocument()"  buttons>
                <div class="q-pa-md" style="max-width: 200px">
                     <div class="q-gutter-md">
                         <AppSelect behavior="menu" :options="paymentStatusOpt" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
@@ -271,6 +271,12 @@ export default {
       editedItem.projectPayment = payment
       editedItem.projectPaymentStatus = paymentStatus
       editedItem.projectDeadline = deadline
+      store.state.customers.customers.forEach((item)=>{
+            if (item.customerName == customer){
+                editedItem.customerId = item.id
+            }
+        })
+      console.log('редактируемый проект',  editedItem)
       console.log('обновление',  store.state.projects.updateDate)
       if(editedItem.endDate == null && status == "Завершен"){
         editedItem.endDate =  new Date().toLocaleDateString("ru", {
@@ -284,9 +290,20 @@ export default {
       }
     })
 
+    // watch(payment, (val) => {
+    //   console.log('jg', editedItem)
+    //   // const data = {idx: editedItem.customerId, sum: payment.value}
+    //   // store.dispatch('customers/updateCustomerSumByID', data)
+    // })
+
     const updateRow = async() => {
       const data = {idx: editedIndex, editedItem}
+      console.log('индекс', editedIndex)
+      console.log('новка', editedItem)
       await store.dispatch('projects/postByID', data)
+      console.log('отредактировали', editedItem.customerId)
+      const payload = {idx: editedItem.customerId}
+      await store.dispatch('customers/updateCustomerSumByID', payload)
       showDialog.value = false
     }
 

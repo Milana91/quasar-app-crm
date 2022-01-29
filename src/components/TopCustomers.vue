@@ -1,21 +1,58 @@
 <template>
     <DoughnutChart ref="doughnutRef" :chartData="testData" :options="options" />
-    <q-btn @click="shuffleData">Shuffle</q-btn>
 </template>  
 <script>
-import { shuffle } from 'lodash';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { DoughnutChart } from 'vue-chart-3';
-import { Chart, registerables  } from 'chart.js';
+import { Chart, registerables  } from 'chart.js'
+import { useStore } from 'vuex'
 Chart.register(...registerables);
 
 
 export default {
     components: { DoughnutChart  },
     setup(props) {
-        
-            const data = ref([30, 40, 60, 70, 5]);
-            const doughnutRef = ref();
+            const getStoreCustomers = computed(()=>store.state.customers.customers)
+            const customers = ref([])
+            const totalVals = ref([])
+            const data = ref([30, 40, 60, 70, 5])
+            const doughnutRef = ref()
+            const store = useStore()
+            
+            const compareSum = (a, b) => {
+                if (a > b) return -1
+                if (a == b) return 0
+                if (a < b) return 1
+            }
+
+            const getCustomers = () => {
+                    getStoreCustomers.value.forEach((item)=>{
+                        totalVals.value.forEach((sum)=>{
+                            if(item.totalCost == sum){
+                                customers.value.push(item.customerName)
+                                console.log("клиенты", customers.value)
+                            }
+                        })
+                    })
+            }
+
+
+            const getVals = () => {
+                getStoreCustomers.value.forEach((item)=>{
+                    totalVals.value.push(item.totalCost)
+                })
+                console.log('значения', totalVals.value)
+                totalVals.value.sort(compareSum)
+                totalVals.value.splice(5, (totalVals.value.length - 5))
+                console.log('сортировка', totalVals.value)
+            }
+
+            onMounted(async()=>{
+                await store.dispatch('customers/loadCustomers')
+                getVals()
+                getCustomers()
+                data.value = totalVals.value
+            })
 
             const options = ref({
             responsive: true,
@@ -25,13 +62,13 @@ export default {
                     },
                     title: {
                         display: true,
-                        text: 'Chart.js Doughnut Chart',
+                        text: 'Топ 5 клиентов',
                     },
                 },
             });
 
             const testData = computed(() => ({
-            labels: ['Paris', 'Nîmes', 'Toulon', 'Perpignan', 'Autre'],
+            labels: customers.value,
             datasets: [
                 {
                 data: data.value,
@@ -45,15 +82,10 @@ export default {
                     ]
                 },
             ],
-            }));
-
-            function shuffleData() {
-            data.value = shuffle(data.value);
-            }
+            }))
 
             return {
                 testData, 
-                shuffleData, 
                 doughnutRef,
                 options
             }

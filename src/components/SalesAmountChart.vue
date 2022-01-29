@@ -63,7 +63,7 @@ export default {
                     },
                     title: {
                         display: true,
-                        text: 'Chart.js Doughnut Chart',
+                        text: 'Суммы проектов по месяцам',
                     },
                 },
             });
@@ -77,21 +77,21 @@ export default {
         // }
 
 
-        // получить последние 12 месяцев
+      // получить последние 12 месяцев
       const getLastTwelveMonths = () => {
             let theMonths = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
             let dataMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
             let now = new Date()
-            console.log('12 мес', theMonths)
-            console.log('сегодня', now)
+            // console.log('12 мес', theMonths)
+            // console.log('сегодня', now)
             for (let i = 0; i > -12; i--) {
                 let future = new Date(now.getFullYear(), now.getMonth() + i, 1)
-                console.log('год', future)
+                // console.log('год', future)
                 let month = theMonths[future.getMonth()]
                 let dataMonth = dataMonths[future.getMonth()]
-                console.log('месяц', future)
+                // console.log('месяц', future)
                 let year = future.getFullYear()
-                console.log('месяц и год', month, year)
+                // console.log('месяц и год', month, year)
                 legendaDataMonths.value.push(month + ' ' + year)
                 chartDataMonths.value.push(dataMonth + ' ' + year)
             }
@@ -100,30 +100,30 @@ export default {
       onMounted(async ()=>{
             await store.dispatch('projects/loadProjects')
             getLastTwelveMonths()
-            console.log('для легенды', legendaDataMonths.value)
-            console.log('для графика', chartDataMonths.value)
-            console.log('получены проекты', getStoreProjects.value)
+            // console.log('для легенды', legendaDataMonths.value)
+            // console.log('для графика', chartDataMonths.value)
+            // console.log('получены проекты', getStoreProjects.value)
             chartValues(chartDataMonths.value, getStoreProjects.value)
-            console.log('месяцы для поиска', chartDataMonths.value)
-            console.log(data.value)
+            // console.log('месяцы для поиска', chartDataMonths.value)
+            // console.log(data.value)
             data.value = mas.value
         })
 
       const chartValues = (chartMonths, projects) =>{
            chartMonths.forEach((item) => {
                let sum = ref(0)
-                console.log('тра', getStoreProjects)
+                // console.log('тра', item)
                 projects.forEach((proj)=>{
                     // console.log('фыа', proj)
-                    if(proj.endDate && proj.endDate.includes(item))
+                    if(proj.projectDeadline.includes(item))
                     {
                         // console.log('проекты вкл', proj)
-                        sum.value = sum.value + parseInt(proj.projectPayment)
+                        sum.value = sum.value + proj.projectSum
                         // console.log('сумма', sum.value)
                     }
                 })
                 mas.value.push(sum.value)
-                console.log('массив значений', mas.value)
+                // console.log('массив значений', mas.value)
 	       })
        }
 

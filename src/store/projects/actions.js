@@ -88,7 +88,7 @@ export async function postProjects({ commit, rootGetters}, payload) {
 }
 
 
-export async function postByID({ state, commit, rootGetters}, payload) {
+export async function postByID({ state, commit, rootGetters, rootState}, payload) {
     try {
         commit('updateProjects',  {
             idx: payload.idx,
@@ -96,6 +96,12 @@ export async function postByID({ state, commit, rootGetters}, payload) {
           })
         commit('updateDate', payload.idx)
         const token = rootGetters['authenticate/token']
+        console.log('bip', payload.editedItem)
+        // const setCustomerId = rootState.customers.customers.forEach((item)=>{
+        //     if (item.customerName == payload.editedItem.projectCustomer){
+        //         payload.editedItem.customerId = item.id
+        //     }
+        // })
         // payload.editedItem.id - id клиента на сервере, обновленная строка payload.editedItem
         const {data} = await api.put(`/projects/${payload.editedItem.id}.json?auth=${token}`, payload.editedItem)
         console.log(data)

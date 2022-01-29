@@ -1,12 +1,8 @@
 <template>
-  <TopCustomers/>
-  <SalesAmountChart/>
-  <q-page class="flex q-pa-md">
-    Добро пожаловать
-    <q-space />
-    <!-- <div>
-      <AppButton label="Выйти" @clickAction="logout"/>
-    </div> -->
+  <q-page class="flex row q-pa-md justify-around">
+
+   <TopCustomers/>
+    <SalesAmountChart/>
   </q-page>
 </template>
 
