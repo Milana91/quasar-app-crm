@@ -1,5 +1,5 @@
 <template>
-  <CustomersCount/>
+  <TopCustomers/>
   <SalesAmountChart/>
   <q-page class="flex q-pa-md">
     Добро пожаловать
@@ -14,7 +14,7 @@
 import { useStore } from 'vuex'
 import { useRouter }  from 'vue-router'
 // import AppButton from 'components/ui/AppButton'
-import CustomersCount from 'components/CustomersCount'
+import TopCustomers from 'components/TopCustomers'
 import SalesAmountChart from 'components/SalesAmountChart'
 import {onMounted} from "vue"
 
@@ -33,7 +33,7 @@ export default {
           logout,
       }
   },
-  components: { CustomersCount, SalesAmountChart}
+  components: { TopCustomers, SalesAmountChart}
 }
 </script>
 

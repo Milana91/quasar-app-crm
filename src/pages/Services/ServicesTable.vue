@@ -12,7 +12,7 @@
       :loading="loading"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать услугу" @submitUpdate="updateRow; showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать услугу" @submitUpdate="updateRow(); showDialog=false">
           <ServicesEditModalFields 
               v-model:titleVal="title" 
               v-model:costVal="cost" 

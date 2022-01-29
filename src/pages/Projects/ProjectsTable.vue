@@ -13,7 +13,7 @@
       no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @submitUpdate="updateRow; showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @submitUpdate="updateRow(); showDialog=false">
           <ProjectsEditModalFields 
               v-model:customerVal="customer" 
               v-model:servicesVal="services" 
@@ -66,7 +66,7 @@
           </q-td>
           <q-td key="status" :props="props">
           <div>{{ props.row.projectStatus  }}<AppIcon name="arrow_drop_down" /></div>
-            <q-popup-edit v-model="props.row.projectStatus " v-slot="scope" @save="() => UpdateDocument()"  buttons>
+            <q-popup-edit v-model="props.row.projectStatus " v-slot="scope" @save="() =>  UpdateDocument()"  buttons>
                <div class="q-pa-md" style="max-width: 200px">
                  <div class="q-gutter-md">
               <AppSelect behavior="menu" :options="statusOpt" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
@@ -177,6 +177,7 @@ export default {
       await store.dispatch('projects/loadProjects')
       loading.value = false
       console.log(getStoreProjects)
+      console.log('rows.value', rows.value)
     })
 
     // следить за изменениями массива services в store
@@ -191,6 +192,18 @@ export default {
     const UpdateDocument = () => {
       updated.value = !(updated.value)
     }
+
+    // const UpdateR = (row) => {
+    //   // idx = rows.value.indexOf(item)
+    //   const ef = JSON.parse(JSON.stringify(row))
+    //   store.commit('projects/changeProject', ef)
+    //   console.log('!в store', store.state.projects.projects)
+    //   // editedItem = ef
+    //   // const data = {idx: editedIndex, editedItem}
+    //   // await store.dispatch('projects/postByID', data)
+    //   // console.log('!после dispatch', data)
+    // }
+
     // следить за редактированием пользователем значений в таблице 
     watch(updated, (val) => {
         updateProjectsFB(rows.value)
@@ -198,6 +211,7 @@ export default {
 
     // обновить услуги в БД и хранилище
     const updateProjectsFB = async(rows) => {
+      console.log('редактирование', rows)
       await store.dispatch('projects/postProjects', rows)
     }
 
@@ -257,11 +271,22 @@ export default {
       editedItem.projectPayment = payment
       editedItem.projectPaymentStatus = paymentStatus
       editedItem.projectDeadline = deadline
-    });
+      console.log('обновление',  store.state.projects.updateDate)
+      if(editedItem.endDate == null && status == "Завершен"){
+        editedItem.endDate =  new Date().toLocaleDateString("ru", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timezone: 'UTC'
+        })
+      } else if (status != "Завершен") {
+        editedItem.endDate = null
+      }
+    })
 
     const updateRow = async() => {
       const data = {idx: editedIndex, editedItem}
-      await store.dispatch('customers/postByID', data)
+      await store.dispatch('projects/postByID', data)
       showDialog.value = false
     }
 
@@ -289,7 +314,7 @@ export default {
       confirm,
       search,
       statusOpt,
-      paymentStatusOpt
+      paymentStatusOpt,
       // separator: ref('vertical'),
     }
   },

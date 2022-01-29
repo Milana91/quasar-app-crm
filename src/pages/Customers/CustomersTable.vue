@@ -13,7 +13,7 @@
       no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента"  @submitUpdate="updateRow; showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента"  @submitUpdate="updateRow(); showDialog=false">
           <CustomersEditModalFields 
               v-model:nameVal="name" 
               v-model:emailVal="email" 

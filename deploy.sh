@@ -22,5 +22,5 @@ git commit -m 'deploy'
 # если вы публикуете по адресу https://<USERNAME>.github.io/<REPO>
 # git push -f git@github.com:Milana91/quasar-app-crm.git master:gh-pages
 
-
+# git push -f git@github.com:Milana91/quasar-app-crm.git master
 cd -

@@ -112,13 +112,13 @@ export default {
       const chartValues = (chartMonths, projects) =>{
            chartMonths.forEach((item) => {
                let sum = ref(0)
-                // console.log('тра', item)
+                console.log('тра', getStoreProjects)
                 projects.forEach((proj)=>{
                     // console.log('фыа', proj)
-                    if(proj.projectDeadline.includes(item))
+                    if(proj.endDate && proj.endDate.includes(item))
                     {
                         // console.log('проекты вкл', proj)
-                        sum.value = sum.value + proj.projectSum
+                        sum.value = sum.value + parseInt(proj.projectPayment)
                         // console.log('сумма', sum.value)
                     }
                 })
