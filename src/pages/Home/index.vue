@@ -4,6 +4,7 @@
    <TopCustomers/>
     <SalesAmountChart/>
   </q-page>
+  <pdf></pdf>
 </template>
 
 <script>
@@ -12,7 +13,8 @@ import { useRouter }  from 'vue-router'
 // import AppButton from 'components/ui/AppButton'
 import TopCustomers from 'components/TopCustomers'
 import SalesAmountChart from 'components/SalesAmountChart'
-import {onMounted} from "vue"
+import {ref, onMounted} from "vue"
+import pdf from 'pages/Home/pdf'
 
 export default {
   name: "Home",
@@ -26,10 +28,10 @@ export default {
       }
 
       return {
-          logout,
+          logout
       }
   },
-  components: { TopCustomers, SalesAmountChart}
+  components: { TopCustomers, SalesAmountChart, pdf}
 }
 </script>
 
