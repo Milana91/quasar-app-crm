@@ -30,7 +30,7 @@ export default {
                         totalVals.value.forEach((sum)=>{
                             if(item.totalCost == sum){
                                 customers.value.push(item.customerName)
-                                console.log("клиенты", customers.value)
+                                // console.log("клиенты", customers.value)
                             }
                         })
                     })
@@ -41,10 +41,10 @@ export default {
                 getStoreCustomers.value.forEach((item)=>{
                     totalVals.value.push(item.totalCost)
                 })
-                console.log('значения', totalVals.value)
+                // console.log('значения', totalVals.value)
                 totalVals.value.sort(compareSum)
                 totalVals.value.splice(5, (totalVals.value.length - 5))
-                console.log('сортировка', totalVals.value)
+                // console.log('сортировка', totalVals.value)
             }
 
             onMounted(async()=>{

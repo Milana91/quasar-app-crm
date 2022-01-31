@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <div class="main">
+    <div ref="htmlToPdf" style="padding: 10px; background: #f5da55">
+        
+           <div class="main">
 <table width="100%" style="font-family: Arial;">
     <tr >
         <td style="width: 68%; padding: 20px 0;">
@@ -171,71 +172,31 @@
   </div>
   <br/>  <br /><br /><br/>  <br /><br /><br/>  <br /><br />
 </div>
-        <!-- <div style="width: 750px" ref="htmlToPdf">
-            <q-card
-                class="my-card text-white"
-                style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)"
-                >
-                <q-card-section>
-                    <div class="text-h6">Our Changing Planet</div>
-                    <div class="text-subtitle2">by John Doe</div>
-                </q-card-section>
-
-                <q-card-section class="q-pt-none">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                Ullam nihil, deleniti molestias explicabo eaque recusandae officia nulla 
-                tempore tenetur labore qui commodi numquam unde perspiciatis,
-                ut amet dolorem voluptatum nemo!
-                </q-card-section>
-            </q-card>
-        </div> -->
-        <button @click="createPdf">generate PDF</button>
-    </div>
+</div>
+    <button id="download"  @click="createPdf">Download Pdf</button>
 </template>
 
 <script>
 import { jsPDF } from "jspdf"
 import {ref, reactive} from "vue"
+import VueHtml2Canvas from 'vue-html2canvas'
+import html2canvas from 'html2canvas'
 
 
 export default {
     setup() {
         const htmlToPdf = ref(null)
         const createPdf = () => {
-             // Landscape export, 2×4 inches
-            const doc = new jsPDF({
-                orientation: 'p',
-                unit: 'px',
-                hotfixes: ["px_scaling"],
-                format: 'a4',
-                putOnlyUsedFonts: true,
-                compress: true,
-                width: 550,
-                windowWidth: 550,
+            console.log(htmlToPdf.value)
+            html2canvas(htmlToPdf.value).then(canvas => {
+            let imgWidth = 208;
+            let imgHeight = canvas.height * imgWidth / canvas.width
+            const contentDataURL = canvas.toDataURL('image/png')
+            let pdf = new jsPDF('p', 'mm', 'a4')
+            let position = 0
+            pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+            pdf.save('newPDF.pdf')
             })
-
-        //    const margins =  reactive({
-        //         top: 80,
-        //         bottom: 60,
-        //         left: 40,
-        //         width: 522
-        //    })
-        //   format: [4, 2]
-        
-            console.log('компонент', htmlToPdf.value)
-            doc.html(htmlToPdf.value,  {
-                callback: function (doc) {
-                    window.open(doc.output('bloburl')); // to debug
-                    // doc.save("two-by-four.pdf")
-                },
-                y: 40,
-                margin: 20,
-                // margins.left, 
-                // margins.top
-                // 'width' : margins.width
-            })
-            // doc.text("Hello world!", 1, 1)
-          
         }
 
         return{
@@ -251,6 +212,4 @@ export default {
   width: 750px
   margin: 0 auto
   font-size: 17px
-
-    
 </style>

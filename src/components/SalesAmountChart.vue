@@ -82,8 +82,8 @@ export default {
             let theMonths = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
             let dataMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
             let now = new Date()
-            // console.log('12 мес', theMonths)
-            // console.log('сегодня', now)
+            console.log('12 мес', dataMonths)
+            console.log('сегодня', now)
             for (let i = 0; i > -12; i--) {
                 let future = new Date(now.getFullYear(), now.getMonth() + i, 1)
                 // console.log('год', future)
@@ -104,8 +104,8 @@ export default {
             // console.log('для графика', chartDataMonths.value)
             // console.log('получены проекты', getStoreProjects.value)
             chartValues(chartDataMonths.value, getStoreProjects.value)
-            // console.log('месяцы для поиска', chartDataMonths.value)
-            // console.log(data.value)
+            console.log('месяцы для поиска', chartDataMonths.value)
+            console.log(data.value)
             data.value = mas.value
         })
 
@@ -118,12 +118,12 @@ export default {
                     if(proj.projectDeadline.includes(item))
                     {
                         // console.log('проекты вкл', proj)
-                        sum.value = sum.value + proj.projectSum
-                        // console.log('сумма', sum.value)
+                        sum.value = sum.value + parseInt(proj.projectSum)
+                        console.log('сумма', sum.value)
                     }
                 })
                 mas.value.push(sum.value)
-                // console.log('массив значений', mas.value)
+                console.log('массив значений', mas.value)
 	       })
        }
 
