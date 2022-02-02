@@ -109,6 +109,9 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="row q-gutter-sm justify-center">
+              <router-link v-slot="{navigate}"  custom to="/invoice">
+                  <AppButton round color="primary" @click="navigate" icon="shopping_cart" />
+              </router-link>
               <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton>
               <AppButton color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
             </div>

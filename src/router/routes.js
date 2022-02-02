@@ -42,6 +42,12 @@ const routes = [
         meta: {
           layout: 'main',
           auth: true
+      } },
+      { path: '/invoice', 
+        component: () => import('src/pages/Invoice.vue'), 
+        meta: {
+          layout: 'main',
+          auth: true
       } }
     ]
   },

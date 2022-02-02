@@ -1,10 +1,10 @@
 <template>
-  <div ref="htmlToPdf"  style="padding-top: 150px; padding-left: 100px; padding-right: 100px">
+  <div ref="htmlToPdf"  style="padding-top: 50px;">
     <div class="main">
       <table width="100%" style="font-family: Arial; margin-bottom: 15px">
         <tr>
           <td style="width: 68%; padding: 20px 0">
-            <div style="text-align: justify; font-size: 17pt">
+            <div style="text-align: justify; font-size: 9pt">
               Внимание! Оплата данного счета означает согласие с условиями
               поставки товара. Счет действителен в течение 5(пяти) банковских
               дней, не считая дня выписки счета. Уведомление об оплате
@@ -50,7 +50,7 @@
               </tr>
               <tr>
                 <td style="padding-bottom: 11px; height: 3mm">
-                  <div style="font-size: 15pt">Банк получателя</div>
+                  <div style="font-size: 10pt">Банк получателя</div>
                 </td>
               </tr>
             </table>
@@ -143,7 +143,7 @@
               </tr>
               <tr>
                 <td valign="bottom" style="padding-bottom: 11px; height: 3mm">
-                  <div style="font-size: 15pt">Получатель</div>
+                  <div style="font-size: 10pt">Получатель</div>
                 </td>
               </tr>
             </table>
@@ -155,7 +155,7 @@
       <div
         style="
           font-weight: bold;
-          font-size: 25pt;
+          font-size: 14pt;
           padding-left: 5px;
           font-family: Arial;
         "
@@ -281,7 +281,7 @@
         &nbsp;
       </div>
       <br />
-      <div style="font-family: Arial; font-size: 15pt">
+      <div style="font-family: Arial; font-size: 10pt">
         1. Счет действителен в течении 5 (пяти) банковских дней, не считая дня
         выписки счета. В случае нарушения срока оплаты сохранение цены на товар
         и наличие товара на складе НЕ ГАРАНТИРУЕТСЯ.<br />
@@ -297,11 +297,11 @@
           height: 250px;
         "
       >
-        <div style="ffont-size: 18pt">Руководитель ______________________</div>
+        <div style="font-size: 11pt">Руководитель ______________________</div>
         <br />
         <br /><br />
 
-        <div style="font-size: 18pt">
+        <div style="font-size: 11pt">
           Главный бухгалтер ______________________
         </div>
         <br />
@@ -309,10 +309,10 @@
         <div style="width: 85mm; text-align: center">М.П.</div>
         <br />
       </div>
-      <br />
+      <!-- <br />
       <br /><br /><br />
       <br /><br /><br />
-      <br /><br />
+      <br /><br /> -->
     </div>
   </div>
   <button id="download" @click="createPdf">Download Pdf</button>
@@ -329,16 +329,32 @@ export default {
     const htmlToPdf = ref(null);
     const createPdf = () => {
       console.log(htmlToPdf.value);
+      // , {
+      //     scale:0.7
+      //   }
       html2canvas(htmlToPdf.value, {
-          scale:0.43
+          scale:0.83,
+          dpi: 300,
         }).then((canvas) => {
-        // let imgWidth = 212;
+        // let imgWidth = 0;
         // let imgHeight = (canvas.height * imgWidth) / canvas.width;
         const contentDataURL = canvas.toDataURL("image/png");
         let pdf = new jsPDF("p", "mm", "a4");
-        let position = 0;
-        // pdf.addImage(contentDataURL, "PNG", 0, position, imgWidth, imgHeight);
-        pdf.addImage(contentDataURL, "PNG", 0, position);
+        // let position = 0;
+       const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const widthRatio = pageWidth / canvas.width;
+    const heightRatio = pageHeight / canvas.height;
+    const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
+
+    const canvasWidth = canvas.width * ratio;
+    const canvasHeight = canvas.height * ratio;
+
+    const marginX = (pageWidth - canvasWidth) / 2;
+    const marginY = (pageHeight - canvasHeight) / 2;
+        pdf.addImage(contentDataURL, "PNG",  marginX, marginY, canvasWidth, canvasHeight);
+        pdf.addImage(contentDataURL, "PNG", -90, 0);
         pdf.save("newPDF.pdf");
       });
     };
@@ -353,9 +369,9 @@ export default {
 
 <style lang="sass">
 .main
-  width: 1600px
+  width: 50%
   margin: 0 auto
-  font-size: 27px
+  font-size: 14px
 
 
 .products
