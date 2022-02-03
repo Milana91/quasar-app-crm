@@ -1,7 +1,7 @@
 <template>
-  <div ref="htmlToPdf"  style="padding-top: 50px;">
+  <div ref="htmlToPdf"  style="padding-top: 30px;">
     <div class="main">
-      <table width="100%" style="font-family: Arial; margin-bottom: 15px">
+      <table width="100%" style="font-family: Arial; margin-bottom: 9px">
         <tr>
           <td style="width: 68%; padding: 20px 0">
             <div style="text-align: justify; font-size: 9pt">
@@ -35,13 +35,13 @@
           <td
             colspan="2"
             rowspan="2"
-            style="border: 1px solid; min-height: 13mm; width: 105mm"
+            style="border: 1px solid; min-height: 76px; width: 105mm"
           >
             <table
               width="100%"
               cellpadding="0"
               cellspacing="0"
-              style="height: 13mm"
+              style="height: 76px"
             >
               <tr>
                 <td valign="top">
@@ -49,7 +49,7 @@
                 </td>
               </tr>
               <tr>
-                <td style="padding-bottom: 11px; height: 3mm">
+                <td style="padding-bottom: 10px; height: 14px">
                   <div style="font-size: 10pt">Банк получателя</div>
                 </td>
               </tr>
@@ -269,7 +269,7 @@
         Всего наименований 0 на сумму 0.00 рублей.<br />
         Ноль рублей 00 копеек
       </div>
-      <br /><br />
+      <br />
       <div
         style="
           background-color: #000000;
@@ -280,35 +280,30 @@
       >
         &nbsp;
       </div>
-      <br />
-      <div style="font-family: Arial; font-size: 10pt">
-        1. Счет действителен в течении 5 (пяти) банковских дней, не считая дня
-        выписки счета. В случае нарушения срока оплаты сохранение цены на товар
-        и наличие товара на складе НЕ ГАРАНТИРУЕТСЯ.<br />
-        2. Оплата данного счета означает согласие с условиями изложенными в п.1
-      </div>
-      <br /><br />
       <div
         style="
           background: url('<!--url печати в png сюда-->');
           background-repeat: no-repeat;
           padding: 30px 10px;
-          width: 400px;
-          height: 250px;
+          width: 100%;
+          height: 25px;
         "
       >
-        <div style="font-size: 11pt">Руководитель ______________________</div>
-        <br />
-        <br /><br />
 
-        <div style="font-size: 11pt">
-          Главный бухгалтер ______________________
+      <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between"> 
+            <div style="font-size: 11pt">Руководитель ______________________</div>
+
+            <div style="font-size: 11pt">
+              Главный бухгалтер ______________________
+            </div>
+
+          <!-- <div style="width: 50px; text-align: center">М.П.</div>
+          <br /> -->
         </div>
-        <br />
-
-        <div style="width: 85mm; text-align: center">М.П.</div>
-        <br />
       </div>
+      <br />
+      <div style="width: 50px; text-align: center">М.П.</div>
+      <br />
       <!-- <br />
       <br /><br /><br />
       <br /><br /><br />
@@ -333,7 +328,7 @@ export default {
       //     scale:0.7
       //   }
       html2canvas(htmlToPdf.value, {
-          scale:0.83,
+          scale:1,
           dpi: 300,
         }).then((canvas) => {
         // let imgWidth = 0;
@@ -341,20 +336,20 @@ export default {
         const contentDataURL = canvas.toDataURL("image/png");
         let pdf = new jsPDF("p", "mm", "a4");
         // let position = 0;
-       const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+    //    const pageWidth = pdf.internal.pageSize.getWidth();
+    // const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const widthRatio = pageWidth / canvas.width;
-    const heightRatio = pageHeight / canvas.height;
-    const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
+    // const widthRatio = pageWidth / canvas.width;
+    // const heightRatio = pageHeight / canvas.height;
+    // const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
 
-    const canvasWidth = canvas.width * ratio;
-    const canvasHeight = canvas.height * ratio;
+    // const canvasWidth = canvas.width * ratio;
+    // const canvasHeight = canvas.height * ratio;
 
-    const marginX = (pageWidth - canvasWidth) / 2;
-    const marginY = (pageHeight - canvasHeight) / 2;
-        pdf.addImage(contentDataURL, "PNG",  marginX, marginY, canvasWidth, canvasHeight);
-        pdf.addImage(contentDataURL, "PNG", -90, 0);
+    // const marginX = (pageWidth - canvasWidth) / 2;
+    // const marginY = (pageHeight - canvasHeight) / 2;
+    //     pdf.addImage(contentDataURL, "PNG",  marginX, marginY, canvasWidth, canvasHeight);
+        pdf.addImage(contentDataURL, "PNG", -110, 0);
         pdf.save("newPDF.pdf");
       });
     };
@@ -369,7 +364,7 @@ export default {
 
 <style lang="sass">
 .main
-  width: 50%
+  width: 42%
   margin: 0 auto
   font-size: 14px
 

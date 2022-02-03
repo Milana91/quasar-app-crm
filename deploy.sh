@@ -23,4 +23,5 @@ git commit -m 'deploy'
 # git push -f git@github.com:Milana91/quasar-app-crm.git master:gh-pages
 
 # git push -f git@github.com:Milana91/quasar-app-crm.git master
+# git push -f git@github.com:Milana91/quasar-app-crm.git new
 cd -

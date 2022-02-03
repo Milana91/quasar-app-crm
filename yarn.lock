@@ -5323,6 +5323,11 @@ html-webpack-plugin@5.5.0:
     pretty-error "^4.0.0"
     tapable "^2.0.0"
 
+html2canvas-dpi@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/html2canvas-dpi/-/html2canvas-dpi-0.4.8.tgz#04731ed52b5952451e2f14bff023400570521b4c"
+  integrity sha512-51ek2u41q5um4+9ubt8Iqw7VeRwTxoWAg0Rx4Ppv9ZnZVrKP4qwESTdcBHzzzPPLgpPeOrmxZUQO7zWBd2n5lg==
+
 html2canvas@^1.0.0-alpha.12, html2canvas@^1.0.0-rc.5, html2canvas@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/html2canvas/-/html2canvas-1.4.1.tgz#7cef1888311b5011d507794a066041b14669a543"
