@@ -10,7 +10,7 @@ export function addProject (state, project) {
     state.projects.push(project)
 }
 
-export function udateProjectsSum (state, totalSum) {
+export function updateProjectsSum (state, totalSum) {
     state.projectsSum = totalSum
 }
 

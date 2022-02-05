@@ -1,20 +1,15 @@
 <template>
-  <div ref="htmlToPdf"  style="padding-top: 30px;">
-    <div class="main">
+  <div v-if="!loader"   style="padding-top: 30px;">
+    <div class="main" ref="htmlToPdf">
       <table width="100%" style="font-family: Arial; margin-bottom: 9px">
         <tr>
+          <td style="width: 32%; text-align: center; padding: 30px 0">
+            <img :src="require(`src/assets/contextvn.gif`)" style="width: 70%" />
+          </td>
           <td style="width: 68%; padding: 20px 0">
             <div style="text-align: justify; font-size: 9pt">
-              Внимание! Оплата данного счета означает согласие с условиями
-              поставки товара. Счет действителен в течение 5(пяти) банковских
-              дней, не считая дня выписки счета. Уведомление об оплате
-              обязательно, в противном случае НЕ ГАРАНТИРУЕТСЯ наличие товара на
-              складе. Товар отпускается по факту прихода денег на р/с
-              Поставщика, самовывозом, при наличии доверенности и паспорта.
+              Внимание! Оплата данного счета означает согласие с условиями оказания услуг
             </div>
-          </td>
-          <td style="width: 32%; text-align: center; padding: 30px 0">
-            <img src="<!--Лого url-->" style="width: 70%" />
           </td>
         </tr>
       </table>
@@ -45,7 +40,7 @@
             >
               <tr>
                 <td valign="top">
-                  <div>СТ-ПЕТЕРБУРГСКИЙ филиал ПАО "ПРОМСВЯЗЬБАНК"<br />Г.</div>
+                  <div>ПАО "СБЕРБАНК" г. Великий Новгород<br />Г.</div>
                 </td>
               </tr>
               <tr>
@@ -90,7 +85,7 @@
               width: 50mm;
             "
           >
-            <div>ИНН</div>
+            <div>ИНН 5321204686</div>
           </td>
           <td
             style="
@@ -101,7 +96,7 @@
               width: 55mm;
             "
           >
-            <div>КПП</div>
+            <div>КПП 532101001</div>
           </td>
           <td
             rowspan="2"
@@ -138,7 +133,7 @@
             >
               <tr>
                 <td valign="top">
-                  <div>ООО ""</div>
+                  <div>ООО "КОНТЕКСТ ВН"</div>
                 </td>
               </tr>
               <tr>
@@ -160,7 +155,7 @@
           font-family: Arial;
         "
       >
-        Счет № 0 от 16.08.2017
+        Счет №{{ invoiceNumber }} от {{ todayDate }}
       </div>
       <br />
 
@@ -182,10 +177,10 @@
           </td>
           <td>
             <div style="font-weight: bold; padding-left: 2px">
-              ООО "" ИНН , КПП ,<br />
+              ООО "КОНТЕКСТ ВН" ИНН 5321204686, КПП 532101001,<br />
               <span style="font-weight: normal"
-                >, Российская Федерация, г. , Невский пр-кт, д. лит. ,<br />
-                пом. , тел.: +7() , факс: +7()
+                >173003, Российская Федерация, г. Великий Новгород, наб. Р. Гзень, д. 5<br />
+                пом. 616, тел.: +7 (816-2) 502-605
               </span>
             </div>
           </td>
@@ -196,11 +191,7 @@
           </td>
           <td>
             <div style="font-weight: bold; padding-left: 2px">
-              ИП , ИНН 7564644646, КПП 45465446456,<br /><span
-                style="font-weight: normal"
-                >213245, Российская Федерация, г. , пр-кт, д.151 лит. А,<br />
-                пом. , тел.: +7() , факс: +7()
-              </span>
+              {{customerCompany}}<br /><br />
             </div>
           </td>
         </tr>
@@ -230,17 +221,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="width: 13mm; padding-bottom: 11px">№</td>
+          <tr v-for="(service, index) in projectServicesWithPrices" :key="service">
+            <td style="width: 11mm; text-align: center; padding-bottom: 11px">{{index + 1}}</td>
 
-            <td style="padding-bottom: 11px">Товар</td>
-            <td style="width: 20mm; padding-bottom: 11px">Кол-во</td>
-            <td style="width: 17mm; padding-bottom: 11px">Шт.</td>
+            <td style="padding-bottom: 11px">{{ service.title }}</td>
+            <td style="text-align: center; width: 20mm; padding-bottom: 11px">1</td>
+            <td style="width: 17mm; text-align: center; padding-bottom: 11px">Шт.</td>
             <td style="width: 27mm; text-align: center; padding-bottom: 11px">
-              Цена
+              {{ service.price + ',00' }}
             </td>
             <td style="width: 27mm; text-align: center; padding-bottom: 11px">
-              Сумма
+              {{ service.price + ',00' }}
             </td>
           </tr>
         </tbody>
@@ -259,15 +250,20 @@
             Итого:
           </td>
           <td style="width: 27mm; font-weight: bold; text-align: center">
-            0.00
+            {{ projectSum + ',00'}}
           </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td style="width: 27mm; font-weight: bold; text-align: right">Без НДС</td>
+          <td></td>
         </tr>
       </table>
 
       <br />
       <div style="font-family: Arial">
-        Всего наименований 0 на сумму 0.00 рублей.<br />
-        Ноль рублей 00 копеек
+        Всего наименований {{countServices}} на сумму {{ projectSum + ',00'}} рублей.<br />
+        <!-- Ноль рублей 00 копеек -->
       </div>
       <br />
       <div
@@ -291,7 +287,7 @@
       >
 
       <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between"> 
-            <div style="font-size: 11pt">Руководитель ______________________</div>
+            <div style="font-size: 11pt">Руководитель _________________ Ляховский Д. А.<div class=""></div></div>
 
             <div style="font-size: 11pt">
               Главный бухгалтер ______________________
@@ -302,7 +298,7 @@
         </div>
       </div>
       <br />
-      <div style="width: 50px; text-align: center">М.П.</div>
+      <!-- <div style="width: 50px; text-align: center">М.П.</div> -->
       <br />
       <!-- <br />
       <br /><br /><br />
@@ -310,18 +306,112 @@
       <br /><br /> -->
     </div>
   </div>
-  <button id="download" @click="createPdf">Download Pdf</button>
+  <div class="q-pa-md flex flex-center" v-else>
+    <AppLoaderCircular size="120px"/>
+    <!-- <q-circular-progress
+      indeterminate
+      size="120px"
+      color="primary"
+      class="q-ma-md"
+    /> -->
+  </div>
+  <AppButton class="absolute-right pdf-btn" label="Скачать PDF" id="download" @click="createPdf"></AppButton>
 </template>
 
 <script>
 import { jsPDF } from "jspdf";
-import { ref, reactive } from "vue";
-import VueHtml2Canvas from "vue-html2canvas";
-import html2canvas from "html2canvas";
+import { ref, reactive, computed, onMounted, onUnmounted, watch} from "vue"
+import VueHtml2Canvas from "vue-html2canvas"
+import html2canvas from "html2canvas"
+import { useStore } from 'vuex'
+import {useRouter} from 'vue-router'
+import AppLoaderCircular from 'components/ui/AppLoaderCircular'
+import AppButton from 'components/ui/AppButton'
 
 export default {
+  components: {AppLoaderCircular, AppButton},
   setup() {
-    const htmlToPdf = ref(null);
+    const htmlToPdf = ref(null)
+    const store = useStore()
+    const router = useRouter()
+
+    const getStoreServices = computed(() => store.state.services.services)
+    const customerCompany =  computed(() => store.state.invoice.company)
+    let projectServices =  computed(() => store.state.invoice.projectServices)
+    const projectServicesWithPrices = ref([])
+    const projectSum = ref(0)
+    const countServices = ref(0)
+    const todayDate = new Date().toLocaleDateString("ru", {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            timezone: 'UTC'
+        })
+    const invoiceNumber = computed(()=>store.state.invoice.invoiceNumber)
+    const getProjectSum = ()=>{
+      const sum = ref(0)
+      const counter = ref(0)
+      projectServicesWithPrices.value.forEach((obj)=>{
+        sum.value = sum.value + obj.price
+        counter.value++
+      })
+      projectSum.value = sum.value
+      countServices.value = counter.value
+    }
+
+    // собрать массив с объектами с услугами: название-цена
+    const getServicesPricesObj = () => {
+      console.log('sdgdhdfh', getStoreServices.value)
+      console.log('nsgnsl', projectServices.value)
+      getStoreServices.value.forEach((item)=>{
+        projectServices.value.forEach((val)=>{
+          if(item.serviceTitle == val){
+            projectServicesWithPrices.value.push({title: item.serviceTitle, price: item.serviceCost })
+          }
+        })
+      })
+      // await store.dispatch('services/loadServices')
+      console.log('услуги с ценами выбранные', projectServicesWithPrices.value)
+    }
+
+    const loader = ref(true)
+
+
+    onMounted(() => {
+      setTimeout(() => {
+        getServicesPricesObj()
+        getProjectSum()
+        console.log('svsxdg', projectServices.value.length)
+      }, 1000);
+
+      // console.log('sdgdhdfh', getStoreServices.value)
+      // console.log('nsgnsl', projectServices.value)
+      // getStoreServices.value.forEach((item)=>{
+      //   projectServices.value.forEach((val)=>{
+      //     if(item.serviceTitle == val){
+      //       projectServicesWithPrices.value.push({title: item.serviceTitle, price: item.serviceCost })
+      //     }
+      //   })
+      // })
+      // // await store.dispatch('services/loadServices')
+      // console.log('услуги с ценами выбранные', projectServicesWithPrices.value)
+      // console.log('svsxdg', projectServices.value.length)
+      setTimeout(() => {
+        loader.value = false
+        if(projectServices.value.length == 0){
+           router.push('/projects')
+        }
+      },2500);
+    })
+
+    watch(projectServices.value, (val)=>{
+      console.log('qwerty', projectServices.value.length)
+    })
+
+    // onUnmounted(()=>{
+    //   projectServices.value = null
+    // })
+
     const createPdf = () => {
       console.log(htmlToPdf.value);
       // , {
@@ -349,7 +439,7 @@ export default {
     // const marginX = (pageWidth - canvasWidth) / 2;
     // const marginY = (pageHeight - canvasHeight) / 2;
     //     pdf.addImage(contentDataURL, "PNG",  marginX, marginY, canvasWidth, canvasHeight);
-        pdf.addImage(contentDataURL, "PNG", -110, 0);
+        pdf.addImage(contentDataURL, "PNG", 20, 0);
         pdf.save("newPDF.pdf");
       });
     };
@@ -357,6 +447,14 @@ export default {
     return {
       createPdf,
       htmlToPdf,
+      customerCompany,
+      projectServices,
+      projectServicesWithPrices,
+      projectSum,
+      countServices,
+      loader,
+      todayDate,
+      invoiceNumber
     };
   },
 };
@@ -364,7 +462,7 @@ export default {
 
 <style lang="sass">
 .main
-  width: 42%
+  width: 666px
   margin: 0 auto
   font-size: 14px
 
@@ -372,5 +470,10 @@ export default {
 .products
     th, td
         border: 1px solid
+
+.pdf-btn
+  height: 50px
+  top: 7%
+  right: 17%
 
 </style>

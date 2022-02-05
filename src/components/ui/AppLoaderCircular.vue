@@ -1,0 +1,9 @@
+<template>
+   <q-circular-progress
+      indeterminate
+      size="200px"
+      :thickness="0.1"
+      color="primary"
+      class="q-ma-md"
+    />
+</template>

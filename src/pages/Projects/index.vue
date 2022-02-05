@@ -24,11 +24,12 @@ import AppModal from 'components/ui/AppModal'
 import ProjectsModal from 'pages/Projects/ProjectsModal'
 import ProjectsTable from 'pages/Projects/ProjectsTable'
 
+
 export default defineComponent({
   name: 'Projects',
   setup(){
-    const modal = ref(false)
     const store = useStore()
+    const modal = ref(false)
     const projectCustomer = ref(null)
     const projectServices = ref([])
     const projectComment = ref('')
@@ -76,6 +77,9 @@ export default defineComponent({
     watch(selectedServicesCost, val => {
       console.log('стоимость выбранных услуг', selectedServicesCost)
       projectSum.value = servicesSum(val)
+      store.commit('projects/updateProjectsSum', projectSum.value)
+      console.log('сумма теперь', store.state.projects.projectsSum)
+
       console.log('сумма выбранных услуг', projectSum.value)
     })
 
@@ -83,7 +87,7 @@ export default defineComponent({
       if (val) {
         selectedServices.value = []
         servicesId.value = []
-        selectedServicesCost.value = []
+        selectedServicesCost.value = [] 
         projectServices.value.forEach(item => serviceInfo(item))
         console.log(val, selectedServices.value)
         selectedServices.value.forEach(item => servicesId.value.push(item.id))

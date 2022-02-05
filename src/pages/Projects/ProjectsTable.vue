@@ -110,7 +110,7 @@
           <q-td key="actions" :props="props">
             <div class="row q-gutter-sm justify-center">
               <router-link v-slot="{navigate}"  custom to="/invoice">
-                  <AppButton round color="primary" @click="navigate" icon="shopping_cart" />
+                  <AppButton round color="primary" @click="navigate" icon="shopping_cart" @clickAction="openInvoice(props.row)" />
               </router-link>
               <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton>
               <AppButton color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
@@ -134,6 +134,7 @@ import ProjectsEditModalFields from 'pages/Projects/ProjectsEditModalFields'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
+import { doc, onSnapshot } from "firebase/firestore"
 
 export default {
    props: {
@@ -147,7 +148,11 @@ export default {
     const rows =  ref([])
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
+    // const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
+    //   console.log("Current data: ", doc.data())
+    // });
     // получить services из store
+    const getStoreServices = computed(() => store.state.services.services)
     const getStoreProjects = computed(() => store.state.projects.projects
             .filter(project => {
                 if (search.value.searchText) {
@@ -173,11 +178,12 @@ export default {
     const search = ref({})
     const paymentStatusOpt = ref(["Оплачен", "Не оплачен", "Частично оплачен"]) // Статус платежа: Оплачен/Не оплачен/Оплачен частично
     const statusOpt = ref(["Активен", "Завершен", "Просрочен"]) // Активен/Завершен/Просрочен(если уже дедлайн наступил)
-
+    const open = ref(false)
     // при загрузке страницы загружить все услуги из БД
-    onMounted(async ()=>{
+    onMounted(async()=>{
       loading.value = true
       await store.dispatch('projects/loadProjects')
+      await store.dispatch('services/loadServices')
       loading.value = false
       console.log(getStoreProjects)
       console.log('rows.value', rows.value)
@@ -293,12 +299,27 @@ export default {
       }
     })
 
-    // watch(payment, (val) => {
-    //   console.log('jg', editedItem)
-    //   // const data = {idx: editedItem.customerId, sum: payment.value}
-    //   // store.dispatch('customers/updateCustomerSumByID', data)
-    // })
+    // при изменении выбранных услуг, пересчитать общую СТОИМОСТЬ проекта
+    watch(services, (val) => {
+      let sum = ref(0)
+      console.log('jg', val)
+      console.log('услуги', getStoreServices)
+      val.forEach((selectedService)=>{
+        console.log('12345', selectedService)
+        getStoreServices.value.forEach((service)=>{
+          console.log('67890', service)
+          if(selectedService == service.serviceTitle){
+            console.log('совпало', service.serviceCost)
+              sum.value = sum.value + service.serviceCost
+          }
+        })
+      })
+      console.log('новая сумма', sum.value)
+      editedItem.projectSum = sum.value
+      console.log('новая сумма в поле', editedItem.projectSum)
+    })
 
+    // отредактировать ряд в таблице
     const updateRow = async() => {
       const data = {idx: editedIndex, editedItem}
       console.log('индекс', editedIndex)
@@ -308,6 +329,13 @@ export default {
       const payload = {idx: editedItem.customerId}
       await store.dispatch('customers/updateCustomerSumByID', payload)
       showDialog.value = false
+    }
+
+    const openInvoice = async (row) => {
+      //  await store.dispatch('invoice/createInvoiceCounter', {invoiceNumber: 0})
+      await store.dispatch('customers/loadByID', row.customerId)
+      store.commit('invoice/setProjectServices', row.projectServices)
+      await store.dispatch('invoice/updateInvoiceCounter', 1)
     }
 
     return {
@@ -335,6 +363,7 @@ export default {
       search,
       statusOpt,
       paymentStatusOpt,
+      openInvoice,
       // separator: ref('vertical'),
     }
   },

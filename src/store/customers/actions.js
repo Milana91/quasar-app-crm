@@ -105,22 +105,32 @@ export async function updateCustomerSumByID({ state, commit, rootGetters, rootSt
         // commit('updateDate', payload.idx)
         const token = rootGetters['authenticate/token']
         let sum = 0
-        const proj =  rootState.projects.projects
-        console.log('proj', proj)
-        console.log('передали', payload.idx)
         const totalSum = ()=>{
             rootState.projects.projects.forEach((item)=>{
                 if(item.customerId == payload.idx){
-                    console.log('совпало', item)
-                    sum = sum + parseInt(item.projectPayment)
+                    if (item.projectPayment != '-'){
+                        sum = sum + parseInt(item.projectPayment)
+                    }
                 }
             })
             return sum
         }
         // payload.editedItem.id - id клиента на сервере, обновленная строка payload.editedItem
         const {data} = await api.put(`/customers/${payload.idx}/totalCost.json?auth=${token}`, totalSum())
-        console.log(data)
-        console.log(state.customers)
+    } catch (e) {
+        console.log(e)
+        Notify.create({
+            message: error(e)
+        })    
+    }
+}
+
+export async function loadByID({ state, commit, rootGetters}, id) {
+    try {
+        const token = rootGetters['authenticate/token']
+        const {data} = await api.get(`/customers/${id}/customerCompany.json?auth=${token}`)
+        commit('invoice/setCompany', data,  { root: true })
+        console.log('компания', data)
     } catch (e) {
         console.log(e)
         Notify.create({
