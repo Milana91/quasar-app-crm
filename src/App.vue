@@ -9,11 +9,23 @@ import MainLayout from 'layouts/MainLayout'
 import AuthLayout from 'layouts/AuthLayout' 
 import { useStore } from 'vuex'
 import {onMounted} from 'vue'
+// import { getDatabase, ref, onValue} from "firebase/database";
 
 export default defineComponent({
   name: 'App',
   setup() {
     const route = useRoute()
+
+
+// const db = getDatabase();
+
+// // + postId + '/starCount'
+// const starCountRef = ref(db, 'events/');
+// onValue(starCountRef, (snapshot) => {
+//   const data = snapshot.val();
+//   // updateStarCount(postElement, data);
+//   console.log('снимок', snapshot.val())
+// });
 
     const store = useStore()
     onMounted(() => {

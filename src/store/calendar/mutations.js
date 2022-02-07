@@ -36,6 +36,14 @@ export function changeEvent (state, event) {
   }
   console.log('события в store после изменения', state.events)
 }  
+
+export function setShowConfirmationVal (state, val) {
+  state.showUpdateConfirmation = val
+}
+
+export function setActiveUser (state, val) {
+  state.activeUser = val
+}
 // export function udateTotalСost (state, totalSum) {
 //     state.totalCost = totalSum
 // }

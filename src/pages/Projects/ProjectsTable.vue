@@ -134,7 +134,7 @@ import ProjectsEditModalFields from 'pages/Projects/ProjectsEditModalFields'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
-import { doc, onSnapshot } from "firebase/firestore"
+
 
 export default {
    props: {
@@ -148,9 +148,7 @@ export default {
     const rows =  ref([])
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
-    // const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
-    //   console.log("Current data: ", doc.data())
-    // });
+  
     // получить services из store
     const getStoreServices = computed(() => store.state.services.services)
     const getStoreProjects = computed(() => store.state.projects.projects

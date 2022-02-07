@@ -77,11 +77,14 @@ import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
 
 import AppModal from 'components/ui/AppModal'
-import { defineComponent } from 'vue'
+import { defineComponent, computed, watch } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
 import { events } from 'src/data/events'
 import CalendarModal from 'pages/Calendar/CalendarModal'
 import CalendarPopupDescription from 'pages/Calendar/CalendarPopupDescription'
+import { getDatabase, ref, onValue} from "firebase/database"
+import { useStore } from 'vuex'
+import { Notify } from 'quasar'
 // import store from '../store/index'
 
 
@@ -96,6 +99,39 @@ import CalendarPopupDescription from 'pages/Calendar/CalendarPopupDescription'
 
 export default defineComponent({
   name: 'MonthSlotDay',
+  setup() {
+    const store = useStore()
+    const db = getDatabase()
+    const showUpdate = computed(()=>store.state.calendar.showUpdateConfirmation)
+    const activeUser = computed(()=>store.state.calendar.activeUser)
+    const starCountRef = ref(db, 'events/')
+
+    const update = onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val()
+      console.log('снимок', data)
+      // Проверить, нужно ли показывать уведомление (показывать, если пользователь не вносил изменения сам)
+      if(showUpdate.value == true && activeUser.value == false){
+          Notify.create({
+            message: 'Доступен обновленный контент. Пожалуйста, обновите страницу',
+            color: 'primary',
+            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+            actions: [
+              { label: 'Подтвердить', color: 'yellow', handler: () => { store.dispatch('calendar/loadEvents')
+          console.log('qwerty', store.state.calendar.events) } },
+              { label: 'Отклонить', color: 'white', handler: () => { /* ... */ } }
+            ]
+          })
+      }
+      // после полученного snapshot сбросить активность пользователя
+      store.commit('calendar/setActiveUser', false)
+      // Установить статус показа уведомления об обновлении в системе
+      store.commit('calendar/setShowConfirmationVal', true)
+      console.log('значение', showUpdate.value)
+    })
+    return {
+      update, showUpdate
+    }
+  },
   components: {
     NavigationBar,
     QCalendarMonth,
@@ -134,7 +170,7 @@ export default defineComponent({
       eventTime: '',
       clickEvent: null,
       modalEditable: false,
-      eventBgColor: ''
+      eventBgColor: '',
     }
   },
   computed: {
@@ -163,10 +199,20 @@ export default defineComponent({
       console.log('map', map)
       return map
     },
+    // watch: {
+    // // whenever question changes, this function will run
+    //   'this.$store.state.calendar.events'(val) {
+    //     console.log('ивенты', val)
+    //    }
+    //  },
+    // counterLoad(){
+    //    return this.$store.state.calendar.counterLoad
+    // },
     eventsArr(){
        return this.$store.state.calendar.events
     },
     events(){
+      console.log('события изменились')
       return this.$store.state.calendar.events
     },
     eventsArrLength(){
@@ -179,9 +225,6 @@ export default defineComponent({
   mounted() {
         // loading.value = true
       this.$store.dispatch('calendar/loadEvents')
-      console.log('состояние events', this.$store.state.calendar.events)
-      // loading.value = false
-      // this.events = this.eventsArr
       setTimeout(() => {
       console.log('все события из хранилища', this.events)
       console.log('eventsMap', this.eventsMap)
@@ -324,7 +367,6 @@ export default defineComponent({
       const eventsArr = this.events
       console.log('свойство events', eventsArr)
       eventsArr.forEach((item)=>{
-        console.log('перебираем события', item)
           if(item.date == this.clickDate)
           {
             console.log('события', item)

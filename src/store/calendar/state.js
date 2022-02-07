@@ -29,6 +29,8 @@ function getCurrentDay (day) {
 export default function () {
   return {
     events: [],
+    showUpdateConfirmation: false,
+    activeUser: false
     // totalCost: null,
     // creationDate: null,
     // updateDate: null,

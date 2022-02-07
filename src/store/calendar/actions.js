@@ -5,6 +5,7 @@ import {computed} from 'vue'
 
 export async function createEvent({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         payload = {...payload}
         console.log(payload)
         const token = rootGetters['authenticate/token']
@@ -38,6 +39,7 @@ export async function loadEvents({ state, commit, rootGetters}) {
 
 export async function removeEvent({ state, commit, rootGetters}, eventId) {
     try {
+        commit('setActiveUser', true)
         const token = rootGetters['authenticate/token']
         const {data} = await api.delete(`/events/${eventId}.json?auth=${token}`)
         commit('deleteEvent', eventId)
@@ -51,6 +53,7 @@ export async function removeEvent({ state, commit, rootGetters}, eventId) {
 
 export async function editEvent({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         const token = rootGetters['authenticate/token']
         const {data} = await api.put(`/events/${payload.id}.json?auth=${token}`, payload.event)
         commit('changeEvent', {...payload.event, id: payload.id})
@@ -63,6 +66,7 @@ export async function editEvent({ state, commit, rootGetters}, payload) {
 
 export async function editReminderStatusEvent({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         const token = rootGetters['authenticate/token']
         const {data} = await api.put(`/events/${payload.id}.json?auth=${token}`, {...payload.selectedEvent, reminderStatus: payload.reminderStatus})
         commit('changeEvent', {...payload.selectedEvent, reminderStatus: payload.reminderStatus, id: payload.id})
