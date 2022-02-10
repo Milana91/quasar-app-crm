@@ -102,6 +102,11 @@ const linksList = [
     icon: 'record_voice_over',
     link: '/calendar'
   },
+   {
+    title: 'Пользователи',
+    icon: 'record_voice_over',
+    link: '/users'
+  },
   // {
   //   title: 'Twitter',
   //   icon: 'rss_feed',
@@ -117,11 +122,12 @@ const linksList = [
   //   icon: 'favorite',
   //   link: 'https://awesome.quasar.dev'
   // }
-];
+]
 
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
+// import { linksList } from 'src/data/linksList'
 
 export default defineComponent({
   name: 'MainLayout',

@@ -23,7 +23,7 @@ export function getToken ({commit}) {
 export function logout ({commit}) {
     const auth = getAuth()
     signOut(auth).then(() => {
-        Notify.create({message: 'Выход осуществлен'})
+        Notify.create({message: 'Вы вышли из системы'})
         commit('removeToken')
       }).catch(e => { 
         Notify.create({
@@ -46,7 +46,7 @@ export function signIn ({commit, dispatch}, payload) {
             setTimeout(() => {
               commit('loaded')
               Notify.create({
-                message:  'Вход осуществлен'
+                message:  'Вы вошли в систему'
               })
               this.$router.push('/home')
             }, 2000);
@@ -57,4 +57,24 @@ export function signIn ({commit, dispatch}, payload) {
               message: error(e.code)
             })}
           )
-    }
+}
+
+export function registerUser ({commit, dispatch}, userData) {
+  const auth = getAuth()
+  createUserWithEmailAndPassword(auth, userData.email, userData.password)
+  .then(async (userCredential) => {
+    commit('loadingActive')
+    const user = userCredential.user
+      setTimeout(() => {
+        commit('loaded')
+        Notify.create({
+          message:  'Пользователь зарегистрирован'
+        })
+      }, 2000);
+  })
+  .catch(e => { 
+      Notify.create({
+        message: error(e.code)
+      })}
+    )
+}

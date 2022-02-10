@@ -13,18 +13,10 @@
       no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента"  @submitUpdate="updateRow(); showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать пользователя"  @submitUpdate="updateRow(); showDialog=false">
           <CustomersEditModalFields 
               v-model:nameVal="name" 
               v-model:emailVal="email" 
-              v-model:phoneVal="phone" 
-              v-model:companyVal="company"
-              v-model:commentVal="comment"
-              v-model:sumCostVal="totalCost"
-              v-model:statusVal="status"
-              v-model:createDateVal="createDate"
-              v-model:updateDateVal="updateDate"
-              :optionsVal="statusOptions"
           />
       </app-modal-edit>
     </template>
@@ -36,53 +28,15 @@
         <q-tr :props="props">
           <q-td key="name" :props="props">
             {{ props.row.customerName }}
-            <q-popup-edit v-model="props.row.customerName" buttons v-slot="scope"  @save="() => UpdateDocument()">
+            <q-popup-edit v-model="props.row.userName" buttons v-slot="scope"  @save="() => UpdateDocument()">
               <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="email" :props="props">
             {{ props.row.customerEmail }}
-            <q-popup-edit v-model="props.row.customerEmail" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+            <q-popup-edit v-model="props.row.userEmail" v-slot="scope" @save="() => UpdateDocument()"  buttons>
               <q-input type="email" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
-          </q-td>
-          <q-td key="phone" :props="props">
-            {{ props.row.customerPhone }}
-            <q-popup-edit v-model="props.row.customerPhone" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input type="tel" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="company" :props="props">
-            {{ props.row.customerCompany }}
-            <q-popup-edit v-model="props.row.customerCompany" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit>
-          </q-td>
-           <q-td auto-width key="comment" :props="props">
-            <div>
-              {{ props.row.customerComment }}
-            </div>
-            <q-popup-edit v-model="props.row.customerComment" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input  type="textarea" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="totalCost" :props="props">
-            {{ props.row.totalCost }}
-          </q-td>
-          <q-td key="status" :props="props">
-            <div>{{ props.row.customerStatus }}<AppIcon name="arrow_drop_down" /></div>
-            <q-popup-edit v-model="props.row.customerStatus" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-               <div class="q-pa-md" style="max-width: 200px">
-                 <div class="q-gutter-md">
-              <AppSelect behavior="menu" :options="statusOptions" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
-                </div> </div>
-            </q-popup-edit>
-          </q-td> 
-          <q-td key="dateCreate" :props="props">
-              {{ props.row.creationDate }}
-          </q-td>
-          <q-td key="dateUpdate" :props="props">
-            {{ props.row.updateDate }}
           </q-td>
           <q-td key="actions" :props="props">
             <div class="row q-gutter-sm justify-center">
@@ -97,13 +51,11 @@
 </template>
 
 <script>
-import { tableColumnsCustomers } from 'src/data/tableColumnsCustomers'
+import { tableColumnsUsers } from 'src/data/tableColumnsUsers'
 import AppSearch from 'components/ui/AppSearch'
 import AppTableLoader from 'components/ui/AppTableLoader'
 import AppModalEdit from 'components/ui/AppModalEdit'
 import AppButton from 'components/ui/AppButton'
-import AppSelect from 'components/ui/AppSelect'
-import AppIcon from 'components/ui/AppIcon'
 import CustomersEditModalFields from 'pages/Customers/CustomersEditModalFields'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
@@ -113,7 +65,7 @@ export default {
    setup(){
     const store = useStore()
     const loading = ref(false)
-    const columns = ref(tableColumnsCustomers)
+    const columns = ref(tableColumnsUsers)
     const rows =  ref([])
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
@@ -259,7 +211,7 @@ export default {
       // separator: ref('vertical'),
     }
   },
-  components: { AppSearch, AppTableLoader, CustomersEditModalFields, AppModalEdit, AppButton, AppSelect, AppIcon}
+  components: { AppSearch, AppTableLoader, CustomersEditModalFields, AppModalEdit, AppButton}
 }
 </script>
 
