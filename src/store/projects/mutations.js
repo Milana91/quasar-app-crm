@@ -41,3 +41,11 @@ export function changeProject (state, project) {
     }
     console.log('проекты в store после изменения', state.projects)
 }
+
+export function setShowConfirmationVal (state, val) {
+    state.showUpdateConfirmation = val
+  }
+  
+  export function setActiveUser (state, val) {
+    state.activeUser = val
+  }

@@ -5,6 +5,7 @@ import {ref, computed} from 'vue'
 
 export async function createProject({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         const dateOfCreate = new Date().toLocaleDateString("ru", {
             year: 'numeric',
             month: 'long',
@@ -51,6 +52,7 @@ export async function loadProjects({ commit, rootGetters}) {
 
 export async function editReminderStatusDeadline({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         const token = rootGetters['authenticate/token']
         const {data} = await api.put(`/projects/${payload.id}.json?auth=${token}`, {...payload.selectedProject, reminderStatus: payload.reminderStatus})
         commit('changeProject', {...payload.selectedProject, reminderStatus: payload.reminderStatus, id: payload.id})
@@ -67,6 +69,7 @@ export async function editReminderStatusDeadline({ state, commit, rootGetters}, 
 
 export async function postProjects({ commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         commit('setProjects', payload)
         const token = rootGetters['authenticate/token']
         console.log(payload)
@@ -90,6 +93,7 @@ export async function postProjects({ commit, rootGetters}, payload) {
 
 export async function postByID({ state, commit, rootGetters, rootState}, payload) {
     try {
+        commit('setActiveUser', true)
         commit('updateProjects',  {
             idx: payload.idx,
             project: payload.editedItem

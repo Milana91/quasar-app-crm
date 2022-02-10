@@ -5,6 +5,7 @@ import {computed} from 'vue'
 
 export async function createService({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         const countOfOrders = 0
         const dateOfCreate = new Date().toLocaleDateString("ru", {
             year: 'numeric',
@@ -58,6 +59,7 @@ export async function loadServices({ state, commit, rootGetters}) {
 
 export async function postServices({ commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         commit('setServices', payload)
         const token = rootGetters['authenticate/token']
         console.log(payload)
@@ -82,6 +84,7 @@ export async function postServices({ commit, rootGetters}, payload) {
 
 export async function postByID({ state, commit, rootGetters}, payload) {
     try {
+        commit('setActiveUser', true)
         // console.log(services)
         commit('updateServices',  {
             idx: payload.idx,

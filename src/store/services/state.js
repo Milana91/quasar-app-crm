@@ -4,6 +4,8 @@ export default function () {
     numberOrders: null,
     creationDate: null,
     updateDate: null,
+    showUpdateConfirmation: false,
+    activeUser: false
     // titleService: null,
     // costService: null
   }

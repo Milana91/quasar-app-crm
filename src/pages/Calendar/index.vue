@@ -99,39 +99,7 @@ import { Notify } from 'quasar'
 
 export default defineComponent({
   name: 'MonthSlotDay',
-  setup() {
-    const store = useStore()
-    const db = getDatabase()
-    const showUpdate = computed(()=>store.state.calendar.showUpdateConfirmation)
-    const activeUser = computed(()=>store.state.calendar.activeUser)
-    const starCountRef = ref(db, 'events/')
-
-    const update = onValue(starCountRef, (snapshot) => {
-      const data = snapshot.val()
-      console.log('снимок', data)
-      // Проверить, нужно ли показывать уведомление (показывать, если пользователь не вносил изменения сам)
-      if(showUpdate.value == true && activeUser.value == false){
-          Notify.create({
-            message: 'Доступен обновленный контент. Пожалуйста, обновите страницу',
-            color: 'primary',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-            actions: [
-              { label: 'Подтвердить', color: 'yellow', handler: () => { store.dispatch('calendar/loadEvents')
-          console.log('qwerty', store.state.calendar.events) } },
-              { label: 'Отклонить', color: 'white', handler: () => { /* ... */ } }
-            ]
-          })
-      }
-      // после полученного snapshot сбросить активность пользователя
-      store.commit('calendar/setActiveUser', false)
-      // Установить статус показа уведомления об обновлении в системе
-      store.commit('calendar/setShowConfirmationVal', true)
-      console.log('значение', showUpdate.value)
-    })
-    return {
-      update, showUpdate
-    }
-  },
+  
   components: {
     NavigationBar,
     QCalendarMonth,

@@ -32,3 +32,11 @@ export function updateDate (state, idx) {
     })
     state.customers[idx].updateDate = dateNow
 }
+
+export function setShowConfirmationVal (state, val) {
+    state.showUpdateConfirmation = val
+}
+  
+export function setActiveUser (state, val) {
+    state.activeUser = val
+}

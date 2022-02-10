@@ -4,5 +4,7 @@ export default function () {
     projectsSum: null,
     creationDate: null,
     updateDate: null,
+    showUpdateConfirmation: false,
+    activeUser: false
   }
 }
