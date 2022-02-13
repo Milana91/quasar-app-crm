@@ -1,5 +1,5 @@
 <template>
-  <div id="app" style="width: 400px">
+  <div id="app" style="width: 500px">
     <!-- <q-btn @click="shuffleData">Shuffle</q-btn> -->
     <BarChart v-bind="barChartProps" :options="options"/>
   </div>

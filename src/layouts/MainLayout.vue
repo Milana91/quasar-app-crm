@@ -102,6 +102,11 @@ const linksList = [
     icon: 'record_voice_over',
     link: '/calendar'
   },
+  {
+    title: 'Помощь',
+    icon: 'record_voice_over',
+    link: '/help'
+  },
    {
     title: 'Пользователи',
     icon: 'record_voice_over',
@@ -126,6 +131,7 @@ const linksList = [
 
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 // import { linksList } from 'src/data/linksList'
 
@@ -146,6 +152,7 @@ export default defineComponent({
     const getCustomersStore = computed(()=> store.state.customers.customers) 
     const router = useRouter()
     let modal = ref(false)
+    const route = useRoute()
 
     const today = new Date().toLocaleDateString("ru", {
                   year: 'numeric',
@@ -350,12 +357,15 @@ export default defineComponent({
 
 
     onMounted(async ()=>{
-      await store.dispatch('calendar/loadEvents')
-      // console.log("События l", getEventsStore.value)
-      await store.dispatch('projects/loadProjects')
-      // console.log("Проекты l", getProjectsStore.value)
-      await store.dispatch('customers/loadCustomers')
-      // console.log("Клиенты l", getCustomersStore.value)
+     const auth = store.getters['authenticate.isAuthenticated']
+    //  if(auth){ }
+        await store.dispatch('calendar/loadEvents')
+        // console.log("События l", getEventsStore.value)
+        await store.dispatch('projects/loadProjects')
+        // console.log("Проекты l", getProjectsStore.value)
+        await store.dispatch('customers/loadCustomers')
+        // console.log("Клиенты l", getCustomersStore.value)
+     
       getEventsStore.value.forEach((item) => {
           // console.log('текущее время', nowTime)
           // console.log('проекты в store', getProjectsStore)

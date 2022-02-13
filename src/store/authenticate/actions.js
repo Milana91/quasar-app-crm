@@ -48,9 +48,9 @@ export function signIn ({commit, dispatch}, payload) {
               Notify.create({
                 message:  'Вы вошли в систему'
               })
-              this.$router.push('/home')
-            }, 2000);
-          });
+              // this.$router.push('/home')
+            }, 2000)
+          })
         })
         .catch(e => { 
             Notify.create({

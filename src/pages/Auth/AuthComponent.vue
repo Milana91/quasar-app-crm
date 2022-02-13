@@ -15,8 +15,14 @@
       </div>
     </q-form>
     <div class="text-center q-my-md">
-      <q-btn flat label="Forgot Password?" color="green" class="text-capitalize rounded-borders"
+      <q-btn flat label="Забыли пароль?" color="green" class="text-capitalize rounded-borders"
         @click="forgotPassword" />
+    </div>
+    <div class="text-center q-my-md">
+      <router-link v-slot="{navigate}"  
+        custom :to="{ path: '/help' }">
+        <q-btn flat label="Помощь" color="cyan-9" class="text-capitalize rounded-borders"   @click="navigate"/>
+      </router-link>
     </div>
     <q-dialog v-model="resetPassword">
       <ForgotPassword />
@@ -54,6 +60,7 @@ export default {
 
     const signInExistingUser = (email, password) => {
         store.dispatch('authenticate/signIn', {email, password})
+        router.push('/home')
     }
 
 

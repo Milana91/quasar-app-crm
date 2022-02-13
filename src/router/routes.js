@@ -50,6 +50,12 @@ const routes = [
           layout: 'main',
           auth: true
       } },
+      { path: '/help', 
+        component: () => import('src/pages/Help.vue'), 
+        meta: {
+          layout: 'main',
+          auth: false
+      } },
       { path: '/users', 
         component: () => import('src/pages/Users/index.vue'), 
         meta: {

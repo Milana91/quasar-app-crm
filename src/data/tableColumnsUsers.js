@@ -1,4 +1,4 @@
-export const tableColumnsProjects = [
+export const tableColumnsUsers = [
     { 
         name: 'name', 
         align: 'left', 
@@ -17,4 +17,20 @@ export const tableColumnsProjects = [
         sortable: true,
         sortOrder: 'ad'
     },
+    { 
+        name: 'role', 
+        align: 'left', 
+        label: 'Права пользователя', 
+        field: row => row.role,
+        format: val => `${val}`,
+        sortable: true,
+        sortOrder: 'ad'
+    },
+    { 
+        name: 'actions',
+        align: 'center', 
+        label: 'Действия', 
+        field: 'actions',
+        sortable: true 
+    }
 ]

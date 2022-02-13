@@ -12,14 +12,14 @@
       no-data-label="I didn't find anything for you"
       no-results-label="The filter didn't uncover any results"
     >
-    <template v-slot:top>
+    <!-- <template v-slot:top>
       <app-modal-edit :modelValue="showDialog" title="Редактировать пользователя"  @submitUpdate="updateRow(); showDialog=false">
           <CustomersEditModalFields 
               v-model:nameVal="name" 
               v-model:emailVal="email" 
           />
       </app-modal-edit>
-    </template>
+    </template> -->
 
       <template v-slot:loading>
         <AppTableLoader/>
@@ -27,21 +27,18 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="name" :props="props">
-            {{ props.row.customerName }}
-            <q-popup-edit v-model="props.row.userName" buttons v-slot="scope"  @save="() => UpdateDocument()">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set"></q-input>
-            </q-popup-edit>
+            {{ props.row.name }}
           </q-td>
           <q-td key="email" :props="props">
-            {{ props.row.customerEmail }}
-            <q-popup-edit v-model="props.row.userEmail" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input type="email" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit>
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="role" :props="props">
+            {{ props.row.role }}
           </q-td>
           <q-td key="actions" :props="props">
             <div class="row q-gutter-sm justify-center">
-              <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton>
-              <AppButton color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
+              <!-- <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton> -->
+              <AppButton v-if="props.row.role!='admin'" color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
             </div>
           </q-td>
         </q-tr>
@@ -54,13 +51,10 @@
 import { tableColumnsUsers } from 'src/data/tableColumnsUsers'
 import AppSearch from 'components/ui/AppSearch'
 import AppTableLoader from 'components/ui/AppTableLoader'
-import AppModalEdit from 'components/ui/AppModalEdit'
 import AppButton from 'components/ui/AppButton'
-import CustomersEditModalFields from 'pages/Customers/CustomersEditModalFields'
 import {ref, reactive, computed, watch, onMounted, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
-
 export default {
    setup(){
     const store = useStore()
@@ -70,95 +64,68 @@ export default {
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
     // получить services из store
-    const getStoreCustomers = computed(() => store.state.customers.customers
-            .filter(customer => {
+    const getStoreUsers = computed(() => store.state.users.users
+            .filter(users => {
                 if (search.value.searchText) {
-                    return customer['customerName'].toLowerCase().includes(search.value.searchText)
+                    return users['userName'].toLowerCase().includes(search.value.searchText)
                 }
-                return customer
+                return users
             }))
-    let editedIndex = ref(-1)
-    let editedItem = reactive({})
     let showDialog = ref(false)
     const name = ref('')
     const email = ref('')
-    const phone = ref('')
-    const company = ref('')
-    const comment = ref('')
-    const status = ref('')
-    const createDate = ref(null)
-    const updateDate =  ref(null)
-    const totalCost =  ref(null)
     let deleteIndex = ref(null)
     const $q = useQuasar()
     const search = ref({})
-    const statusOptions = ref(["Активен", "Не активен"])
-
     // при загрузке страницы загружить все услуги из БД
     onMounted(async ()=>{
       loading.value = true
-      await store.dispatch('customers/loadCustomers')
+      await store.dispatch('users/loadUsers')
       loading.value = false
+      console.log('юзеры', getStoreUsers.value)
+    //   loading.value = true
+    //   await store.dispatch('users/loadUsers')
+    //   loading.value = false
     })
-
     // следить за изменениями массива services в store
     // делать копию при изменении и передавать в rows, на основе которых отрисовывается таблица
-    watch(getStoreCustomers, (val) => {
+    watch(getStoreUsers, (val) => {
       const copyStore = JSON.parse(JSON.stringify(val))
       rows.value = copyStore
       console.log(rows)
-      console.log(getStoreCustomers)
+      console.log(getStoreUsers)
     })
-
     const UpdateDocument = () => {
       updated.value = !(updated.value)
     }
-    // следить за редактированием пользователем значений в таблице 
-    watch(updated, (val) => {
-        updateCustomersFB(rows.value)
-        console.log(getStoreCustomers.value)
-    } )
-
-    // обновить услуги в БД и хранилище
-    const updateCustomersFB = async(rows) => {
-      await store.dispatch('customers/postCustomers', rows)
-    }
-
+    // // следить за редактированием пользователем значений в таблице 
+    // watch(updated, (val) => {
+    //     updateCustomersFB(rows.value)
+    //     console.log(getStoreCustomers.value)
+    // } )
+    // // обновить услуги в БД и хранилище
+    // const updateCustomersFB = async(rows) => {
+    //   await store.dispatch('customers/postCustomers', rows)
+    // }
     const pagination = ref({
       sortBy: 'desc',
     })
 
-    // update in actions (table)
-    const editItem = (item) => {
-                editedIndex = rows.value.indexOf(item)
-                editedItem = Object.assign({}, item)
-                name.value = editedItem.customerName
-                email.value =  editedItem.customerEmail
-                phone.value =  editedItem.customerPhone
-                company.value =  editedItem.customerCompany
-                comment.value =  editedItem.customerComment
-                status.value =  editedItem.customerStatus
-                totalCost.value =  editedItem.totalCost
-                createDate.value =  editedItem.creationDate
-                updateDate.value =  editedItem.updateDate
-                rows.value[editedIndex] = editedItem
-    }
-
-    const deleteItem = (item) => {
+    const deleteUser = async (item) => {
+      store.dispatch('users/deleteUser')
       deleteIndex = rows.value.indexOf(item)
       rows.value.splice(deleteIndex, 1)
     }
-
     const confirm = (item) => {
       $q.dialog({
         title: 'Подтверждение',
-        message: 'Вы хотите удалить клиента?',
+        message: 'Вы хотите удалить пользователя?',
         cancel: true,
         persistent: true
       }).onOk(() => {
-        deleteItem(item)
-        store.commit('customers/setCustomers', rows.value)
-        updateCustomersFB(rows.value)
+        deleteUser(item)
+        store.commit('users/setUsers', rows.value)
+        // updateCustomersFB(rows.value)
       }).onOk(() => {
         // console.log('>>>> second OK catcher')
       }).onCancel(() => {
@@ -167,54 +134,28 @@ export default {
         // console.log('I am triggered on both OK and Cancel')
       })
     }
-
-    // Если пользователь обновляет  редиктируемые поля, 
-    // обновляется копия объекта editedItem (данные для попапа)
-    watch([name, email, phone, company, comment, status], ([name, email, phone, company, comment, status]) => {
-      editedItem.customerName = name
-      editedItem.customerEmail = email
-      editedItem.customerPhone = phone
-      editedItem.customerCompany = company
-      editedItem.customerComment = comment
-      editedItem.customerStatus = status
-    });
-
-    const updateRow = async() => {
-      const data = {idx: editedIndex, editedItem}
-      await store.dispatch('customers/postByID', data)
-      showDialog.value = false
-    }
-
+    // const updateRow = async() => {
+    //   const data = {idx: editedIndex, editedItem}
+    //   await store.dispatch('customers/postByID', data)
+    //   showDialog.value = false
+    // }
     return {
       rows,
       columns,
       pagination,
       loading,
       UpdateDocument,
-      editItem,
       showDialog,
-      editedItem,
       name,
       email,
-      phone,
-      company,
-      comment,
-      status,
-      totalCost,
-      createDate,
-      updateDate,
-      updateRow,
-      deleteItem,
+      deleteUser,
       confirm,
       search,
-      statusOptions,
-      // separator: ref('vertical'),
     }
   },
-  components: { AppSearch, AppTableLoader, CustomersEditModalFields, AppModalEdit, AppButton}
+  components: { AppSearch, AppTableLoader, AppButton}
 }
 </script>
 
 <style lang="sass">
-
 </style>

@@ -2,7 +2,7 @@
   <q-page class="flex row q-pa-md justify-around">
 
    <TopCustomers/>
-    <SalesAmountChart/>
+   <SalesAmountChart/>
   </q-page>
 </template>
 
@@ -10,8 +10,8 @@
 import { useStore } from 'vuex'
 import { useRouter }  from 'vue-router'
 // import AppButton from 'components/ui/AppButton'
-import TopCustomers from 'components/TopCustomers'
-import SalesAmountChart from 'components/SalesAmountChart'
+import TopCustomers from 'components/graphics/TopCustomers'
+import SalesAmountChart from 'components/graphics/SalesAmountChart'
 import {ref, onMounted} from "vue"
 
 export default {
@@ -20,13 +20,17 @@ export default {
       const store = useStore()
       const router = useRouter()
 
-      const logout = function() {
-        store.dispatch('authenticate/logout')
-        router.push('/auth')
-      }
+      // onMounted(async()=>{
+      //     await store.dispatch('users/loadUsers')
+      // })
+
+      // const logout = function() {
+      //   store.dispatch('authenticate/logout')
+      //   router.push('/auth')
+      // }
 
       return {
-          logout
+          // logout
       }
   },
   components: { TopCustomers, SalesAmountChart}

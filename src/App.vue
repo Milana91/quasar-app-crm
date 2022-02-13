@@ -46,7 +46,6 @@ export default defineComponent({
       store.commit('calendar/setActiveUser', false)
       // Установить статус показа уведомления об обновлении в системе
       store.commit('calendar/setShowConfirmationVal', true)
-      console.log('значение', showUpdate.value)
     })
 
     
