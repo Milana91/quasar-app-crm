@@ -97,9 +97,9 @@
           </q-td> 
           <q-td key="deadline" :props="props">
             {{ props.row.projectDeadline }}
-            <!-- <q-popup-edit v-model="props.row.projectDeadline" v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input type="date" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
-            </q-popup-edit> -->
+            <q-popup-edit v-model="props.row.projectDeadline"  v-slot="scope" @save="() => {editRowIdx(props.row), props.row.projectDeadline = format, UpdateDocument()}"  buttons>
+              <q-input type="date" v-model="scope.value" dense autofocus @update:modelValue="event => $emit('update:scope.value', formatDate(event))" @keyup.enter="scope.set"></q-input>
+            </q-popup-edit>
           </q-td>
           <q-td key="dateCreate" :props="props">
               {{ props.row.creationDate }}
@@ -171,6 +171,7 @@ export default {
     const deadline =  ref(null)
     const dateCreate =  ref(null)
     const dateUpdate =  ref(null)
+    const projectDeadlineEditIdx = ref()
     let deleteIndex = ref(null)
     const $q = useQuasar()
     const search = ref({})
@@ -200,6 +201,20 @@ export default {
       updated.value = !(updated.value)
     }
 
+    const format = ref()
+    const formatDate = (date) => {
+      console.log('data', date)
+      const formatDate = new Date(date).toLocaleDateString("ru", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timezone: 'UTC'
+        })
+      format.value = formatDate
+      console.log('1111111', format.value)
+      return formatDate
+    }
+
     // const UpdateR = (row) => {
     //   // idx = rows.value.indexOf(item)
     //   const ef = JSON.parse(JSON.stringify(row))
@@ -219,6 +234,11 @@ export default {
     // обновить услуги в БД и хранилище
     const updateProjectsFB = async(rows) => {
       console.log('редактирование', rows)
+      if(projectDeadlineEditIdx.value){
+        rows[projectDeadlineEditIdx.value].projectDeadline = format.value
+        console.log('редактирование обновленное', rows[projectDeadlineEditIdx.value].projectDeadline)
+      console.log('редактирование store', rows)
+      }
       await store.dispatch('projects/postProjects', rows)
     }
 
@@ -226,18 +246,25 @@ export default {
       sortBy: 'desc',
     })
 
+    const editRowIdx = (item) => {
+      console.log('индекс новый', rows.value.indexOf(item))
+      projectDeadlineEditIdx.value = rows.value.indexOf(item)
+      return projectDeadlineEditIdx.value
+    }
+
     // update in actions (table)
     const editItem = (item) => {
                 editedIndex = rows.value.indexOf(item)
                 editedItem = Object.assign({}, item)
+                console.log('дата дедлайна', editedItem.projectDeadline)
                 customer.value = editedItem.projectCustomer
                 services.value =  editedItem.projectServices
                 comment.value =  editedItem.projectComment
                 status.value =  editedItem.projectStatus
                 projectSum.value =  editedItem.projectSum
                 payment.value =  editedItem.projectPayment
-                paymentStatus.value =  editedItem.paymentStatus
-                deadline.value =  editedItem.projectDeadline
+                paymentStatus.value =  editedItem.projectPaymentStatus
+                deadline.value = editedItem.projectDeadline
                 dateCreate.value =  editedItem.creationDate
                 dateUpdate.value =  editedItem.updateDate
                 rows.value[editedIndex] = editedItem
@@ -362,6 +389,10 @@ export default {
       statusOpt,
       paymentStatusOpt,
       openInvoice,
+      formatDate,
+      format,
+      editRowIdx,
+      projectDeadlineEditIdx
       // separator: ref('vertical'),
     }
   },

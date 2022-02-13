@@ -22,7 +22,7 @@
           <div class="row q-mt-xs">
             <q-btn
               class="q-pl-md q-pr-md q-mr-md text-capitalize rounded-borders"
-              label="Submit"
+              label="Продолжить"
               color="primary"
               @click="resetPassword"
             />

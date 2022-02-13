@@ -133,8 +133,8 @@ export default defineComponent({
                   timezone: 'UTC'
               })
 
-             console.log('дата формат', formatDate)
-            const data = {customerId: customerInfo.value.id, projectCustomer: projectCustomer.value, projectServices: projectServices.value, projectComment: projectComment.value, projectStatus: projectStatus.value, projectSum: projectSum.value, projectPayment: projectPayment.value, paymentStatus: projectPaymentStatus.value, projectDeadline: formatDate}
+            console.log('дата формат', formatDate)
+            const data = {customerId: customerInfo.value.id, projectCustomer: projectCustomer.value, projectServices: projectServices.value, projectComment: projectComment.value, projectStatus: projectStatus.value, projectSum: projectSum.value, projectPayment: projectPayment.value, paymentPaymentStatus: projectPaymentStatus.value, projectDeadline: formatDate}
             await store.dispatch('projects/createProject', data)
             projectCustomer.value = null
             projectServices.value = null

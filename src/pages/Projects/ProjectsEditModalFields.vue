@@ -45,7 +45,6 @@
                         behavior="menu"
                     />
                     <AppInput 
-                        readonly
                         label="Дедлайн"
                         :modelValue="deadlineVal"
                         @update:modelValue="event => $emit('update:deadlineVal', event)"

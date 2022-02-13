@@ -5,9 +5,6 @@
           <div class="text-h6">{{title}}</div>
         </q-card-section>
         <slot/>
-        <!-- <q-card-section class="q-pt-none">
-          <q-input dense v-model="address" autofocus @keyup.enter="prompt = false" />
-        </q-card-section>-->
 
         <q-card-actions align="right" class="text-primary">
           <AppButton flat :label="leftBtn" v-close-popup @click = "$emit('leftBtnAct')"/>
