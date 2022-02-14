@@ -5,7 +5,6 @@ export const tableColumns = [
         label: 'Название услуги', 
         field: 'title',
         sortable: true,
-        sortOrder: 'ad'
      },
     { 
         name: 'cost', 
@@ -13,8 +12,6 @@ export const tableColumns = [
         label: 'Цена', 
         field: 'cost',
         sortable: true,
-        sort: (a, b) => a-b,
-        sortOrder: 'ad'
     },
     { 
         name: 'dateCreate', 

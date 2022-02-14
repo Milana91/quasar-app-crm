@@ -1,4 +1,5 @@
 export function setServices (state, services) {
+        services.reverse()
         state.services = services
 }
 

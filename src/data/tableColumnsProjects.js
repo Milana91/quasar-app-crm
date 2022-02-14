@@ -1,3 +1,22 @@
+// // Форматировать дату дедлайна 
+// const formatDate = (date) => {
+//     const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+//     const arr = date.split(" ")
+//     const month = arr[1]
+//     const day = arr[0]
+//     const year = arr[2]
+//     const idxMonth = months.findIndex(item => item == month)
+//     const formDate = [year, idxMonth, day].join(', ')
+
+//     // console.log("новая дата", formDate)
+//     const d = new Date(year, idxMonth, day)
+//     return d
+//   }
+
+
+// const date1 = new Date(formatDate(start))
+
+
 export const tableColumnsProjects = [
     { 
         name: 'customer', 
@@ -6,7 +25,8 @@ export const tableColumnsProjects = [
         field: row => row.name,
         format: val => `${val}`,
         sortable: true,
-        sortOrder: 'ad'
+        // sort: (a, b, rowA, rowB) => a > b,
+        // sortOrder: 'ad'
      },
     { 
         name: 'services', 
@@ -14,8 +34,8 @@ export const tableColumnsProjects = [
         align: 'left', 
         label: 'Услуги', 
         field: 'services',
-        sortable: true,
-        sortOrder: 'ad'
+        // sortable: true,
+        // sortOrder: 'ad'
     },
     { 
         name: 'comment',
@@ -31,7 +51,6 @@ export const tableColumnsProjects = [
         label: 'Статус', 
         field: 'status',
         sortable: true,
-        sortOrder: 'ad'
     },
     { 
         name: 'projectSum', 
@@ -59,7 +78,8 @@ export const tableColumnsProjects = [
         align: 'left',
         label: 'Дедлайн', 
         field: 'deadline',
-        sortable: true
+        sortable: true,
+        // sortOrder: 'da'
     },
     { 
         name: 'dateCreate', 
@@ -80,6 +100,6 @@ export const tableColumnsProjects = [
         align: 'center', 
         label: 'Действия', 
         field: 'actions',
-        sortable: true 
+        // sortable: true 
     }
 ]

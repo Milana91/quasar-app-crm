@@ -2,7 +2,9 @@
   <div class="q-pa-md">
   <AppSearch v-model="search"/>
    <q-table 
+      binary-state-sort
       v-model:pagination="pagination"
+      :sort-method="customSort"
       :rows="rows"
       dense
       :columns="columns"
@@ -233,6 +235,70 @@ export default {
       showDialog.value = false
     }
 
+
+      // Сортировка
+     const customSort = (rows, sortBy, descending) => {
+        const data = [...rows]
+
+        if (sortBy) {
+          data.sort((a, b) => {
+            const x = descending ? b : a
+            const y = descending ? a : b
+            console.log('x', x)
+            console.log('y', y)
+            if (sortBy === 'name') {
+              return x.customerName > y.customerName ? 1 : x.customerName < y.customerName ? -1 : 0
+            }
+            else if (sortBy === 'email') {
+              return x.customerEmail > y.customerEmail ? 1 : x.customerEmail < y.customerEmail ? -1 : 0
+            }
+            else if (sortBy === 'phone') {
+              return x.customerPhone > y.customerPhone ? 1 : x.customerPhone < y.customerPhone ? -1 : 0
+            }
+            else if (sortBy === 'company') {
+              return x.customerCompany > y.customerCompany ? 1 : x.customerCompany < y.customerCompany ? -1 : 0
+            }
+            else if (sortBy === 'comment') {
+              return x.customerComment > y.customerComment ? 1 : x.customerComment < y.customerComment ? -1 : 0
+            }
+            else if (sortBy === 'totalCost') {
+              return parseInt(x.totalCost) > parseInt(y.totalCost) ? 1 : parseInt(x.totalCost) < parseInt(y.totalCost) ? -1 : 0
+            }
+            else if (sortBy === 'status') {
+              return x.customerStatus > y.customerStatus ? 1 : x.customerStatus < y.customerStatus ? -1 : 0
+            }
+            else if (sortBy === 'dateCreate') {
+               const dateX = new Date(getFormatDate(x.creationDate))
+              const dateY = new Date(getFormatDate(y.creationDate))
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+            else if (sortBy === 'dateUpdate') {
+               const dateX = new Date(getFormatDate(x.updateDate))
+              const dateY = new Date(getFormatDate(y.updateDate))
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+          })
+        }
+
+        return data
+      }
+    
+  // Форматировать дату long
+  const getFormatDate = (date) => {
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const arr = date.split(" ")
+      const month = arr[1]
+      const day = arr[0]
+      const year = arr[2]
+      const idxMonth = months.findIndex(item => item == month)
+      const formDate = [year, idxMonth, day].join(', ')
+
+      // console.log("новая дата", formDate)
+      const d = new Date(year, idxMonth, day)
+      return d
+  }
+
+
     return {
       rows,
       columns,
@@ -256,6 +322,7 @@ export default {
       confirm,
       search,
       statusOptions,
+      customSort
       // separator: ref('vertical'),
     }
   },

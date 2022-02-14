@@ -2,12 +2,13 @@
   <div class="q-pa-md">
   <AppSearch v-model="search"/>
    <q-table 
-      v-model:pagination="pagination"
+      binary-state-sort 
+      :sort-method="customSort"
       :rows="rows"
       dense
       :columns="columns"
       :rows-per-page-options="[10, 15]"
-      row-key="name"
+      row-key="customer"
       :loading="loading"
       no-data-label="I didn't find anything for you"
       no-results-label="The filter didn't uncover any results"
@@ -158,6 +159,95 @@ export default {
                 }
                 return project
             }))
+
+    // Сортировка
+     const customSort = (rows, sortBy, descending) => {
+        const data = [...rows]
+
+        if (sortBy) {
+          data.sort((a, b) => {
+            const x = descending ? b : a
+            const y = descending ? a : b
+            console.log('x', x)
+            console.log('y', y)
+            if (sortBy === 'status') {
+              return x.projectStatus > y.projectStatus ? 1 : x.projectStatus < y.projectStatus ? -1 : 0
+            }
+            else if (sortBy === 'customer') {
+              return x.projectCustomer > y.projectCustomer ? 1 : x.projectCustomer < y.projectCustomer ? -1 : 0
+            }
+             else if (sortBy === 'comment') {
+              return x.projectComment > y.projectComment ? 1 : x.projectComment < y.projectComment ? -1 : 0
+            }
+            else if (sortBy === 'paymentStatus') {
+              return x.projectPaymentStatus > y.projectPaymentStatus ? 1 : x.projectPaymentStatus < y.projectPaymentStatus ? -1 : 0
+            }
+            else if (sortBy === 'deadline') {
+               const dateX = new Date(getFormatDate(x.projectDeadline))
+              const dateY = new Date(getFormatDate(y.projectDeadline))
+              console.log('сортировка дата 1', dateX)
+            console.log('сортировка дата 2',  dateY)
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+            else if (sortBy === 'deadline') {
+               const dateX = new Date(getFormatDate(x.projectDeadline))
+              const dateY = new Date(getFormatDate(y.projectDeadline))
+              console.log('сортировка дата 1', dateX)
+            console.log('сортировка дата 2',  dateY)
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+            else if (sortBy === 'dateCreate') {
+               const dateX = new Date(getFormatDate(x.creationDate))
+              const dateY = new Date(getFormatDate(y.creationDate))
+              console.log('сортировка дата 1', dateX)
+            console.log('сортировка дата 2',  dateY)
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+            else if (sortBy === 'dateUpdate') {
+               const dateX = new Date(getFormatDate(x.updateDate))
+              const dateY = new Date(getFormatDate(y.updateDate))
+              console.log('сортировка дата 1', dateX)
+            console.log('сортировка дата 2',  dateY)
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+            else if (sortBy === 'projectSum') {
+              console.log('сортировка стоимость 1', x.projectSum)
+              console.log('сортировка стоимость 2', y.projectSum)
+              return parseInt(x.projectSum) > parseInt(y.projectSum) ? 1 : parseInt(x.projectSum) < parseInt(y.projectSum) ? -1 : 0
+            }
+             else if (sortBy === 'payment') {
+              console.log('сортировка стоимость 1', x.projectPayment)
+              console.log('сортировка стоимость 2', y.projectPayment)
+              return parseInt(x.projectPayment) > parseInt(y.projectPayment) ? 1 : parseInt(x.projectPayment) < parseInt(y.projectPayment) ? -1 : 0
+            }
+            else {
+              // numeric sort
+              return parseFloat(x.projectCustomer) - parseFloat(y.projectCustomer)
+            }
+          })
+        }
+
+        return data
+      }
+    
+  // Форматировать дату long
+  const getFormatDate = (date) => {
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+      const arr = date.split(" ")
+      const month = arr[1]
+      const day = arr[0]
+      const year = arr[2]
+      const idxMonth = months.findIndex(item => item == month)
+      const formDate = [year, idxMonth, day].join(', ')
+
+      // console.log("новая дата", formDate)
+      const d = new Date(year, idxMonth, day)
+      return d
+  }
+
+
+
+
     let editedIndex = ref(-1)
     let editedItem = reactive({})
     let showDialog = ref(false)
@@ -242,9 +332,9 @@ export default {
       await store.dispatch('projects/postProjects', rows)
     }
 
-    const pagination = ref({
-      sortBy: 'desc',
-    })
+    // const pagination = ref({
+    //   sortBy: 'desc',
+    // })
 
     const editRowIdx = (item) => {
       console.log('индекс новый', rows.value.indexOf(item))
@@ -366,7 +456,6 @@ export default {
     return {
       rows,
       columns,
-      pagination,
       loading,
       UpdateDocument,
       editItem,
@@ -392,7 +481,8 @@ export default {
       formatDate,
       format,
       editRowIdx,
-      projectDeadlineEditIdx
+      projectDeadlineEditIdx,
+      customSort
       // separator: ref('vertical'),
     }
   },

@@ -1,4 +1,5 @@
 export function setCustomers (state, customers) {
+        customers.reverse()
         state.customers = customers
 }
 

@@ -3,6 +3,7 @@ import {error} from 'src/utils/error'
 import { Notify } from 'quasar'
 import {ref, computed} from 'vue'
 
+
 export async function createProject({ state, commit, rootGetters}, payload) {
     try {
         commit('setActiveUser', true)

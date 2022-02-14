@@ -1,4 +1,5 @@
 export function setProjects (state, projects) {
+        projects.reverse()
         state.projects = projects
 }
 

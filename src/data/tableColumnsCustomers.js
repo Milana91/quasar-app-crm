@@ -6,7 +6,6 @@ export const tableColumnsCustomers = [
         field: row => row.name,
         format: val => `${val}`,
         sortable: true,
-        sortOrder: 'ad'
      },
     { 
         name: 'email', 
@@ -14,7 +13,6 @@ export const tableColumnsCustomers = [
         label: 'Email', 
         field: 'email',
         sortable: true,
-        sortOrder: 'ad'
     },
     { 
         name: 'phone', 
@@ -22,7 +20,6 @@ export const tableColumnsCustomers = [
         label: 'Телефон', 
         field: 'phone',
         sortable: true,
-        sortOrder: 'ad'
     },
     { 
         name: 'company', 
@@ -30,15 +27,14 @@ export const tableColumnsCustomers = [
         label: 'Компания', 
         field: 'company',
         sortable: true,
-        sortOrder: 'ad'
     },
     { 
         name: 'comment',
         style: 'width: 250px; max-height: 300px; white-space: normal; overflow: hidden', 
         align: 'left',
         label: 'Комментарий*', 
-        field: 'comment',
-        sortable: true 
+        field: 'comment', 
+        sortable: true
     },
     { 
         name: 'totalCost', 
@@ -72,7 +68,6 @@ export const tableColumnsCustomers = [
         name: 'actions',
         align: 'center', 
         label: 'Действия', 
-        field: 'actions',
-        sortable: true 
+        field: 'actions', 
     }
 ]

@@ -2,6 +2,8 @@
   <div class="q-pa-md">
   <AppSearch v-model="search"/>
    <q-table 
+      binary-state-sort
+      :sort-method="customSort"
       ref="tableRef"
       v-model:pagination="pagination"
       :rows="rows"
@@ -183,6 +185,56 @@ export default {
       showDialog.value = false
     }
 
+     // Сортировка
+     const customSort = (rows, sortBy, descending) => {
+        const data = [...rows]
+
+        if (sortBy) {
+          data.sort((a, b) => {
+            const x = descending ? b : a
+            const y = descending ? a : b
+            console.log('x', x)
+            console.log('y', y)
+            if (sortBy === 'title') {
+              return x.serviceTitle > y.serviceTitle ? 1 : x.serviceTitle < y.serviceTitle ? -1 : 0
+            }
+            else if (sortBy === 'cost') {
+              return parseInt(x.serviceCost) > parseInt(y.serviceCost) ? 1 : parseInt(x.serviceCost) < parseInt(y.serviceCost) ? -1 : 0
+            }
+            else if (sortBy === 'dateCreate') {
+               const dateX = new Date(getFormatDate(x.creationDate))
+              const dateY = new Date(getFormatDate(y.creationDate))
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            }
+            else if (sortBy === 'dateUpdate') {
+               const dateX = new Date(getFormatDate(x.updateDate))
+              const dateY = new Date(getFormatDate(y.updateDate))
+              return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
+            } 
+            else if (sortBy === 'numberOrders') {
+              return parseInt(x.numberOrders) > parseInt(y.numberOrders) ? 1 : parseInt(x.numberOrders) < parseInt(y.numberOrders) ? -1 : 0
+            }
+          })
+        }
+
+        return data
+      }
+    
+    // Форматировать дату long
+    const getFormatDate = (date) => {
+        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+        const arr = date.split(" ")
+        const month = arr[1]
+        const day = arr[0]
+        const year = arr[2]
+        const idxMonth = months.findIndex(item => item == month)
+        const formDate = [year, idxMonth, day].join(', ')
+
+        // console.log("новая дата", formDate)
+        const d = new Date(year, idxMonth, day)
+        return d
+    }
+
     return {
       rows,
       columns,
@@ -201,6 +253,7 @@ export default {
       deleteItem,
       confirm,
       search,
+      customSort
     }
   },
   components: { AppSearch, AppTableLoader, ServicesEditModalFields, AppModalEdit, AppButton }
