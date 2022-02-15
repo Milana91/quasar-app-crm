@@ -49,11 +49,11 @@
             </q-popup-edit>
           </q-td>
           <q-td key="services" :props="props">
-          <div>{{ props.row.projectServices }}<AppIcon name="arrow_drop_down" /></div>
-            <q-popup-edit v-model="props.row.projectServices" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+          <AppSelect multiple borderless v-model="props.row.projectServices" style="width: 160px"  behavior="menu"></AppSelect>
+            <q-popup-edit v-model="props.row.projectServices" v-slot="scope" @save="() => { editSumIdx(props.row), UpdateDocument()}"  buttons>
                <div class="q-pa-md" style="max-width: 200px">
                  <div class="q-gutter-md">
-                  <AppSelect behavior="menu" multiple :options="servicesOptions" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
+                  <AppSelect behavior="menu" multiple :options="servicesOptions" style="width:160px" v-model="scope.value" @update:modelValue="event => $emit('update:scope.value', showServicesArr(event))" dense autofocus @keyup.enter="scope.set"></AppSelect>
                 </div> </div>
             </q-popup-edit>
           </q-td> 
@@ -76,8 +76,8 @@
           </q-td> 
           <q-td key="projectSum" :props="props">
             {{ props.row.projectSum }}
-            <q-popup-edit v-model="props.row.projectSum " v-slot="scope" @save="() => UpdateDocument()"  buttons>
-              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+            <q-popup-edit v-model="props.row.projectSum " v-slot="scope" @save="() => {props.row.projectSum = sum, UpdateDocument()}"  buttons>
+              <q-input v-model="scope.value" dense autofocus  @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
            <q-td auto-width key="payment" :props="props">
@@ -149,7 +149,9 @@ export default {
     const rows =  ref([])
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
-  
+    const totalProjectSum = ref(0)
+    const selectedItems = ref()
+    const servicesText = ref('')
     // получить services из store
     const getStoreServices = computed(() => store.state.services.services)
     const getStoreProjects = computed(() => store.state.projects.projects
@@ -160,6 +162,14 @@ export default {
                 return project
             }))
 
+    const showServicesArr = (val) => {
+        selectedItems.value = val
+        console.log('выбраны услуги', val)
+        getTotalSumProject(val)
+        servicesText.value = val.join(', ')
+        console.log('услуги текстом', servicesText.value)
+    }
+
     // Сортировка
      const customSort = (rows, sortBy, descending) => {
         const data = [...rows]
@@ -168,8 +178,6 @@ export default {
           data.sort((a, b) => {
             const x = descending ? b : a
             const y = descending ? a : b
-            console.log('x', x)
-            console.log('y', y)
             if (sortBy === 'status') {
               return x.projectStatus > y.projectStatus ? 1 : x.projectStatus < y.projectStatus ? -1 : 0
             }
@@ -185,39 +193,33 @@ export default {
             else if (sortBy === 'deadline') {
                const dateX = new Date(getFormatDate(x.projectDeadline))
               const dateY = new Date(getFormatDate(y.projectDeadline))
-              console.log('сортировка дата 1', dateX)
-            console.log('сортировка дата 2',  dateY)
+              
               return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
             }
             else if (sortBy === 'deadline') {
                const dateX = new Date(getFormatDate(x.projectDeadline))
               const dateY = new Date(getFormatDate(y.projectDeadline))
-              console.log('сортировка дата 1', dateX)
-            console.log('сортировка дата 2',  dateY)
+             
               return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
             }
             else if (sortBy === 'dateCreate') {
                const dateX = new Date(getFormatDate(x.creationDate))
               const dateY = new Date(getFormatDate(y.creationDate))
-              console.log('сортировка дата 1', dateX)
-            console.log('сортировка дата 2',  dateY)
+              
               return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
             }
             else if (sortBy === 'dateUpdate') {
                const dateX = new Date(getFormatDate(x.updateDate))
               const dateY = new Date(getFormatDate(y.updateDate))
-              console.log('сортировка дата 1', dateX)
-            console.log('сортировка дата 2',  dateY)
+              
               return dateX > dateY ? 1 : dateX < dateY ? -1 : 0
             }
             else if (sortBy === 'projectSum') {
-              console.log('сортировка стоимость 1', x.projectSum)
-              console.log('сортировка стоимость 2', y.projectSum)
+              
               return parseInt(x.projectSum) > parseInt(y.projectSum) ? 1 : parseInt(x.projectSum) < parseInt(y.projectSum) ? -1 : 0
             }
              else if (sortBy === 'payment') {
-              console.log('сортировка стоимость 1', x.projectPayment)
-              console.log('сортировка стоимость 2', y.projectPayment)
+             
               return parseInt(x.projectPayment) > parseInt(y.projectPayment) ? 1 : parseInt(x.projectPayment) < parseInt(y.projectPayment) ? -1 : 0
             }
             else {
@@ -262,6 +264,7 @@ export default {
     const dateCreate =  ref(null)
     const dateUpdate =  ref(null)
     const projectDeadlineEditIdx = ref()
+    const projectSumEditIdx = ref()
     let deleteIndex = ref(null)
     const $q = useQuasar()
     const search = ref({})
@@ -305,6 +308,9 @@ export default {
       return formatDate
     }
 
+    // const sumProject = ref()
+    // const getSumProject = ()
+
     // const UpdateR = (row) => {
     //   // idx = rows.value.indexOf(item)
     //   const ef = JSON.parse(JSON.stringify(row))
@@ -324,22 +330,33 @@ export default {
     // обновить услуги в БД и хранилище
     const updateProjectsFB = async(rows) => {
       console.log('редактирование', rows)
+      console.log('яыпвчыр', projectDeadlineEditIdx.value)
       if(projectDeadlineEditIdx.value){
         rows[projectDeadlineEditIdx.value].projectDeadline = format.value
-        console.log('редактирование обновленное', rows[projectDeadlineEditIdx.value].projectDeadline)
-      console.log('редактирование store', rows)
       }
+      console.log('сумма равна', sum.value)
+      console.log('подставить в', projectSumEditIdx.value)
+      console.log('svsssss', rows[projectSumEditIdx.value].projectSum)
+      if(projectSumEditIdx.value>=0){
+        console.log('посл', rows[projectSumEditIdx.value])
+        rows[projectSumEditIdx.value].projectSum = sum.value
+        console.log('пыпяпосл', rows[projectSumEditIdx.value])
+      }
+      console.log('после замены', rows[projectSumEditIdx.value])
       await store.dispatch('projects/postProjects', rows)
     }
 
-    // const pagination = ref({
-    //   sortBy: 'desc',
-    // })
 
     const editRowIdx = (item) => {
-      console.log('индекс новый', rows.value.indexOf(item))
       projectDeadlineEditIdx.value = rows.value.indexOf(item)
       return projectDeadlineEditIdx.value
+    }
+
+    const editSumIdx = (item) => {
+      console.log('sgsz', item)
+      projectSumEditIdx.value = rows.value.indexOf(item)
+      console.log('индекс item', projectSumEditIdx.value)
+      return projectSumEditIdx.value
     }
 
     // update in actions (table)
@@ -351,6 +368,7 @@ export default {
                 services.value =  editedItem.projectServices
                 comment.value =  editedItem.projectComment
                 status.value =  editedItem.projectStatus
+                console.log('сумма проектов', editedItem.projectSum)
                 projectSum.value =  editedItem.projectSum
                 payment.value =  editedItem.projectPayment
                 paymentStatus.value =  editedItem.projectPaymentStatus
@@ -391,7 +409,7 @@ export default {
       editedItem.projectServices = services
       editedItem.projectComment = comment
       editedItem.projectStatus = status
-      editedItem.projectSum = projectSum
+      editedItem.projectSum = totalProjectSum.value
       editedItem.projectPayment = payment
       editedItem.projectPaymentStatus = paymentStatus
       editedItem.projectDeadline = deadline
@@ -401,6 +419,16 @@ export default {
             }
         })
       console.log('редактируемый проект',  editedItem)
+      // let sum = 0
+      // editedItem.projectServices.forEach((item)=> {
+      //   store.state.services.services.forEach((service)=>{
+      //       if(service.serviceTitle == item){
+      //         totalProjectSum.value = totalProjectSum.value + parseInt(service.serviceCost)
+      //         console.log('общ сумма', totalProjectSum.value)
+      //         totalProjectSum.value = 0
+      //       }
+      //   })
+      // })
       console.log('обновление',  store.state.projects.updateDate)
       if(editedItem.endDate == null && status == "Завершен"){
         editedItem.endDate =  new Date().toLocaleDateString("ru", {
@@ -416,23 +444,32 @@ export default {
 
     // при изменении выбранных услуг, пересчитать общую СТОИМОСТЬ проекта
     watch(services, (val) => {
-      let sum = ref(0)
-      console.log('jg', val)
-      console.log('услуги', getStoreServices)
+      getTotalSumProject(val)
+    })
+
+    // watch(selectedItems.value, (val) => {
+    //   console.log("меняется", selectedItems.value)
+    //   getTotalSumProject(val)
+    // })
+
+
+    let sum = ref(0)
+    const getTotalSumProject = (val) =>{
+      console.log('услуги ыаыя', val)
       val.forEach((selectedService)=>{
-        console.log('12345', selectedService)
         getStoreServices.value.forEach((service)=>{
-          console.log('67890', service)
           if(selectedService == service.serviceTitle){
             console.log('совпало', service.serviceCost)
-              sum.value = sum.value + service.serviceCost
+              sum.value = sum.value + parseInt(service.serviceCost)
           }
         })
       })
+      
+      console.log('текущие услуги', val)
       console.log('новая сумма', sum.value)
       editedItem.projectSum = sum.value
       console.log('новая сумма в поле', editedItem.projectSum)
-    })
+    }
 
     // отредактировать ряд в таблице
     const updateRow = async() => {
@@ -482,7 +519,13 @@ export default {
       format,
       editRowIdx,
       projectDeadlineEditIdx,
-      customSort
+      projectSumEditIdx,
+      editSumIdx,
+      customSort,
+      totalProjectSum,
+      showServicesArr,
+      servicesText,
+      sum
       // separator: ref('vertical'),
     }
   },
