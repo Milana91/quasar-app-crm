@@ -360,42 +360,24 @@ export default defineComponent({
      const auth = store.getters['authenticate.isAuthenticated']
     //  if(auth){ }
         await store.dispatch('calendar/loadEvents')
-        // console.log("События l", getEventsStore.value)
         await store.dispatch('projects/loadProjects')
-        // console.log("Проекты l", getProjectsStore.value)
         await store.dispatch('customers/loadCustomers')
-        // console.log("Клиенты l", getCustomersStore.value)
      
       getEventsStore.value.forEach((item) => {
-          // console.log('текущее время', nowTime)
-          // console.log('проекты в store', getProjectsStore)
-          // console.log('текущ дата', todayDate)
           const dateFormat = new Date(item.date).toLocaleDateString().slice(0, 10)
-          // console.log('дата из массива', dateFormat)
           if (dateFormat == todayDate && item.time > nowTime){
-            // console.log('Ура', item)
             eventsToday.value.push(item)
           }
       })
       getProjectsStore.value.forEach((item) => {
-          // console.log('текущее время', nowTime)
-          // console.log('проекты в store', getProjectsStore)
-          // console.log('item', item)
-          // console.log('дата проекта Сегодня', item )
-          // console.log('дата проекта', item.projectDeadline )
-          // console.log('разница', getNumberOfDays(today, item.projectDeadline))
           if (getNumberOfDays(today, item.projectDeadline) == 2 && item.reminderStatus == "no"){
-            // console.log('Два дня', item)
             projectsForNotifications.value.push(item)
             remindColor = "blue"
-            // console.log('Проекты - напоминания', projectsForNotifications.value)
           }
           if (getNumberOfDays(today, item.projectDeadline) == 1 && item.reminderStatus == "remindLater"){
-            // console.log('Один день', item)
             projectsForNotificationsLater.value.push(item)
           }
       })
-      // console.log('Ура', eventsToday.value)
       eventsToday.value.forEach((item)=>{
         if(item.reminderStatus != 'done'){
           setTimeout(() => {
@@ -410,7 +392,6 @@ export default defineComponent({
             getNotificationsProjects(item)
           }, 4000);
          }
-         console.log('массив проектов с напоминаниями')
       })
       projectsForNotificationsLater.value.forEach((item)=>{
         if(item.reminderStatus == 'remindLater'){
@@ -419,7 +400,6 @@ export default defineComponent({
             getNotificationsProjects(item)
           }, 4000);
          }
-        //  console.log('массив проектов с напоминаниями')
       })
     })
 

@@ -9,6 +9,7 @@
               <slot/>
               
               <q-card-actions align="right">
+                <AppButton flat label="Отмена" v-close-popup @clickAction="$emit('closeModal')" />
                 <AppButton flat label="OK" v-close-popup @clickAction="$emit('submitUpdate')"/>
               </q-card-actions>
             </q-card>

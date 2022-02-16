@@ -14,7 +14,7 @@
       no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @submitUpdate="updateRow(); showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @closeModal="closeModal" @submitUpdate="updateRow(); showDialog=false">
           <ProjectsEditModalFields 
               v-model:customerVal="customer" 
               v-model:servicesVal="services" 
@@ -50,10 +50,10 @@
           </q-td>
           <q-td key="services" :props="props">
           <AppSelect multiple borderless v-model="props.row.projectServices" style="width: 160px"  behavior="menu"></AppSelect>
-            <q-popup-edit v-model="props.row.projectServices" v-slot="scope" @save="() => { editSumIdx(props.row), UpdateDocument()}"  buttons>
+            <q-popup-edit v-model="props.row.projectServices" v-slot="scope" @save="() => { editSumIdx(props.row), UpdateDocument() }"  buttons>
                <div class="q-pa-md" style="max-width: 200px">
                  <div class="q-gutter-md">
-                  <AppSelect behavior="menu" multiple :options="servicesOptions" style="width:160px" v-model="scope.value" @update:modelValue="event => $emit('update:scope.value', showServicesArr(event))" dense autofocus @keyup.enter="scope.set"></AppSelect>
+                  <AppSelect behavior="menu" multiple :options="servicesOptions" style="width:160px" v-model="scope.value" @update:modelValue="event => $emit('update:scope.value', getSelectedServices(event))" dense autofocus @keyup.enter="scope.set"></AppSelect>
                 </div> </div>
             </q-popup-edit>
           </q-td> 
@@ -149,11 +149,12 @@ export default {
     const rows =  ref([])
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
-    const totalProjectSum = ref(0)
+    // Услуги, выбранные в таблице
     const selectedItems = ref()
     const servicesText = ref('')
     // получить services из store
     const getStoreServices = computed(() => store.state.services.services)
+    // получить projects из store
     const getStoreProjects = computed(() => store.state.projects.projects
             .filter(project => {
                 if (search.value.searchText) {
@@ -162,15 +163,11 @@ export default {
                 return project
             }))
 
-    const showServicesArr = (val) => {
+    const getSelectedServices = (val) => {
         selectedItems.value = val
-        console.log('выбраны услуги', val)
-        getTotalSumProject(val)
-        servicesText.value = val.join(', ')
-        console.log('услуги текстом', servicesText.value)
     }
 
-    // Сортировка
+    // Сортировка полей таблицы
      const customSort = (rows, sortBy, descending) => {
         const data = [...rows]
 
@@ -265,6 +262,7 @@ export default {
     const dateUpdate =  ref(null)
     const projectDeadlineEditIdx = ref()
     const projectSumEditIdx = ref()
+    // const projectServicesEditIdx = ref() 
     let deleteIndex = ref(null)
     const $q = useQuasar()
     const search = ref({})
@@ -308,41 +306,64 @@ export default {
       return formatDate
     }
 
-    // const sumProject = ref()
-    // const getSumProject = ()
-
-    // const UpdateR = (row) => {
-    //   // idx = rows.value.indexOf(item)
-    //   const ef = JSON.parse(JSON.stringify(row))
-    //   store.commit('projects/changeProject', ef)
-    //   console.log('!в store', store.state.projects.projects)
-    //   // editedItem = ef
-    //   // const data = {idx: editedIndex, editedItem}
-    //   // await store.dispatch('projects/postByID', data)
-    //   // console.log('!после dispatch', data)
-    // }
-
     // следить за редактированием пользователем значений в таблице 
     watch(updated, (val) => {
         updateProjectsFB(rows.value)
     } )
 
+
+    const listServices = computed(() => store.state.services.services);
+    const copyListServices = ref()
+    const selectedServicesArr = ref([])
+
+    watch(listServices, (val) =>{
+      const copyStore = JSON.parse(JSON.stringify(val))
+      copyListServices.value = copyStore
+      console.log("услуги загружены из табл проекты", copyListServices.value)
+    })
+
+    const getCountServicesOrders = (rows) =>{
+       // получить массив выбранных услуг
+      selectedServicesArr.value = []
+      rows.forEach((item)=>{
+        item.projectServices.forEach((item)=>{
+          selectedServicesArr.value.push(item)
+        })
+      })
+
+      // найти выбранные услуги в списке услуг и посчитать количество их заказов
+      copyListServices.value.forEach((service)=>{
+        service.numberOrders = 0
+        console.log('количество заказов услуги', service.numberOrders)
+        selectedServicesArr.value.forEach((selectService)=>{
+          if(service.serviceTitle==selectService){
+            console.log('совпадение', selectService, service.numberOrders )
+            ++service.numberOrders 
+          }
+        })
+      })
+    } 
+
     // обновить услуги в БД и хранилище
     const updateProjectsFB = async(rows) => {
-      console.log('редактирование', rows)
-      console.log('яыпвчыр', projectDeadlineEditIdx.value)
+      getCountServicesOrders(rows)
+      console.log('получить измененные услуги',  copyListServices.value)
+      await store.dispatch("services/postServices", copyListServices.value)
+
+
+      // рассчитать общую стоимость
+      sum.value = 0
+      if(selectedItems.value){
+        getTotalSumProject(selectedItems.value)
+      }
+      // перерассчитать количество заказов услуг
+
       if(projectDeadlineEditIdx.value){
         rows[projectDeadlineEditIdx.value].projectDeadline = format.value
       }
-      console.log('сумма равна', sum.value)
-      console.log('подставить в', projectSumEditIdx.value)
-      console.log('svsssss', rows[projectSumEditIdx.value].projectSum)
       if(projectSumEditIdx.value>=0){
-        console.log('посл', rows[projectSumEditIdx.value])
         rows[projectSumEditIdx.value].projectSum = sum.value
-        console.log('пыпяпосл', rows[projectSumEditIdx.value])
       }
-      console.log('после замены', rows[projectSumEditIdx.value])
       await store.dispatch('projects/postProjects', rows)
     }
 
@@ -358,6 +379,12 @@ export default {
       console.log('индекс item', projectSumEditIdx.value)
       return projectSumEditIdx.value
     }
+
+    // // получить индекс строки, в которой редактируем услуги
+    // const editServicesIdx = (item) => {
+    //   projectServicesEditIdx.value = rows.value.indexOf(item)
+    //   return projectServicesEditIdx.value
+    // }
 
     // update in actions (table)
     const editItem = (item) => {
@@ -409,7 +436,7 @@ export default {
       editedItem.projectServices = services
       editedItem.projectComment = comment
       editedItem.projectStatus = status
-      editedItem.projectSum = totalProjectSum.value
+      editedItem.projectSum = projectSum
       editedItem.projectPayment = payment
       editedItem.projectPaymentStatus = paymentStatus
       editedItem.projectDeadline = deadline
@@ -444,7 +471,7 @@ export default {
 
     // при изменении выбранных услуг, пересчитать общую СТОИМОСТЬ проекта
     watch(services, (val) => {
-      getTotalSumProject(val)
+      // getTotalSumProject(val)
     })
 
     // watch(selectedItems.value, (val) => {
@@ -473,6 +500,13 @@ export default {
 
     // отредактировать ряд в таблице
     const updateRow = async() => {
+      getCountServicesOrders(rows.value)
+      console.log('обновить услуги',  copyListServices.value)
+      await store.dispatch("services/postServices", copyListServices.value)
+      sum.value = 0
+      console.log('услуги отпр', services.value)
+      getTotalSumProject(services.value)
+      console.log('сумма проекта теперь равна', sum.value)
       const data = {idx: editedIndex, editedItem}
       console.log('индекс', editedIndex)
       console.log('новка', editedItem)
@@ -481,6 +515,11 @@ export default {
       const payload = {idx: editedItem.customerId}
       await store.dispatch('customers/updateCustomerSumByID', payload)
       showDialog.value = false
+      // sum.value = 0
+    }
+
+    const closeModal = () => {
+        showDialog.value = false
     }
 
     const openInvoice = async (row) => {
@@ -509,6 +548,7 @@ export default {
       dateCreate,
       dateUpdate,
       updateRow,
+      closeModal,
       deleteItem,
       confirm,
       search,
@@ -520,12 +560,14 @@ export default {
       editRowIdx,
       projectDeadlineEditIdx,
       projectSumEditIdx,
+      // projectServicesEditIdx,
       editSumIdx,
+      // editServicesIdx,
       customSort,
-      totalProjectSum,
-      showServicesArr,
+      // totalProjectSum,
+      getSelectedServices,
       servicesText,
-      sum
+      sum,
       // separator: ref('vertical'),
     }
   },

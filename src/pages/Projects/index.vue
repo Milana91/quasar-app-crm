@@ -78,6 +78,8 @@ export default defineComponent({
 
     // Для select customers
     const listServices = computed(() => store.state.services.services);
+    const copyListServices = ref()
+
     const servicesOpt = computed(() =>
       listServices.value.map((item) => item.serviceTitle)
     );
@@ -97,7 +99,13 @@ export default defineComponent({
       selectedServicesCost.value.push(val.serviceCost);
     };
 
-    const servicesSum = (arr) => arr.reduce((sum, current) => sum + current, 0);
+    const servicesSum = (arr) => arr.reduce((sum, current) => sum + parseInt(current), 0);
+
+    watch(listServices, (val) =>{
+      const copyStore = JSON.parse(JSON.stringify(val))
+      copyListServices.value = copyStore
+      console.log("услуги загружены", copyListServices.value)
+    })
 
     // При изм массива цен выбр услуг, рассчитать сумму выбранных услуг (Проекты - Стоимость)
     watch(selectedServicesCost, (val) => {
@@ -150,16 +158,17 @@ export default defineComponent({
     };
 
     const createProject = async () => {
-      // const formatDate = new Date(projectDeadline.value).toLocaleDateString(
-      //   "ru",
-      //   {
-      //     year: "numeric",
-      //     month: "long",
-      //     day: "numeric",
-      //     timezone: "UTC",
-      //   }
-      // );
-      // getFormatDate(projectDeadline.value)
+      // Найти выбранные услуги при создании в списке и увеличить количество заказов данных услуг
+      copyListServices.value.forEach((service)=>{
+        servicesId.value.forEach((selectServiceId)=>{
+          if(service.id==selectServiceId){
+            ++service.numberOrders 
+          }
+        })
+      })
+      // console.log('измененные услуги',  copyListServices.value)
+      await store.dispatch("services/postServices", copyListServices.value)
+
       const data = {
         customerId: customerInfo.value.id,
         projectCustomer: projectCustomer.value,
