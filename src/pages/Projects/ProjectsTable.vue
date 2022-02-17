@@ -10,7 +10,7 @@
       :rows-per-page-options="[10, 15]"
       row-key="customer"
       :loading="loading"
-      no-data-label="I didn't find anything for you"
+      no-data-label="Ничего не найдено"
       no-results-label="The filter didn't uncover any results"
       :visible-columns="visibleColumns"
     >
@@ -171,7 +171,9 @@ export default {
                     return project['projectCustomer'].toLowerCase().includes(search.value.searchText)||
                     project['projectComment'].toLowerCase().includes(search.value.searchText)||
                     project['projectStatus'].toLowerCase().includes(search.value.searchText)||
-                    project['projectPaymentStatus'].toLowerCase().includes(search.value.searchText)
+                    project['projectPaymentStatus'].toLowerCase().includes(search.value.searchText) ||
+                    String(project['projectSum']).toLowerCase().includes(search.value.searchText) ||
+                    String(project['projectPayment']).toLowerCase().includes(search.value.searchText)
                 }
                 return project
             }))

@@ -34,9 +34,9 @@
     >
       <q-list padding>
         <q-item-label
-          header
+          header style="font-size: 20px"
         >
-          Essential Links
+          Меню
         </q-item-label>
 
         <EssentialLink
@@ -79,27 +79,27 @@ import AppModal from 'components/ui/AppModal.vue'
 const linksList = [
   {
     title: 'Главная',
-    icon: 'school',
+    icon: 'home',
     link: '/home'
   },
     {
     title: 'Проекты',
-    icon: 'chat',
+    icon: 'content_copy',
     link: '/projects'
   },
   {
     title: 'Услуги',
-    icon: 'code',
+    icon: 'currency_ruble',
     link: '/services'
   },
   {
     title: 'Клиенты',
-    icon: 'chat',
+    icon: 'people',
     link: '/customers'
   },
   {
     title: 'Календарь',
-    icon: 'record_voice_over',
+    icon: 'event',
     link: '/calendar'
   },
   {
@@ -129,10 +129,11 @@ const linksList = [
   // }
 ]
 
-import { defineComponent, ref, onMounted, computed } from 'vue'
+import { defineComponent, ref, onMounted, computed, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
+
 // import { linksList } from 'src/data/linksList'
 
 export default defineComponent({
@@ -208,17 +209,13 @@ export default defineComponent({
 
         return diffInDays
     }
-
+    let dismiss = ref()
+    let dismiss1 = ref()
     // Получить напоминания о событиях
     const getNotifications = (item) => {
-            $q.notify({
+      dismiss = $q.notify({
               message: `<span style="font-size: 15px">Событие:</span><br> <span style="font-size: 17px">${item.title }</span>`,
-              caption: `<span style="font-size: 16px">${item.details}</span> <br> ${new Date(item.date).toLocaleDateString("ru", {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  timezone: 'UTC'
-              }) } ${item.time}`,
+              caption: `<span style="font-size: 16px">${item.details}</span> <br>  ${item.time}`,
               classes: 'test',
               timeout: 0,
               badgeClass: 'my-badge-class',
@@ -241,11 +238,10 @@ export default defineComponent({
                 } }
               ]
            })
-    }
-
+        }
+  
 
     let clickProject = ref('')
-
     // Получить напоминания о проектах
     const getNotificationsProjects = (item) => {
       const customerName = computed(()=>getCustomersStore.value.find((customer)=> customer.id == item.customerId))
@@ -253,7 +249,7 @@ export default defineComponent({
        return (item.reminderStatus == "remindLater")? 1 : 2
       })
     //  console.log('имя клиента', customerName.value)
-            $q.notify({
+        dismiss1 = $q.notify({
               message: `<span style="font-size: 16px">Через ${countDays.value} дня срок сдачи проекта</span><br><span style="font-size: 16px"> для клиента</span> <span style="font-size: 18px"><strong>${customerName.value.customerName}</strong></span>`,
               caption: ` ${item.projectDeadline } `,
               classes: 'test',
@@ -289,6 +285,22 @@ export default defineComponent({
               ]
            })
     }
+
+    onUnmounted(()=>{
+      console.log('что такое', projectsForNotifications.value, projectsForNotificationsLater.value, eventsToday.value)
+      if(eventsToday.value.length!=0){
+        dismiss()
+        console.log('ыпып')
+      }
+      if(projectsForNotificationsLater.value.length!=0){
+        dismiss1()
+        console.log('проекты позже')
+      }
+      if(projectsForNotifications.value.length!=0){
+        dismiss1()
+        console.log('проекты напом')
+      }
+    })
 
     const clickLeftBtn = () => {
           const idx = projectsForNotifications.value.findIndex((elem) => elem == clickProject.value)
@@ -355,10 +367,10 @@ export default defineComponent({
           id: item.eventId       
       })
 
-
+    const auth = store.getters['authenticate.isAuthenticated']
     onMounted(async ()=>{
-     const auth = store.getters['authenticate.isAuthenticated']
-    //  if(auth){ }
+    //  const auth = store.getters['authenticate.isAuthenticated']
+     
         await store.dispatch('calendar/loadEvents')
         await store.dispatch('projects/loadProjects')
         await store.dispatch('customers/loadCustomers')
@@ -370,11 +382,11 @@ export default defineComponent({
           }
       })
       getProjectsStore.value.forEach((item) => {
-          if (getNumberOfDays(today, item.projectDeadline) == 2 && item.reminderStatus == "no"){
+          if (getNumberOfDays(today, item.projectDeadline) == 2 && item.reminderStatus == "no" && item.projectStatus != "Завершен"){
             projectsForNotifications.value.push(item)
             remindColor = "blue"
           }
-          if (getNumberOfDays(today, item.projectDeadline) == 1 && item.reminderStatus == "remindLater"){
+          if (getNumberOfDays(today, item.projectDeadline) == 1 && item.reminderStatus == "remindLater"  && item.projectStatus != "Завершен"){
             projectsForNotificationsLater.value.push(item)
           }
       })

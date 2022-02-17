@@ -12,7 +12,7 @@
            <!-- <AppInput  label="Дата" type="date" autofocus
            :modelValue="dateEvent" 
            @update:modelValue="event => $emit('update:dateEvent', event)" /> -->
-           <app-input-icon  label="Время"  :icon="colorIcon" :isIconClick="true" type="text" autofocus
+           <app-input-icon  label="Время"  :icon="colorIconTime" :isIconClick="true" type="text" autofocus
            :modelValue="timeEvent" 
            @update:modelValue="event => $emit('update:timeEvent', event)">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -50,6 +50,7 @@ export default {
         bgcolorEvent: [String],
         iconEvent: [String],
         colorIcon: [String],
+        colorIconTime: [String]
     },
      setup(){
 

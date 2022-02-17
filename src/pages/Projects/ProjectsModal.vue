@@ -10,6 +10,7 @@
                         behavior="menu"
            />
            <AppSelect
+                        :rules="[val => !!val || 'Выберите услуги']"
                         label="Услуги"
                         multiple
                         :options="servicesOptions"
@@ -22,7 +23,7 @@
            <AppInput filled label="Комментарий" type="text" autofocus
            :modelValue="comment" 
            @update:modelValue="event => $emit('update:comment', event)" />
-           <AppInput filled label="Дедлайн" type="date" autofocus
+           <AppInput :rules="[val => !!val || 'Введите дату дедлайна']" filled label="Дедлайн" type="date" autofocus
            :modelValue="deadline" 
            @update:modelValue="event => $emit('update:deadline', event)" />
         </div>

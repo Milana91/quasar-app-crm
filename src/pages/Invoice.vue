@@ -352,7 +352,7 @@ export default {
       const sum = ref(0)
       const counter = ref(0)
       projectServicesWithPrices.value.forEach((obj)=>{
-        sum.value = sum.value + obj.price
+        sum.value = sum.value + parseInt(obj.price)
         counter.value++
       })
       projectSum.value = sum.value

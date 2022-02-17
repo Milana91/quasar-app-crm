@@ -45,6 +45,9 @@ export default route(function (/* { store, ssrContext } */) {
     if (to.path == '/' && store().getters['authenticate/isAuthenticated']){
       console.log('переход', store().getters['authenticate/isAuthenticated'])  
       Router.push('/home')}  
+    // else if (to.path == '/help'){ 
+    //   Router.push('/help')
+    // }
     else if (requiredAuth && store().getters['authenticate/isAuthenticated']){
       console.log('переход', store().getters['authenticate/isAuthenticated'])  
       next()

@@ -50,7 +50,7 @@
   <teleport to="body">
      <!-- @submitForm="createEvent" -->
       <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="addEvent" v-model="modal" title="Добавить событие">
-        <CalendarModal :colorIcon="colorIcon" v-model:titleEvent="title" v-model:detailsEvent="details" v-model:dateEvent="clickDateModal" v-model:timeEvent="time" v-model:modelValue="bgcolor"  @created="modal = false" />
+        <CalendarModal :colorIcon="colorIcon"  :colorIconTime="colorIconTime" v-model:titleEvent="title" v-model:detailsEvent="details" v-model:dateEvent="clickDateModal" v-model:timeEvent="time" v-model:modelValue="bgcolor"  @created="modal = false" />
       </app-modal>
   </teleport>
   <teleport to="body">
@@ -59,7 +59,7 @@
   <teleport to="body">
      <!-- @submitForm="createEvent" -->
       <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="changeEvent" v-model="modalEditable" title="Редактировать событие">
-        <CalendarModal :colorIcon="colorIcon" v-model:titleEvent="eventTitle" v-model:detailsEvent="eventDescription" v-model:dateEvent="eventDate" v-model:timeEvent="eventTime" v-model:modelValue="eventBgColor"  @created="modalEditable = false" />
+        <CalendarModal :colorIcon="colorIcon"  :colorIconTime="colorIconTime" v-model:titleEvent="eventTitle" v-model:detailsEvent="eventDescription" v-model:dateEvent="eventDate" v-model:timeEvent="eventTime" v-model:modelValue="eventBgColor"  @created="modalEditable = false" />
       </app-modal>
   </teleport>
 </template>
@@ -139,6 +139,7 @@ export default defineComponent({
       clickEvent: null,
       modalEditable: false,
       eventBgColor: '',
+      colorIconTime: 'av_timer'
     }
   },
   computed: {
@@ -269,13 +270,16 @@ export default defineComponent({
     },
     onClickDay (data) {
       console.log('onClickDay', data)
-      this.modal = true
+      // сравнить екущий месяц с месяцем выбранной даты
       console.log('eventsMap', this.eventsMap)
       this.numberOfDay = data.scope.timestamp.day
       this.clickDate = data.scope.timestamp.date
+      if(parseInt(new Date().getMonth()+1) == parseInt(this.clickDate.split('-')[1])){
+        this.modal = true
+      }
       this.getClickDateEvent()
-      console.log('Выбранная дата', this.clickDate)
-      console.log('События дня', this.clickEvents)
+      console.log('Выбранная дата', parseInt(this.clickDate.split('-')[1]))
+      console.log(new Date().getMonth()+1)
       console.log('номер дня', this.numberOfDay)
     },
     onClickEvent (event) {

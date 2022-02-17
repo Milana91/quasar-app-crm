@@ -1,6 +1,7 @@
 <template>
-  <div class="row justify-center">
-    <div class="q-pa-md q-gutter-sm row">
+  <div class="text-h4 flex row justify-center">Сегодня: {{todayDate}}</div>
+  <div class="flex row justify-center items-center">
+    <div class="q-pa-md q-gutter-sm row" >
       <q-btn
         no-caps
         class="button"
@@ -28,3 +29,21 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  setup () {
+    const todayDate = new Date().toLocaleDateString("ru", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timezone: 'UTC'
+    })
+
+
+    return {
+      todayDate
+    }
+  }
+}
+</script>

@@ -11,7 +11,7 @@
       :rows-per-page-options="[10, 15]"
       row-key="name"
       :loading="loading"
-      no-data-label="I didn't find anything for you"
+      no-data-label="Ничего не найдено"
       no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
@@ -123,7 +123,12 @@ export default {
     const getStoreCustomers = computed(() => store.state.customers.customers
             .filter(customer => {
                 if (search.value.searchText) {
-                    return customer['customerName'].toLowerCase().includes(search.value.searchText)
+                    return customer['customerName'].toLowerCase().includes(search.value.searchText) ||
+                    String(customer['customerEmail']).toLowerCase().includes(search.value.searchText) ||
+                    customer['customerCompany'].toLowerCase().includes(search.value.searchText) ||
+                    customer['customerComment'].toLowerCase().includes(search.value.searchText) ||
+                    customer['customerStatus'].toLowerCase().includes(search.value.searchText) ||
+                    String(customer['totalCost']).includes(search.value.searchText)
                 }
                 return customer
             }))

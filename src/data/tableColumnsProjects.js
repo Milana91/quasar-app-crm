@@ -49,7 +49,7 @@ export const tableColumnsProjects = [
         name: 'status', 
         align: 'left', 
         label: 'Статус', 
-        style: 'width: 65px; white-space: normal; overflow: hidden', 
+        style: 'width: 102px; white-space: normal; overflow: hidden', 
         field: 'status',
         sortable: true,
     },

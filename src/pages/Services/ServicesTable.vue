@@ -12,6 +12,7 @@
       :rows-per-page-options="[10, 15]"
       row-key="title"
       :loading="loading"
+      no-data-label="Ничего не найдено"
     >
     <template v-slot:top>
       <app-modal-edit :modelValue="showDialog" title="Редактировать услугу" @submitUpdate="updateRow(); showDialog=false">

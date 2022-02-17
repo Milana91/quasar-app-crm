@@ -1,5 +1,7 @@
 <template>
-  <q-btn  color="primary"   class="row items-center"  @click="$emit('clickAction')"/>
+  <q-btn  color="primary"   class="row items-center"  @click="$emit('clickAction')">
+  <slot></slot>
+  </q-btn>
 </template>
 
 <script>
