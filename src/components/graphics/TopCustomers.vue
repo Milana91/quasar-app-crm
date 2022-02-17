@@ -1,5 +1,7 @@
 <template>
-    <DoughnutChart ref="doughnutRef" :chartData="testData" :options="options" />
+    <div style="width: 500px">
+        <DoughnutChart ref="doughnutRef" :chartData="testData" :options="options" />
+    </div>
 </template>  
 <script>
 import { computed, ref, onMounted } from 'vue';
@@ -51,6 +53,7 @@ export default {
                 await store.dispatch('customers/loadCustomers')
                 getVals()
                 getCustomers()
+                console.log('все значения', totalVals.value)
                 data.value = totalVals.value
             })
 
@@ -59,10 +62,19 @@ export default {
                 plugins: {
                     legend: {
                         position: 'top',
+                        labels: {
+                            font: {
+                                size: 13
+                            }
+                        }
                     },
                     title: {
                         display: true,
                         text: 'Топ 5 клиентов',
+                        padding: 35,
+                        font: {
+                            size: 21
+                        }
                     },
                 },
             });

@@ -12,6 +12,7 @@
       :loading="loading"
       no-data-label="I didn't find anything for you"
       no-results-label="The filter didn't uncover any results"
+      :visible-columns="visibleColumns"
     >
     <template v-slot:top>
       <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @closeModal="closeModal" @submitUpdate="updateRow(); showDialog=false">
@@ -39,21 +40,22 @@
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="customer" :props="props">
+          <q-td  key="customer" :props="props">
             {{ props.row.projectCustomer }}<AppIcon name="arrow_drop_down" />
-            <q-popup-edit v-model="props.row.projectCustomer" buttons v-slot="scope"  @save="() => UpdateDocument()">
+            <q-popup-edit v-model="props.row.projectCustomer" buttons v-slot="scope"  @save="() => UpdateDocument(props.row)">
               <div class="q-pa-md" style="max-width: 200px">
                  <div class="q-gutter-md">
                   <AppSelect behavior="menu" :options="customerOptions" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
                 </div> </div>
             </q-popup-edit>
           </q-td>
-          <q-td key="services" :props="props">
-          <AppSelect multiple borderless v-model="props.row.projectServices" style="width: 160px"  behavior="menu"></AppSelect>
-            <q-popup-edit v-model="props.row.projectServices" v-slot="scope" @save="() => { editSumIdx(props.row), UpdateDocument() }"  buttons>
-               <div class="q-pa-md" style="max-width: 200px">
+          <q-td  key="services" :props="props">
+          <AppSelect :chips="true" stack-label  borderless v-model="props.row.projectServices" style="width: 310px"  behavior="menu">
+          </AppSelect>
+            <q-popup-edit v-model="props.row.projectServices" v-slot="scope" @save="() => { editSumIdx(props.row), UpdateDocument(props.row) }"  buttons>
+               <div class="q-pa-md" style="max-width: 350px">
                  <div class="q-gutter-md">
-                  <AppSelect behavior="menu" multiple :options="servicesOptions" style="width:160px" v-model="scope.value" @update:modelValue="event => $emit('update:scope.value', getSelectedServices(event))" dense autofocus @keyup.enter="scope.set"></AppSelect>
+                  <AppSelect   :chips="true" behavior="menu" multiple :options="servicesOptions" style="width:320px" v-model="scope.value" @update:modelValue="event => $emit('update:scope.value', getSelectedServices(event))" dense autofocus @keyup.enter="scope.set"></AppSelect>
                 </div> </div>
             </q-popup-edit>
           </q-td> 
@@ -61,13 +63,13 @@
             <div>
               {{ props.row.projectComment }}
             </div>
-            <q-popup-edit v-model="props.row.projectComment" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+            <q-popup-edit v-model="props.row.projectComment" v-slot="scope" @save="() => UpdateDocument(props.row)"  buttons>
               <q-input  type="textarea" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="status" :props="props">
           <div>{{ props.row.projectStatus  }}<AppIcon name="arrow_drop_down" /></div>
-            <q-popup-edit v-model="props.row.projectStatus " v-slot="scope" @save="() =>  UpdateDocument()"  buttons>
+            <q-popup-edit v-model="props.row.projectStatus " v-slot="scope" @save="() =>  {editStatusIdx(props.row); UpdateDocument(props.row)}"  buttons>
                <div class="q-pa-md" style="max-width: 200px">
                  <div class="q-gutter-md">
               <AppSelect behavior="menu" :options="statusOpt" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
@@ -76,19 +78,19 @@
           </q-td> 
           <q-td key="projectSum" :props="props">
             {{ props.row.projectSum }}
-            <q-popup-edit v-model="props.row.projectSum " v-slot="scope" @save="() => {props.row.projectSum = sum, UpdateDocument()}"  buttons>
+            <q-popup-edit v-model="props.row.projectSum " v-slot="scope" @save="() => {props.row.projectSum = sum, UpdateDocument(props.row)}"  buttons>
               <q-input v-model="scope.value" dense autofocus  @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
            <q-td auto-width key="payment" :props="props">
               {{ props.row.projectPayment }}
-            <q-popup-edit v-model="props.row.projectPayment" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+            <q-popup-edit v-model="props.row.projectPayment" v-slot="scope" @save="() => UpdateDocument(props.row)"  buttons>
               <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="paymentStatus" :props="props">
           <div>{{ props.row.projectPaymentStatus }}<AppIcon name="arrow_drop_down" /></div>
-            <q-popup-edit v-model="props.row.projectPaymentStatus" v-slot="scope" @save="() => UpdateDocument()"  buttons>
+            <q-popup-edit v-model="props.row.projectPaymentStatus" v-slot="scope" @save="() => {editPaymentStatusIdx(props.row); UpdateDocument(props.row);}"  buttons>
                <div class="q-pa-md" style="max-width: 200px">
                     <div class="q-gutter-md">
                         <AppSelect behavior="menu" :options="paymentStatusOpt" style="width:160px" v-model="scope.value" dense autofocus @keyup.enter="scope.set"></AppSelect>
@@ -98,7 +100,7 @@
           </q-td> 
           <q-td key="deadline" :props="props">
             {{ props.row.projectDeadline }}
-            <q-popup-edit v-model="props.row.projectDeadline"  v-slot="scope" @save="() => {editRowIdx(props.row), props.row.projectDeadline = format, UpdateDocument()}"  buttons>
+            <q-popup-edit v-model="props.row.projectDeadline"  v-slot="scope" @save="() => {editRowIdx(props.row), props.row.projectDeadline = format, UpdateDocument(props.row)}"  buttons>
               <q-input type="date" v-model="scope.value" dense autofocus @update:modelValue="event => $emit('update:scope.value', formatDate(event))" @keyup.enter="scope.set"></q-input>
             </q-popup-edit>
           </q-td>
@@ -111,7 +113,7 @@
           <q-td key="actions" :props="props">
             <div class="row q-gutter-sm justify-center">
               <router-link v-slot="{navigate}"  custom to="/invoice">
-                  <AppButton round color="primary" @click="navigate" icon="shopping_cart" @clickAction="openInvoice(props.row)" />
+                  <AppButton padding="xs" color="primary" @click="navigate" icon="article" @clickAction="openInvoice(props.row)" />
               </router-link>
               <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton>
               <AppButton color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
@@ -144,9 +146,17 @@ export default {
    },
    setup(){
     const store = useStore()
+    const $q = useQuasar()
+    const visibleColumns = ref(['customer', 'comment', 'services', 'status', 'projectSum', 'payment', 'paymentStatus', 'deadline',  'dateUpdate', 'actions'])
+    // const getVisibleColumns = ()=>{
+    //   if($q.screen.gt.lg){
+    //     visibleColumns.value.splice(0, 0, 'services')
+    //   }
+    // }
     const loading = ref(false)
     const columns = ref(tableColumnsProjects)
     const rows =  ref([])
+    // const chips = ref()
     // для слежения за изменениями значений в таблице
     const updated = ref(0)
     // Услуги, выбранные в таблице
@@ -158,7 +168,10 @@ export default {
     const getStoreProjects = computed(() => store.state.projects.projects
             .filter(project => {
                 if (search.value.searchText) {
-                    return project['projectCustomer'].toLowerCase().includes(search.value.searchText)
+                    return project['projectCustomer'].toLowerCase().includes(search.value.searchText)||
+                    project['projectComment'].toLowerCase().includes(search.value.searchText)||
+                    project['projectStatus'].toLowerCase().includes(search.value.searchText)||
+                    project['projectPaymentStatus'].toLowerCase().includes(search.value.searchText)
                 }
                 return project
             }))
@@ -262,9 +275,10 @@ export default {
     const dateUpdate =  ref(null)
     const projectDeadlineEditIdx = ref()
     const projectSumEditIdx = ref()
+    const projectStatusEditIdx = ref()
+    const projectPaymentStatusEditIdx = ref()
     // const projectServicesEditIdx = ref() 
     let deleteIndex = ref(null)
-    const $q = useQuasar()
     const search = ref({})
     const paymentStatusOpt = ref(["Оплачен", "Не оплачен", "Частично оплачен"]) // Статус платежа: Оплачен/Не оплачен/Оплачен частично
     const statusOpt = ref(["Активен", "Завершен", "Просрочен"]) // Активен/Завершен/Просрочен(если уже дедлайн наступил)
@@ -274,9 +288,11 @@ export default {
       loading.value = true
       await store.dispatch('projects/loadProjects')
       await store.dispatch('services/loadServices')
+      await store.dispatch('customers/loadCustomers')
       loading.value = false
       console.log(getStoreProjects)
       console.log('rows.value', rows.value)
+      // getVisibleColumns()
     })
 
     // следить за изменениями массива services в store
@@ -288,9 +304,6 @@ export default {
       console.log("vdxbxsb", getStoreProjects)
     })
 
-    const UpdateDocument = () => {
-      updated.value = !(updated.value)
-    }
 
     const format = ref()
     const formatDate = (date) => {
@@ -306,10 +319,32 @@ export default {
       return formatDate
     }
 
+     const editStatusIdx = (item) => {
+      projectStatusEditIdx.value = rows.value.indexOf(item)
+      return projectStatusEditIdx.value
+    }
+
+    const editPaymentStatusIdx = (item) => {
+      projectPaymentStatusEditIdx.value = rows.value.indexOf(item)
+      return projectPaymentStatusEditIdx.value
+    }
+
+    const editRowIdx = (item) => {
+      projectDeadlineEditIdx.value = rows.value.indexOf(item)
+      return projectDeadlineEditIdx.value
+    }
+
+    const editSumIdx = (item) => {
+      console.log('sgsz', item)
+      projectSumEditIdx.value = rows.value.indexOf(item)
+      console.log('индекс item', projectSumEditIdx.value)
+      return projectSumEditIdx.value
+    }
+
     // следить за редактированием пользователем значений в таблице 
-    watch(updated, (val) => {
-        updateProjectsFB(rows.value)
-    } )
+    // watch(updated, (val) => {
+    //     updateProjectsFB(rows.value)
+    // } )
 
 
     const listServices = computed(() => store.state.services.services);
@@ -320,6 +355,15 @@ export default {
       const copyStore = JSON.parse(JSON.stringify(val))
       copyListServices.value = copyStore
       console.log("услуги загружены из табл проекты", copyListServices.value)
+    })
+
+    const listCustomers = computed(() => store.state.customers.customers);
+    const copyListCustomers = ref()
+
+    watch(listCustomers, (val) =>{
+      const copyStore = JSON.parse(JSON.stringify(val))
+      copyListCustomers.value = copyStore
+       console.log("клиенты загружены из табл проекты", copyListCustomers.value)
     })
 
     const getCountServicesOrders = (rows) =>{
@@ -344,8 +388,12 @@ export default {
       })
     } 
 
+    const UpdateDocument = (row) => {
+      updateProjectsFB(rows.value, row)
+    }
+
     // обновить услуги в БД и хранилище
-    const updateProjectsFB = async(rows) => {
+    const updateProjectsFB = async (rows, row) => {
       getCountServicesOrders(rows)
       console.log('получить измененные услуги',  copyListServices.value)
       await store.dispatch("services/postServices", copyListServices.value)
@@ -356,28 +404,44 @@ export default {
       if(selectedItems.value){
         getTotalSumProject(selectedItems.value)
       }
+ 
       // перерассчитать количество заказов услуг
-
-      if(projectDeadlineEditIdx.value){
+      if(projectStatusEditIdx.value>=0 && rows[projectStatusEditIdx.value].projectStatus == 'Завершен'
+      && !rows[projectStatusEditIdx.value].endDate){
+        console.log('условие', rows[projectStatusEditIdx.value].endDate)
+        rows[projectStatusEditIdx.value].endDate =  new Date().toLocaleDateString("ru", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timezone: 'UTC'
+        })
+        rows[projectStatusEditIdx.value].projectPayment = rows[projectStatusEditIdx.value].projectSum
+        rows[projectStatusEditIdx.value].projectPaymentStatus = "Оплачен"
+      }
+      if(projectDeadlineEditIdx.value>=0){
         rows[projectDeadlineEditIdx.value].projectDeadline = format.value
       }
       if(projectSumEditIdx.value>=0){
         rows[projectSumEditIdx.value].projectSum = sum.value
       }
-      await store.dispatch('projects/postProjects', rows)
-    }
+       console.log('сколько оплачено', rows[projectPaymentStatusEditIdx.value])
+      if(projectPaymentStatusEditIdx.value>=0 && rows[projectPaymentStatusEditIdx.value].projectPaymentStatus == "Оплачен"){
+        console.log('сколько', rows[projectPaymentStatusEditIdx.value].projectPaymentStatus)
+        rows[projectPaymentStatusEditIdx.value].projectPayment = rows[projectPaymentStatusEditIdx.value].projectSum
+      }
+      console.log('ыпяп', row)
+      if(row){
+        row.updateDate = new Date().toLocaleDateString("ru", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timezone: 'UTC'
+        })
+      }
+      store.dispatch('projects/postProjects', rows)
 
-
-    const editRowIdx = (item) => {
-      projectDeadlineEditIdx.value = rows.value.indexOf(item)
-      return projectDeadlineEditIdx.value
-    }
-
-    const editSumIdx = (item) => {
-      console.log('sgsz', item)
-      projectSumEditIdx.value = rows.value.indexOf(item)
-      console.log('индекс item', projectSumEditIdx.value)
-      return projectSumEditIdx.value
+      getPaymentSum()
+      store.dispatch('customers/postCustomers', copyListCustomers.value)
     }
 
     // // получить индекс строки, в которой редактируем услуги
@@ -470,9 +534,9 @@ export default {
     })
 
     // при изменении выбранных услуг, пересчитать общую СТОИМОСТЬ проекта
-    watch(services, (val) => {
-      // getTotalSumProject(val)
-    })
+    // watch(services, (val) => {
+    //   // getTotalSumProject(val)
+    // })
 
     // watch(selectedItems.value, (val) => {
     //   console.log("меняется", selectedItems.value)
@@ -498,23 +562,51 @@ export default {
       console.log('новая сумма в поле', editedItem.projectSum)
     }
 
+    let totalPaymentSum = ref(0)
+
+    const getPaymentSum = () =>{
+      console.log('все клиенты', copyListCustomers.value)
+      copyListCustomers.value.forEach((customer)=>{
+        totalPaymentSum.value = 0
+        store.state.projects.projects.forEach((item)=>{
+              console.log('customer.id', customer.id)
+              console.log('item.customerId', item.customerId)
+                if(customer.id == item.customerId){
+                        console.log('совпали', customer.id, item.customerId, item.projectPayment)
+                        totalPaymentSum.value = totalPaymentSum.value + parseInt(item.projectPayment)
+                        console.log('счет сумма', totalPaymentSum.value)
+                }
+            })
+            console.log('клиент 1', customer.totalCost)
+            customer.totalCost = totalPaymentSum.value
+            console.log('клиент 1 новая сумма', customer.totalCost)
+            console.log('обновлены  клиенты', copyListCustomers.value)
+      })
+      console.log('посчитали сумму оплат', totalPaymentSum.value)
+    }
+
     // отредактировать ряд в таблице
     const updateRow = async() => {
       getCountServicesOrders(rows.value)
-      console.log('обновить услуги',  copyListServices.value)
       await store.dispatch("services/postServices", copyListServices.value)
       sum.value = 0
-      console.log('услуги отпр', services.value)
+      console.log('услуги отпр',  editedItem)
       getTotalSumProject(services.value)
-      console.log('сумма проекта теперь равна', sum.value)
+      if(editedItem.projectStatus == "Завершен"){
+        editedItem.projectPayment = editedItem.projectSum
+        editedItem.projectPaymentStatus = "Оплачен"
+      }
+      if(editedItem.projectPaymentStatus == "Оплачен"){
+        editedItem.projectPayment = editedItem.projectSum
+      }
       const data = {idx: editedIndex, editedItem}
-      console.log('индекс', editedIndex)
-      console.log('новка', editedItem)
       await store.dispatch('projects/postByID', data)
-      console.log('отредактировали', editedItem.customerId)
-      const payload = {idx: editedItem.customerId}
-      await store.dispatch('customers/updateCustomerSumByID', payload)
+      // const payload = {idx: editedItem.customerId}
+      // console.log('отправляем', editedItem.customerId)
+      // await store.dispatch('customers/updateCustomerSumByID', payload)
       showDialog.value = false
+      getPaymentSum()
+      store.dispatch('customers/postCustomers', copyListCustomers.value)
       // sum.value = 0
     }
 
@@ -558,6 +650,10 @@ export default {
       formatDate,
       format,
       editRowIdx,
+      editStatusIdx,
+      editPaymentStatusIdx,
+      projectPaymentStatusEditIdx,
+      projectStatusEditIdx,
       projectDeadlineEditIdx,
       projectSumEditIdx,
       // projectServicesEditIdx,
@@ -568,6 +664,8 @@ export default {
       getSelectedServices,
       servicesText,
       sum,
+      visibleColumns
+      // chips
       // separator: ref('vertical'),
     }
   },

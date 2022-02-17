@@ -52,7 +52,7 @@ export default defineComponent({
     const projectStatus = ref("Активен");
 
     let projectSum = ref(0);
-    const projectPayment = ref("-");
+    const projectPayment = ref(0);
     const projectPaymentStatus = ref("Не оплачен");
     const deadlineDate = new Date(
       Date.now() + 24 * 60 * 60 * 1000

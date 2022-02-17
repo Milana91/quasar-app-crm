@@ -17,6 +17,7 @@
                         @update:modelValue="event => $emit('update:services', event)"
                         style="width: 290px"
                         behavior="menu"
+                        :chips="true"
            />
            <AppInput filled label="Комментарий" type="text" autofocus
            :modelValue="comment" 

@@ -21,12 +21,12 @@ export const tableColumnsProjects = [
     { 
         name: 'customer', 
         align: 'left', 
+        style: 'width: 130px; max-height: 300px; white-space: normal; overflow: hidden', 
         label: 'Клиент', 
         field: row => row.name,
         format: val => `${val}`,
         sortable: true,
         // sort: (a, b, rowA, rowB) => a > b,
-        // sortOrder: 'ad'
      },
     { 
         name: 'services', 
@@ -39,7 +39,7 @@ export const tableColumnsProjects = [
     },
     { 
         name: 'comment',
-        style: 'width: 250px; max-height: 300px; white-space: normal; overflow: hidden', 
+        style: 'min-width: 200px; max-width: 200px; max-height: 300px; white-space: normal; overflow: hidden', 
         align: 'left',
         label: 'Комментарий*', 
         field: 'comment',
@@ -49,12 +49,14 @@ export const tableColumnsProjects = [
         name: 'status', 
         align: 'left', 
         label: 'Статус', 
+        style: 'width: 65px; white-space: normal; overflow: hidden', 
         field: 'status',
         sortable: true,
     },
     { 
         name: 'projectSum', 
         align: 'center',
+        style: 'width: 63px; white-space: normal; overflow: hidden', 
         label: 'Стоимость', 
         field: 'projectSum',
         sortable: true 
@@ -69,6 +71,7 @@ export const tableColumnsProjects = [
     { 
         name: 'paymentStatus', 
         align: 'left',
+        style: 'width: 65px; white-space: normal; overflow: hidden', 
         label: 'Статус оплаты', 
         field: 'paymentStatus',
         sortable: true
@@ -92,7 +95,7 @@ export const tableColumnsProjects = [
         name: 'dateUpdate', 
         align: 'left',
         label: 'Обновлен', 
-        field: 'dateUpdate',
+        field: 'dateUpdate', 
         sortable: true
     },
     { 

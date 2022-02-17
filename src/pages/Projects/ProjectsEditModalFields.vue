@@ -9,15 +9,6 @@
                         style="width: 160px"
                         behavior="menu"
                     />
-                    <AppSelect
-                        label="Услуги"
-                        :options="servicesOptions"
-                        :modelValue="servicesVal"
-                        multiple
-                        @update:modelValue="event => $emit('update:servicesVal', event)"
-                        style="width: 160px"
-                        behavior="menu"
-                    />
                      <AppSelect
                         label="Статус"
                         :options="statusOptions"
@@ -62,6 +53,16 @@
                         @update:modelValue="event => $emit('update:updateDateVal', event)"
                     />                 
                     </div>
+                     <AppSelect
+                    :chips="true"
+                        label="Услуги"
+                        :options="servicesOptions"
+                        :modelValue="servicesVal"
+                        multiple
+                        @update:modelValue="event => $emit('update:servicesVal', event)"
+                        style="width: 480px"
+                        behavior="menu"
+                    />
                     <AppInput  type="textarea" class="comment"
                         label="Комментарий*"
                         :modelValue="commentVal"

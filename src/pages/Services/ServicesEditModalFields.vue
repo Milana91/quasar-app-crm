@@ -12,11 +12,13 @@
                         @update:modelValue="event => $emit('update:costVal', event)"
                     />
                     <AppInput  
+                        readonly
                         label="Дата создания"
                         :modelValue="createDateVal"
                         @update:modelValue="event => $emit('update:createDateVal', event)"
                     />
                     <AppInput  
+                        readonly
                         label="Дата обновления"
                         :modelValue="updateDateVal"
                         @update:modelValue="event => $emit('update:updateDateVal', event)"

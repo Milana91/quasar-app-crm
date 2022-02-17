@@ -59,11 +59,17 @@ export default {
             responsive: true,
                 plugins: {
                     legend: {
-                        position: 'top',
+                        display: false
+                        // position: 'top',
+                        // label: 'sgsxd'
                     },
                     title: {
                         display: true,
                         text: 'Суммы проектов по месяцам',
+                        padding: 35,
+                         font: {
+                            size: 21
+                        }
                     },
                 },
             });
@@ -95,6 +101,7 @@ export default {
                 legendaDataMonths.value.push(month + ' ' + year)
                 chartDataMonths.value.push(dataMonth + ' ' + year)
             }
+            legendaDataMonths.value.reverse()
       }
 
       onMounted(async ()=>{
@@ -105,8 +112,9 @@ export default {
             // console.log('получены проекты', getStoreProjects.value)
             chartValues(chartDataMonths.value, getStoreProjects.value)
             console.log('месяцы для поиска', chartDataMonths.value)
-            console.log(data.value)
             data.value = mas.value
+            data.value.reverse()
+            console.log('значения', data.value)
         })
 
       const chartValues = (chartMonths, projects) =>{
@@ -115,10 +123,11 @@ export default {
                 // console.log('тра', item)
                 projects.forEach((proj)=>{
                     // console.log('фыа', proj)
-                    if(proj.projectDeadline.includes(item))
+                    if(proj.endDate && proj.endDate.includes(item))
                     {
                         // console.log('проекты вкл', proj)
-                        sum.value = sum.value + parseInt(proj.projectSum)
+                        sum.value = sum.value + proj.projectPayment
+                        console.log('что', proj.projectPayment)
                         console.log('сумма', sum.value)
                     }
                 })

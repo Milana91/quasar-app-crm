@@ -2,6 +2,7 @@ export const tableColumnsCustomers = [
     { 
         name: 'name', 
         align: 'left', 
+        style: 'max-width: 90px; white-space: normal; overflow: hidden', 
         label: 'ФИО', 
         field: row => row.name,
         format: val => `${val}`,
@@ -9,6 +10,7 @@ export const tableColumnsCustomers = [
      },
     { 
         name: 'email', 
+        style: 'min-width: 150px; max-width: 190px; white-space: normal; overflow: hidden', 
         align: 'left', 
         label: 'Email', 
         field: 'email',
@@ -24,13 +26,14 @@ export const tableColumnsCustomers = [
     { 
         name: 'company', 
         align: 'left', 
+        style: 'min-width: 150px; max-width: 150px; white-space: normal; overflow: hidden', 
         label: 'Компания', 
         field: 'company',
         sortable: true,
     },
     { 
         name: 'comment',
-        style: 'width: 250px; max-height: 300px; white-space: normal; overflow: hidden', 
+        style: 'min-width: 200px; max-width: 200px; max-height: 300px; white-space: normal; overflow: hidden', 
         align: 'left',
         label: 'Комментарий*', 
         field: 'comment', 

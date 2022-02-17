@@ -99,35 +99,40 @@ export async function postByID({ state, commit, rootGetters}, payload) {
     }
 }
 
-export async function updateCustomerSumByID({ state, commit, rootGetters, rootState}, payload) {
-    try {
-        commit('setActiveUser', true)
-        // commit('updateCustomers',  {
-        //     idx: payload.idx,
-        //     sum: payload.sum
-        //   })
-        // commit('updateDate', payload.idx)
-        const token = rootGetters['authenticate/token']
-        let sum = 0
-        const totalSum = ()=>{
-            rootState.projects.projects.forEach((item)=>{
-                if(item.customerId == payload.idx){
-                    if (item.projectPayment != '-'){
-                        sum = sum + parseInt(item.projectPayment)
-                    }
-                }
-            })
-            return sum
-        }
-        // payload.editedItem.id - id клиента на сервере, обновленная строка payload.editedItem
-        const {data} = await api.put(`/customers/${payload.idx}/totalCost.json?auth=${token}`, totalSum())
-    } catch (e) {
-        console.log(e)
-        Notify.create({
-            message: error(e)
-        })    
-    }
-}
+// export async function updateCustomerSumByID({ state, commit, rootGetters, rootState}, payload) {
+//     try {
+//         commit('setActiveUser', true)
+//         // commit('updateCustomers',  {
+//         //     idx: payload.idx,
+//         //     sum: payload.sum
+//         //   })
+//         // commit('updateDate', payload.idx)
+//         const token = rootGetters['authenticate/token']
+//         // let sum = 0
+//         // const totalSum = ()=>{
+//         //     rootState.projects.projects.forEach((item)=>{
+//         //         sym = 0
+//         //         console.log('ggggg', item)
+//         //         console.log('item.customerId', item.customerId)
+//         //         console.log('payload.idx', payload.idx)
+//         //         if(item.customerId == payload.idx){
+//         //             if(item.projectPayment>0){
+//         //                 console.log('считаем клиента', item.projectPayment)
+//         //                 sum = sum + parseInt(item.projectPayment)
+//         //             }
+//         //         }
+//         //     })
+//         //     return sum
+//         // }
+//         // payload.editedItem.id - id клиента на сервере, обновленная строка payload.editedItem
+//             const {data} = await api.put(`/customers/${payload.idx}/totalCost.json?auth=${token}`, totalSum())
+//     } catch (e) {
+//         console.log(e)
+//         Notify.create({
+//             message: error(e)
+//         })    
+//     }
+// }
 
 export async function loadByID({ state, commit, rootGetters}, id) {
     try {

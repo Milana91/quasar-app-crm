@@ -30,7 +30,7 @@
       :mini="!leftDrawerOpen || miniState"
       @click.capture="drawerClick"
       bordered
-      :width="250"
+      :width="180"
     >
       <q-list padding>
         <q-item-label
@@ -107,11 +107,11 @@ const linksList = [
     icon: 'record_voice_over',
     link: '/help'
   },
-   {
-    title: 'Пользователи',
-    icon: 'record_voice_over',
-    link: '/users'
-  },
+  //  {
+  //   title: 'Пользователи',
+  //   icon: 'record_voice_over',
+  //   link: '/users'
+  // },
   // {
   //   title: 'Twitter',
   //   icon: 'rss_feed',

@@ -1,8 +1,8 @@
 <template>
-  <q-page class="flex row q-pa-md justify-around">
+  <q-page class="flex row q-pa-md justify-center">
 
-   <TopCustomers/>
-   <SalesAmountChart/>
+   <TopCustomers style="margin-right: 50px"/>
+   <SalesAmountChart style="margin-left: 50px"/>
   </q-page>
 </template>
 
