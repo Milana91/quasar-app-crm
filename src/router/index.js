@@ -51,7 +51,7 @@ export default route(function (/* { store, ssrContext } */) {
     else if (requiredAuth && store().getters['authenticate/isAuthenticated']){
       console.log('переход', store().getters['authenticate/isAuthenticated'])  
       next()
-      } else if (requiredAuth && !store().getters['authenticate/isAuthenticated']) {
+      } else if (requiredAuth && !store().getters['authenticate/isAuthenticated'] && to.path != '/help') {
         console.log('ошибка', store().getters['authenticate/isAuthenticated']) 
         Notify.create('Пожалуйста, войдите в систему')
         next('/auth?message=auth')

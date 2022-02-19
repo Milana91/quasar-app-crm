@@ -126,7 +126,7 @@ export default {
                     if(proj.endDate && proj.endDate.includes(item))
                     {
                         // console.log('проекты вкл', proj)
-                        sum.value = sum.value + proj.projectPayment
+                        sum.value = sum.value + parseInt(proj.projectPayment)
                         console.log('что', proj.projectPayment)
                         console.log('сумма', sum.value)
                     }

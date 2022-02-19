@@ -369,11 +369,13 @@ export default defineComponent({
 
     const auth = store.getters['authenticate.isAuthenticated']
     onMounted(async ()=>{
-    //  const auth = store.getters['authenticate.isAuthenticated']
-     
+     const auth = store.getters['authenticate.isAuthenticated']
+     console.log('route', route.path)
+     if(route.path!="/help"){
         await store.dispatch('calendar/loadEvents')
         await store.dispatch('projects/loadProjects')
         await store.dispatch('customers/loadCustomers')
+    }
      
       getEventsStore.value.forEach((item) => {
           const dateFormat = new Date(item.date).toLocaleDateString().slice(0, 10)

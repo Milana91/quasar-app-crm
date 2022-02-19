@@ -28,11 +28,13 @@ export default {
             }
 
             const getCustomers = () => {
-                    getStoreCustomers.value.forEach((item)=>{
-                        totalVals.value.forEach((sum)=>{
-                            if(item.totalCost == sum){
+                // console.log("суммы1", totalVals.value.sort(compareSum))
+                    totalVals.value.forEach((sum)=>{
+                        getStoreCustomers.value.forEach((item)=>{
+                            if( sum == item.totalCost){
+                                console.log("клиенты оплаты", item, item.totalCost, sum)
                                 customers.value.push(item.customerName)
-                                // console.log("клиенты", customers.value)
+                                console.log("клиенты", customers.value)
                             }
                         })
                     })
