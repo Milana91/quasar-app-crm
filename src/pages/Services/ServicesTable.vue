@@ -15,7 +15,7 @@
       no-data-label="Ничего не найдено"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать услугу" @submitUpdate="updateRow(); showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать услугу" @closeModal="closeModal" @submitUpdate="updateRow(); showDialog=false">
           <ServicesEditModalFields 
               v-model:titleVal="title" 
               v-model:costVal="cost" 
@@ -164,6 +164,7 @@ export default {
         console.log(rows)
         store.commit('services/setServices', rows.value)
         updateServicesFB(rows.value)
+        $q.notify({message: "Услуга удалена"})
       }).onOk(() => {
         // console.log('>>>> second OK catcher')
       }).onCancel(() => {
@@ -184,6 +185,10 @@ export default {
       const data = {idx: editedIndex, editedItem}
       await store.dispatch('services/postByID', data)
       showDialog.value = false
+    }
+
+    const closeModal = () => {
+        showDialog.value = false
     }
 
      // Сортировка
@@ -254,7 +259,8 @@ export default {
       deleteItem,
       confirm,
       search,
-      customSort
+      customSort,
+      closeModal
     }
   },
   components: { AppSearch, AppTableLoader, ServicesEditModalFields, AppModalEdit, AppButton }

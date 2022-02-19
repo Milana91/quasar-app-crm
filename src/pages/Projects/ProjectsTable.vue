@@ -15,7 +15,7 @@
       :visible-columns="visibleColumns"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @closeModal="closeModal" @submitUpdate="updateRow(); showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать проект" @closeModal="closeModal" @submitUpdate="updateRow(); showDialog=false">
           <ProjectsEditModalFields 
               v-model:customerVal="customer" 
               v-model:servicesVal="services" 
@@ -486,6 +486,7 @@ export default {
         deleteItem(item)
         store.commit('projects/setProjects', rows.value)
         updateProjectsFB(rows.value)
+        $q.notify({message: "Проект удален"})
       }).onOk(() => {
         // console.log('>>>> second OK catcher')
       }).onCancel(() => {

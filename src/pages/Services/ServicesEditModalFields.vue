@@ -2,11 +2,6 @@
      <q-card-section>
                 <div class="row">
                     <AppInput  
-                        label="Название услуги"
-                        :modelValue="titleVal"
-                        @update:modelValue="event => $emit('update:titleVal', event)"
-                    />
-                    <AppInput  
                         label="Стоимость"
                         :modelValue="costVal"
                         @update:modelValue="event => $emit('update:costVal', event)"
@@ -29,6 +24,11 @@
                         @update:modelValue="event => $emit('update:numbersVal', event)"
                     />
                 </div>
+                <AppInput  
+                        label="Название услуги"
+                        :modelValue="titleVal"
+                        @update:modelValue="event => $emit('update:titleVal', event)"
+                    />
     </q-card-section>
 </template>
 

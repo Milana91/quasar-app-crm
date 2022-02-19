@@ -15,7 +15,7 @@
       no-results-label="The filter didn't uncover any results"
     >
     <template v-slot:top>
-      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента"  @submitUpdate="updateRow(); showDialog=false">
+      <app-modal-edit :modelValue="showDialog" title="Редактировать клиента" @closeModal="closeModal"  @submitUpdate="updateRow(); showDialog=false">
           <CustomersEditModalFields 
               v-model:nameVal="name" 
               v-model:emailVal="email" 
@@ -214,6 +214,7 @@ export default {
         deleteItem(item)
         store.commit('customers/setCustomers', rows.value)
         updateCustomersFB(rows.value)
+        $q.notify({message: "Клиент удален"})
       }).onOk(() => {
         // console.log('>>>> second OK catcher')
       }).onCancel(() => {
@@ -240,6 +241,9 @@ export default {
       showDialog.value = false
     }
 
+    const closeModal = () => {
+        showDialog.value = false
+    }
 
       // Сортировка
      const customSort = (rows, sortBy, descending) => {
@@ -327,7 +331,8 @@ export default {
       confirm,
       search,
       statusOptions,
-      customSort
+      customSort,
+      closeModal
       // separator: ref('vertical'),
     }
   },

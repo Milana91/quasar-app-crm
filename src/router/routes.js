@@ -56,6 +56,20 @@ const routes = [
           layout: 'main',
           auth: false
       } },
+      {  path: '/:catchAll(.*)*', 
+        component: () => import('src/pages/Error404.vue'), 
+        meta: {
+          layout: 'main',
+          auth: true
+      } },
+      // {
+      //   path: '/:catchAll(.*)*',
+      //   component: () => import('pages/Error404.vue')
+      // }
+      // { 
+      //   path: '*', 
+      //   redirect: '/404' 
+      // }
       // { path: '/users', 
       //   component: () => import('src/pages/Users/index.vue'), 
       //   meta: {
@@ -67,10 +81,14 @@ const routes = [
 
   // Always leave this as last one,
   // but you can also remove it
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/Error404.vue')
-  }
+  // {
+  //   path: '/:catchAll(.*)*',
+  //   component: () => import('pages/Error404.vue'),
+  //   meta: {
+  //     layout: 'main',
+  //     auth: true
+  // }
+  // }
 ]
 
 export default routes
