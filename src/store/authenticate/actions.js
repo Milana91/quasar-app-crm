@@ -3,6 +3,7 @@ import { error } from "src/utils/error";
 import { Quasar } from "quasar";
 import { Notify } from "quasar";
 
+
 export function getToken({ commit }) {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -44,7 +45,7 @@ export function signIn({ commit, dispatch }, payload) {
         setTimeout(() => {
           commit("loaded")
         }, 4000);
-      });
+      })
     })
     .catch((e) => {
       Notify.create({

@@ -61,6 +61,7 @@ export default {
     const signInExistingUser = async (email, password) => {
         await store.dispatch('authenticate/signIn', {email, password})
          setTimeout(() => {
+
               router.push('/home')
         }, 4000)
     }
