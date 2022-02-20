@@ -1,13 +1,9 @@
 <template>
   <div class="subcontent">
-    <navigation-bar
-      @today="onToday"
-      @prev="onPrev"
-      @next="onNext"
-    />
+    <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
     <div class="row justify-center">
-      <div style="display: flex; max-width: 1000px; width: 100%;">
+      <div style="display: flex; max-width: 1000px; width: 100%">
         <q-calendar-month
           ref="calendar"
           v-model="selectedDate"
@@ -33,11 +29,12 @@
             >
               <div
                 :class="badgeClasses(event, 'day')"
-                :style="{backgroundColor: event.bgcolor}"
-                class="my-event" @click.stop="onClickEvent(event)"
+                :style="{ backgroundColor: event.bgcolor }"
+                class="my-event"
+                @click.stop="onClickEvent(event)"
               >
                 <div class="title q-calendar__ellipsis">
-                  {{ event.title + (event.time ? ' - ' + event.time : '') }}
+                  {{ event.title + (event.time ? " - " + event.time : "") }}
                   <q-tooltip>{{ event.details }}</q-tooltip>
                 </div>
               </div>
@@ -48,19 +45,59 @@
     </div>
   </div>
   <teleport to="body">
-     <!-- @submitForm="createEvent" -->
-      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="addEvent" v-model="modal" title="Добавить событие">
-        <CalendarModal :colorIcon="colorIcon"  :colorIconTime="colorIconTime" v-model:titleEvent="title" v-model:detailsEvent="details" v-model:dateEvent="clickDateModal" v-model:timeEvent="time" v-model:modelValue="bgcolor"  @created="modal = false" />
-      </app-modal>
+    <!-- @submitForm="createEvent" -->
+    <app-modal
+      leftBtn="Отмена"
+      rightBtn="Создать"
+      @submitForm="addEvent"
+      v-model="modal"
+      title="Добавить событие"
+    >
+      <CalendarModal
+        :colorIcon="colorIcon"
+        :colorIconTime="colorIconTime"
+        v-model:titleEvent="title"
+        v-model:detailsEvent="details"
+        v-model:dateEvent="clickDateModal"
+        v-model:timeEvent="time"
+        v-model:modelValue="bgcolor"
+        @created="modal = false"
+      />
+    </app-modal>
   </teleport>
   <teleport to="body">
-     <CalendarPopupDescription   :eventDate="eventDate" :eventTime="eventTime" :eventBgColor="eventBgColor" :eventDescription="eventDescription" :eventTitle="eventTitle" v-model="popupShow" @clickAct="popupShow = false" @deleteEvent="deleteEvent" @editEvent="editEvent"/>
+    <CalendarPopupDescription
+      :eventDate="eventDate"
+      :eventTime="eventTime"
+      :eventBgColor="eventBgColor"
+      :eventDescription="eventDescription"
+      :eventTitle="eventTitle"
+      v-model="popupShow"
+      @clickAct="popupShow = false"
+      @deleteEvent="deleteEvent"
+      @editEvent="editEvent"
+    />
   </teleport>
   <teleport to="body">
-     <!-- @submitForm="createEvent" -->
-      <app-modal leftBtn="Отмена" rightBtn="Создать" @submitForm="changeEvent" v-model="modalEditable" title="Редактировать событие">
-        <CalendarModal :colorIcon="colorIcon"  :colorIconTime="colorIconTime" v-model:titleEvent="eventTitle" v-model:detailsEvent="eventDescription" v-model:dateEvent="eventDate" v-model:timeEvent="eventTime" v-model:modelValue="eventBgColor"  @created="modalEditable = false" />
-      </app-modal>
+    <!-- @submitForm="createEvent" -->
+    <app-modal
+      leftBtn="Отмена"
+      rightBtn="Создать"
+      @submitForm="changeEvent"
+      v-model="modalEditable"
+      title="Редактировать событие"
+    >
+      <CalendarModal
+        :colorIcon="colorIcon"
+        :colorIconTime="colorIconTime"
+        v-model:titleEvent="eventTitle"
+        v-model:detailsEvent="eventDescription"
+        v-model:dateEvent="eventDate"
+        v-model:timeEvent="eventTime"
+        v-model:modelValue="eventBgColor"
+        @created="modalEditable = false"
+      />
+    </app-modal>
   </teleport>
 </template>
 
@@ -70,23 +107,22 @@ import {
   addToDate,
   parseDate,
   parseTimestamp,
-  today
-} from '@quasar/quasar-ui-qcalendar/src/index.js'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
+  today,
+} from "@quasar/quasar-ui-qcalendar/src/index.js";
+import "@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass";
+import "@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass";
+import "@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass";
 
-import AppModal from 'components/ui/AppModal'
-import { defineComponent, computed, watch } from 'vue'
-import NavigationBar from 'components/NavigationBar.vue'
-import { events } from 'src/data/events'
-import CalendarModal from 'pages/Calendar/CalendarModal'
-import CalendarPopupDescription from 'pages/Calendar/CalendarPopupDescription'
-import { getDatabase, ref, onValue} from "firebase/database"
-import { useStore } from 'vuex'
-import { Notify } from 'quasar'
+import AppModal from "components/ui/AppModal";
+import { defineComponent, computed, watch } from "vue";
+import NavigationBar from "components/NavigationBar.vue";
+import { events } from "src/data/events";
+import CalendarModal from "pages/Calendar/CalendarModal";
+import CalendarPopupDescription from "pages/Calendar/CalendarPopupDescription";
+import { getDatabase, ref, onValue } from "firebase/database";
+import { useStore } from "vuex";
+import { Notify } from "quasar";
 // import store from '../store/index'
-
 
 // const CURRENT_DAY = new Date()
 // function getCurrentDay (day) {
@@ -96,146 +132,119 @@ import { Notify } from 'quasar'
 //   return tm.date
 // }
 
-
 export default defineComponent({
-  name: 'MonthSlotDay',
-  
+  name: "MonthSlotDay",
+
   components: {
     NavigationBar,
     QCalendarMonth,
     AppModal,
     CalendarModal,
-    CalendarPopupDescription
+    CalendarPopupDescription,
   },
-  data () {
+  data() {
     return {
       options: {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timezone: 'UTC'
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timezone: "UTC",
       },
       CURRENT_DAY: new Date(),
       selectedDate: today(),
       // events: events,
       modal: false,
-      title: '',
-      details: '',
+      title: "",
+      details: "",
       // .toLocaleString("ru", this.options)
       date: this.getCurrentDay(this.numberOfDay),
-      time: '',
-      bgcolor: '#148fb8',
-      icon: '',
+      time: "",
+      bgcolor: "#148fb8",
+      icon: "",
       daysData: {},
       numberOfDay: null,
-      clickDate: '',
+      clickDate: "",
       clickEvents: [],
-      colorIcon: 'colorize',
+      colorIcon: "colorize",
       popupShow: false,
-      eventTitle: '',
-      eventDescription: '',
-      eventDate: '',
-      eventTime: '',
+      eventTitle: "",
+      eventDescription: "",
+      eventDate: "",
+      eventTime: "",
       clickEvent: null,
       modalEditable: false,
-      eventBgColor: '',
-      colorIconTime: 'av_timer'
-    }
+      eventBgColor: "",
+      colorIconTime: "av_timer",
+    };
   },
   computed: {
-    eventsMap () {
-      const map = {}
+    eventsMap() {
+      const map = {};
       if (this.events.length > 0) {
-        this.events.forEach(event => {
-          (map[ event.date ] = (map[ event.date ] || [])).push(event)
+        this.events.forEach((event) => {
+          (map[event.date] = map[event.date] || []).push(event);
           if (event.days !== undefined) {
-            let timestamp = parseTimestamp(event.date)
-            let days = event.days
+            let timestamp = parseTimestamp(event.date);
+            let days = event.days;
             // add a new event for each day
             // skip 1st one which would have been done above
             do {
-              timestamp = addToDate(timestamp, { day: 1 })
-              if (!map[ timestamp.date ]) {
-                map[ timestamp.date ] = []
+              timestamp = addToDate(timestamp, { day: 1 });
+              if (!map[timestamp.date]) {
+                map[timestamp.date] = [];
               }
-              map[ timestamp.date ].push(event)
+              map[timestamp.date].push(event);
               // already accounted for 1st day
-            } while (--days > 1)
+            } while (--days > 1);
           }
-        })
+        });
       }
-      console.log('прогруз', this.events)
-      console.log('map', map)
-      return map
+      return map;
     },
-    // watch: {
-    // // whenever question changes, this function will run
-    //   'this.$store.state.calendar.events'(val) {
-    //     console.log('ивенты', val)
-    //    }
-    //  },
-    // counterLoad(){
-    //    return this.$store.state.calendar.counterLoad
-    // },
-    eventsArr(){
-       return this.$store.state.calendar.events
+    eventsArr() {
+      return this.$store.state.calendar.events;
     },
-    events(){
-      console.log('события изменились')
-      return this.$store.state.calendar.events
+    events() {
+      return this.$store.state.calendar.events;
     },
-    eventsArrLength(){
-      return this.events.length
+    eventsArrLength() {
+      return this.events.length;
     },
-    clickDateModal(){
-      return new Date(this.clickDate).toLocaleDateString('ru-RU', this.options)
-    }
+    clickDateModal() {
+      return new Date(this.clickDate).toLocaleDateString("ru-RU", this.options);
+    },
   },
   mounted() {
-        // loading.value = true
-      this.$store.dispatch('calendar/loadEvents')
-      setTimeout(() => {
-      console.log('все события из хранилища', this.events)
-      console.log('eventsMap', this.eventsMap)
-      }, 5000)
+    this.$store.dispatch("calendar/loadEvents");
   },
   methods: {
-    getCurrentDay (day) {
-      const newDay = new Date(this.CURRENT_DAY)
-      newDay.setDate(day)
-      const tm = parseDate(newDay)
-      console.log('дата', this.selectedDate)
-      console.log('дата', this.CURRENT_DAY)
-      console.log('результат getCurrentDay',  tm.date)
-      return tm.date
+    getCurrentDay(day) {
+      const newDay = new Date(this.CURRENT_DAY);
+      newDay.setDate(day);
+      const tm = parseDate(newDay);
+      return tm.date;
     },
-    addEvent(){
-      this.$store.dispatch('calendar/createEvent', {
-          title: this.title,
-          id: this.eventsArrLength + 1, 
-          details: this.details,
-          date: this.getCurrentDay(this.numberOfDay),
-          time: this.time,
-          bgcolor: this.bgcolor,
-          reminderStatus: 'no'
-      })
-      this.title = ''
-      this.details = ''
-      this.time = ''
-      this.bgcolor = ''
+    addEvent() {
+      this.$store.dispatch("calendar/createEvent", {
+        title: this.title,
+        id: this.eventsArrLength + 1,
+        details: this.details,
+        date: this.getCurrentDay(this.numberOfDay),
+        time: this.time,
+        bgcolor: this.bgcolor,
+        reminderStatus: "no",
+      });
+      this.title = "";
+      this.details = "";
+      this.time = "";
+      this.bgcolor = "";
     },
-    // // postEvents(data) {
-    // //     // const events = this.eventsMap
-    // //     // const calendarData = {data, events}
-    // //     this.$store.dispatch('calendar/postEvents', data)
-    // //     // console.log(calendarData)
-    // // },
-    badgeClasses (event, type) {
+    badgeClasses(event, type) {
       return {
         // bg-${ event.bgcolor }
-        [ `text-white` ]: true,
-        'rounded-border': true
-      }
+        [`text-white`]: true,
+        "rounded-border": true,
+      };
     },
     // badgeStyles (day, event) {
     //   console.log('event-1', event)
@@ -248,122 +257,111 @@ export default defineComponent({
     //   // s.width = (event.days * this.parsedCellWidth) + '%'
     //   return s
     // },
-    onToday () {
-      this.$refs.calendar.moveToToday()
+    onToday() {
+      this.$refs.calendar.moveToToday();
     },
-    onPrev () {
-      this.$refs.calendar.prev()
+    onPrev() {
+      this.$refs.calendar.prev();
     },
-    onNext () {
-      this.$refs.calendar.next()
+    onNext() {
+      this.$refs.calendar.next();
     },
-    onMoved (data) {
-      console.log('onMoved', data)
+    onMoved(data) {
+      console.log("onMoved", data);
     },
-    onChange (data) {
-      this.daysData = data
-      console.log('onChange', data)
-      console.log('записано', this.daysData)
+    onChange(data) {
+      this.daysData = data;
     },
-    onClickDate (data) {
-      console.log('onClickDate', data)
+    onClickDate(data) {
+      console.log("onClickDate", data);
     },
-    onClickDay (data) {
-      console.log('onClickDay', data)
+    onClickDay(data) {
       // сравнить екущий месяц с месяцем выбранной даты
-      console.log('eventsMap', this.eventsMap)
-      this.numberOfDay = data.scope.timestamp.day
-      this.clickDate = data.scope.timestamp.date
-      if(parseInt(new Date().getMonth()+1) == parseInt(this.clickDate.split('-')[1])){
-        this.modal = true
+      this.numberOfDay = data.scope.timestamp.day;
+      this.clickDate = data.scope.timestamp.date;
+      if (
+        parseInt(new Date().getMonth() + 1) ==
+        parseInt(this.clickDate.split("-")[1])
+      ) {
+        this.modal = true;
       }
-      this.getClickDateEvent()
-      console.log('Выбранная дата', parseInt(this.clickDate.split('-')[1]))
-      console.log(new Date().getMonth()+1)
-      console.log('номер дня', this.numberOfDay)
+      this.getClickDateEvent();
     },
-    onClickEvent (event) {
-      console.log('clickEvent', event)
-      this.clickEvent = event
-      this.eventTitle = event.title
-      this.eventDescription = event.details
-      this.eventTime = event.time
-      this.eventBgColor = event.bgcolor
+    onClickEvent(event) {
+      this.clickEvent = event;
+      this.eventTitle = event.title;
+      this.eventDescription = event.details;
+      this.eventTime = event.time;
+      this.eventBgColor = event.bgcolor;
       const date = new Date(event.date).toLocaleDateString("ru", {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            timezone: 'UTC'
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timezone: "UTC",
+      });
+      this.eventDate = date;
+      this.popupShow = true;
+    },
+    deleteEvent() {
+      this.$q
+        .dialog({
+          title: "Подтверждение",
+          message: "Вы хотите удалить событие?",
+          cancel: true,
+          persistent: true,
         })
-      this.eventDate = date
-      this.popupShow = true
+        .onOk(() => {
+          this.$store.dispatch("calendar/removeEvent", this.clickEvent.eventId);
+          this.popupShow = false;
+        })
+        .onOk(() => {
+          // console.log('>>>> second OK catcher')
+        })
+        .onCancel(() => {
+          // console.log('>>>> Cancel')
+        })
+        .onDismiss(() => {
+          // console.log('I am triggered on both OK and Cancel')
+        });
     },
-    deleteEvent(){
-      this.$q.dialog({
-        title: 'Подтверждение',
-        message: 'Вы хотите удалить событие?',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        console.log('событие клика', this.clickEvent)
-        console.log('событие клика ID', this.clickEvent.eventId)
-        this.$store.dispatch('calendar/removeEvent', this.clickEvent.eventId)
-        this.popupShow = false
-      }).onOk(() => {
-        // console.log('>>>> second OK catcher')
-      }).onCancel(() => {
-        // console.log('>>>> Cancel')
-      }).onDismiss(() => {
-        // console.log('I am triggered on both OK and Cancel')
-      })
+    editEvent() {
+      this.modalEditable = true;
     },
-    editEvent(){
-      this.modalEditable = true
+    changeEvent() {
+      this.$store.dispatch("calendar/editEvent", {
+        event: {
+          title: this.eventTitle,
+          id: this.clickEvent.id,
+          details: this.eventDescription,
+          date: this.clickEvent.date,
+          time: this.eventTime,
+          bgcolor: this.eventBgColor,
+          reminderStatus: "no",
+        },
+        id: this.clickEvent.eventId,
+      });
+      this.popupShow = false;
     },
-    changeEvent(){
-      this.$store.dispatch('calendar/editEvent', {
-          event: {
-            title: this.eventTitle,
-            id: this.clickEvent.id, 
-            details: this.eventDescription,
-            date: this.clickEvent.date,
-            time: this.eventTime,
-            bgcolor: this.eventBgColor,
-            reminderStatus: 'no'
-          },
-          id: this.clickEvent.eventId       
-      })
-      this.popupShow = false
-    },
-    getClickDateEvent(){
-      const eventsArr = this.events
-      console.log('свойство events', eventsArr)
-      eventsArr.forEach((item)=>{
-          if(item.date == this.clickDate)
-          {
-            console.log('события', item)
-            this.clickEvents.push(item)
-            return this.clickEvents
-          }
+    getClickDateEvent() {
+      const eventsArr = this.events;
+      eventsArr.forEach((item) => {
+        if (item.date == this.clickDate) {
+          this.clickEvents.push(item);
+          return this.clickEvents;
         }
-      )
+      });
     },
-    onClickWorkweek (data) {
-      console.log('onClickWorkweek', data)
+    onClickWorkweek(data) {
+      console.log("onClickWorkweek", data);
     },
-    onClickHeadDay (data) {
-      console.log('onClickHeadDay', data)
+    onClickHeadDay(data) {
+      console.log("onClickHeadDay", data);
     },
-    onClickHeadWorkweek (data) {
-      console.log('onClickHeadWorkweek', data)
+    onClickHeadWorkweek(data) {
+      console.log("onClickHeadWorkweek", data);
     },
-    // createEvent() {
-    //   const eventNew = 
-    //   this.$store.commit('increment')
-    //   console.log(this.$store.state.count)
-    // }
-  }
-})
+  },
+});
 </script>
 <style lang="sass" scoped>
 .my-event
@@ -409,5 +407,4 @@ export default defineComponent({
 
 .rounded-border
   border-radius: 2px
-  
 </style>

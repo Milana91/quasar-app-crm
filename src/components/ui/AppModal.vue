@@ -15,11 +15,9 @@
 </template>
 
 <script>
-import {ref, onMounted} from 'vue'
 import AppButton from 'components/ui/AppButton'
 
 export default {
-  // name: 'ComponentName',
   emit: ['submitForm', 'leftBtnAct'],
   props: {
     title: {

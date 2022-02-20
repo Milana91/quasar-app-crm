@@ -1,31 +1,28 @@
 <template>
   <q-page class="flex justify-center q-py-md">
     <q-card class="my-card">
-        <q-card-section>
-          <div class="text-center text-h4 mb-3">Войти в систему</div>
-        </q-card-section>
+      <q-card-section>
+        <div class="text-center text-h4 mb-3">Войти в систему</div>
+      </q-card-section>
 
-        <q-card-section>
-          <AuthComponent/>
-        </q-card-section>
+      <q-card-section>
+        <AuthComponent />
+      </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import AuthComponent from 'pages/Auth/AuthComponent'
+import { defineComponent } from "vue";
+import AuthComponent from "pages/Auth/AuthComponent";
 
 export default defineComponent({
-  name: 'Auth',
+  name: "Auth",
   setup() {
-
-    return {
-      
-    }
+    return {};
   },
-  components: { AuthComponent }
-})
+  components: { AuthComponent },
+});
 </script>
 <style lang="sass" scoped>
 .my-card

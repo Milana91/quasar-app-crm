@@ -24,7 +24,6 @@ import AppButton from 'components/ui/AppButton'
 
 
 export default {
-  // name: 'ComponentName',
   emit: ['submitUpdate'],
   props: {
     title: {

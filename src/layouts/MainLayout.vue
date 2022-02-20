@@ -1,6 +1,6 @@
 <template>
-  <q-layout  view="hHh Lpr lFf">
-    <q-header elevated >
+  <q-layout view="hHh Lpr lFf">
+    <q-header elevated>
       <q-toolbar>
         <q-btn
           flat
@@ -11,11 +11,18 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-        <q-btn dense color="indigo-8" round icon="notifications" class="q-mr-md" @click="openNotifications">
-            <q-badge v-if="counterNotify > 0" color="red" floating>{{ counterNotify }}</q-badge>
+        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-btn
+          dense
+          color="indigo-8"
+          round
+          icon="notifications"
+          class="q-mr-md"
+          @click="openNotifications"
+        >
+          <q-badge v-if="counterNotify > 0" color="red" floating>{{
+            counterNotify
+          }}</q-badge>
         </q-btn>
         <div><a href="#" @click.prevent="logout">Выйти</a></div>
         <!-- <router-link to="/logout" @click.prevent="logout">Выйти</router-link>
@@ -24,7 +31,7 @@
     </q-header>
 
     <q-drawer
-    class="menuleft bg-grey-3"
+      class="menuleft bg-grey-3"
       v-model="leftDrawerOpen"
       show-if-above
       :mini="!leftDrawerOpen || miniState"
@@ -33,11 +40,7 @@
       :width="180"
     >
       <q-list padding>
-        <q-item-label
-          header style="font-size: 20px"
-        >
-          Меню
-        </q-item-label>
+        <q-item-label header style="font-size: 20px"> Меню </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
@@ -46,15 +49,15 @@
         />
       </q-list>
       <div class="q-mini-drawer-hide absolute" style="top: 15px; right: -17px">
-          <q-btn
-            dense
-            round
-            unelevated
-            color="primary"
-            icon="chevron_left"
-            @click="miniState = true"
-          ></q-btn>
-        </div>
+        <q-btn
+          dense
+          round
+          unelevated
+          color="primary"
+          icon="chevron_left"
+          @click="miniState = true"
+        ></q-btn>
+      </div>
     </q-drawer>
 
     <q-page-container>
@@ -62,383 +65,360 @@
     </q-page-container>
   </q-layout>
 
-  <teleport to='body'>
-    <app-modal v-model="modal" title="Подтверждение" leftBtn="Больше не напоминать" rightBtn="ОК" @leftBtnAct = "clickLeftBtn" @submitForm="clickRightBtn">
-        <q-card-section class="q-pt-none">
-          Напомнить завтра?
-        </q-card-section>
+  <teleport to="body">
+    <app-modal
+      v-model="modal"
+      title="Подтверждение"
+      leftBtn="Больше не напоминать"
+      rightBtn="ОК"
+      @leftBtnAct="clickLeftBtn"
+      @submitForm="clickRightBtn"
+    >
+      <q-card-section class="q-pt-none"> Напомнить завтра? </q-card-section>
     </app-modal>
   </teleport>
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
-import {useRouter} from 'vue-router'
-import AppModal from 'components/ui/AppModal.vue'
+import EssentialLink from "components/EssentialLink.vue";
+import { useRouter } from "vue-router";
+import AppModal from "components/ui/AppModal.vue";
 
 const linksList = [
   {
-    title: 'Главная',
-    icon: 'home',
-    link: '/home'
-  },
-    {
-    title: 'Проекты',
-    icon: 'content_copy',
-    link: '/projects'
+    title: "Главная",
+    icon: "home",
+    link: "/home",
   },
   {
-    title: 'Услуги',
-    icon: 'currency_ruble',
-    link: '/services'
+    title: "Проекты",
+    icon: "content_copy",
+    link: "/projects",
   },
   {
-    title: 'Клиенты',
-    icon: 'people',
-    link: '/customers'
+    title: "Услуги",
+    icon: "currency_ruble",
+    link: "/services",
   },
   {
-    title: 'Календарь',
-    icon: 'event',
-    link: '/calendar'
+    title: "Клиенты",
+    icon: "people",
+    link: "/customers",
   },
   {
-    title: 'Помощь',
-    icon: 'record_voice_over',
-    link: '/help'
+    title: "Календарь",
+    icon: "event",
+    link: "/calendar",
   },
-  //  {
-  //   title: 'Пользователи',
-  //   icon: 'record_voice_over',
-  //   link: '/users'
-  // },
-  // {
-  //   title: 'Twitter',
-  //   icon: 'rss_feed',
-  //   link: 'https://twitter.quasar.dev'
-  // },
-  // {
-  //   title: 'Facebook',
-  //   icon: 'public',
-  //   link: 'https://facebook.quasar.dev'
-  // },
-  // {
-  //   title: 'Quasar Awesome',
-  //   icon: 'favorite',
-  //   link: 'https://awesome.quasar.dev'
-  // }
-]
+  {
+    title: "Помощь",
+    icon: "record_voice_over",
+    link: "/help",
+  },
+];
 
-import { defineComponent, ref, onMounted, computed, onUnmounted } from 'vue'
-import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
-import { useQuasar } from 'quasar'
-
-// import { linksList } from 'src/data/linksList'
+import { defineComponent, ref, onMounted, computed, onUnmounted } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+import { useQuasar } from "quasar";
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: "MainLayout",
 
   components: {
-    EssentialLink, AppModal
+    EssentialLink,
+    AppModal,
   },
 
-  setup () {
-    const leftDrawerOpen = ref(false)
-    const miniState = ref(false)
-    const store = useStore()
-    const $q = useQuasar()
-    const counterNotify = ref(0)
-    let remindColor = ref('')
-    const getCustomersStore = computed(()=> store.state.customers.customers) 
-    const router = useRouter()
-    let modal = ref(false)
-    const route = useRoute()
+  setup() {
+    const leftDrawerOpen = ref(false);
+    const miniState = ref(false);
+    const store = useStore();
+    const $q = useQuasar();
+    const counterNotify = ref(0);
+    let remindColor = ref("");
+    const getCustomersStore = computed(() => store.state.customers.customers);
+    const router = useRouter();
+    let modal = ref(false);
+    const route = useRoute();
 
     const today = new Date().toLocaleDateString("ru", {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  timezone: 'UTC'
-              })
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timezone: "UTC",
+    });
 
-    // Форматировать дату дедлайна 
+    // Форматировать дату дедлайна
     const formatDate = (date) => {
-      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
-      const arr = date.split(" ")
-      const month = arr[1]
-      const day = arr[0]
-      const year = arr[2]
-      const idxMonth = months.findIndex(item => item == month)
-      const formDate = [year, idxMonth, day].join(', ')
+      const months = [
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря",
+      ];
+      const arr = date.split(" ");
+      const month = arr[1];
+      const day = arr[0];
+      const year = arr[2];
+      const idxMonth = months.findIndex((item) => item == month);
+      const formDate = [year, idxMonth, day].join(", ");
 
-      // console.log("новая дата", formDate)
-      const d = new Date(year, idxMonth, day)
+      const d = new Date(year, idxMonth, day);
 
-      // console.log("hredh", d)
-      // var dd = d.getDate()
-      // if (dd < 10) dd = '0' + dd
-      // var mm = d.getMonth() + 1
-      // if (mm < 10) mm = '0' + mm;
-      // var yy = d.getFullYear() % 100
-      // if (yy < 10) yy = '0' + yy;
+      return d;
+    };
 
-      // const xvdx = dd + '.' + mm + '.' + yy
-      // console.log("индекс", xvdx)
-      return d
-    }
-      
     // Найти разницу между датами (кол-во дней)
     function getNumberOfDays(start, end) {
+      const date1 = new Date(formatDate(start));
+      const date2 = new Date(formatDate(end));
+      const oneDay = 1000 * 60 * 60 * 24;
 
-        const date1 = new Date(formatDate(start))
-        const date2 = new Date(formatDate(end))
+      const diffInTime = date2.getTime() - date1.getTime();
 
-        // console.log('item 1', start)
-        // console.log('item 2', formatDate(end))
-        // console.log('дата 1', date1)
-        // console.log('дата 2', date2)
-        // One day in milliseconds
-        const oneDay = 1000 * 60 * 60 * 24;
+      const diffInDays = Math.round(diffInTime / oneDay);
 
-        // Calculating the time difference between two dates
-        const diffInTime = date2.getTime() - date1.getTime()
-
-        // Calculating the no. of days between two dates
-        const diffInDays = Math.round(diffInTime / oneDay)
-
-        return diffInDays
+      return diffInDays;
     }
-    let dismiss = ref()
-    let dismiss1 = ref()
+    let dismiss = ref();
+    let dismiss1 = ref();
     // Получить напоминания о событиях
     const getNotifications = (item) => {
       dismiss = $q.notify({
-              message: `<span style="font-size: 15px">Событие:</span><br> <span style="font-size: 17px">${item.title }</span>`,
-              caption: `<span style="font-size: 16px">${item.details}</span> <br>  ${item.time}`,
-              classes: 'test',
-              timeout: 0,
-              badgeClass: 'my-badge-class',
-              color: "primary",
-              position: 'top-right',
-              html: true,
-              icon: 'event',
-              textColor: 'white',
-              actions: [
-              { label: 'Просмотрено', color: 'yellow', handler: ()=>{
-                // console.log('Просмотрено', item)
-                const idx = eventsToday.value.findIndex((elem) => elem == item)
-                eventsToday.value.splice(idx, 1)
-                confirmReminder(item)
-               } 
-              },
-              { label: 'Напомнить позже', color: 'white', handler: ()=>{ 
-                ++counterNotify.value
-                // console.log('counterNotify.value', counterNotify.value)
-                } }
-              ]
-           })
-        }
-  
+        message: `<span style="font-size: 15px">Событие:</span><br> <span style="font-size: 17px">${item.title}</span>`,
+        caption: `<span style="font-size: 16px">${item.details}</span> <br>  ${item.time}`,
+        classes: "test",
+        timeout: 0,
+        badgeClass: "my-badge-class",
+        color: "primary",
+        position: "top-right",
+        html: true,
+        icon: "event",
+        textColor: "white",
+        actions: [
+          {
+            label: "Просмотрено",
+            color: "yellow",
+            handler: () => {
+              const idx = eventsToday.value.findIndex((elem) => elem == item);
+              eventsToday.value.splice(idx, 1);
+              confirmReminder(item);
+            },
+          },
+          {
+            label: "Напомнить позже",
+            color: "white",
+            handler: () => {
+              ++counterNotify.value;
+            },
+          },
+        ],
+      });
+    };
 
-    let clickProject = ref('')
+    let clickProject = ref("");
     // Получить напоминания о проектах
     const getNotificationsProjects = (item) => {
-      const customerName = computed(()=>getCustomersStore.value.find((customer)=> customer.id == item.customerId))
+      const customerName = computed(() =>
+        getCustomersStore.value.find(
+          (customer) => customer.id == item.customerId
+        )
+      );
       const countDays = computed(() => {
-       return (item.reminderStatus == "remindLater")? 1 : 2
-      })
-    //  console.log('имя клиента', customerName.value)
-        dismiss1 = $q.notify({
-              message: `<span style="font-size: 16px">Через ${countDays.value} дня срок сдачи проекта</span><br><span style="font-size: 16px"> для клиента</span> <span style="font-size: 18px"><strong>${customerName.value.customerName}</strong></span>`,
-              caption: ` ${item.projectDeadline } `,
-              classes: 'test',
-              timeout: 0,
-              color: remindColor,
-              position: 'top-right',
-              html: true,
-              icon: 'warning',
-              badgeClass: 'my-badge-class',
-              textColor: 'white',
-              actions: [
-              { label: 'Просмотрено', color: 'yellow', handler: ()=>{
-                // console.log('Просмотрено', item)
-                clickProject.value = item
-                if (item.reminderStatus != "remindLater"){
-                  modal.value = true
-                  // console.log(modal.value)
-                  // confirmView(item)
-                } else
-                if (item.reminderStatus == "remindLater")
-                {
-                  confirmReminderDeadline(item, 'done')
-                  const idx = projectsForNotificationsLater.value.findIndex((elem) => elem == item)
-                  projectsForNotificationsLater.value.splice(idx, 1)
-                  // console.log('ПРосм', projectsForNotificationsLater.value)
-                }
-               } 
-              },
-              { label: 'Напомнить позже', color: 'white', handler: ()=>{ 
-                ++counterNotify.value
-                // console.log('counterNotify.value', counterNotify.value)
-                } }
-              ]
-           })
-    }
+        return item.reminderStatus == "remindLater" ? 1 : 2;
+      });
+      //  console.log('имя клиента', customerName.value)
+      dismiss1 = $q.notify({
+        message: `<span style="font-size: 16px">Через ${countDays.value} дня срок сдачи проекта</span><br><span style="font-size: 16px"> для клиента</span> <span style="font-size: 18px"><strong>${customerName.value.customerName}</strong></span>`,
+        caption: ` ${item.projectDeadline} `,
+        classes: "test",
+        timeout: 0,
+        color: remindColor,
+        position: "top-right",
+        html: true,
+        icon: "warning",
+        badgeClass: "my-badge-class",
+        textColor: "white",
+        actions: [
+          {
+            label: "Просмотрено",
+            color: "yellow",
+            handler: () => {
+              clickProject.value = item;
+              if (item.reminderStatus != "remindLater") {
+                modal.value = true;
+              } else if (item.reminderStatus == "remindLater") {
+                confirmReminderDeadline(item, "done");
+                const idx = projectsForNotificationsLater.value.findIndex(
+                  (elem) => elem == item
+                );
+                projectsForNotificationsLater.value.splice(idx, 1);
+              }
+            },
+          },
+          {
+            label: "Напомнить позже",
+            color: "white",
+            handler: () => {
+              ++counterNotify.value;
+            },
+          },
+        ],
+      });
+    };
 
-    onUnmounted(()=>{
-      console.log('что такое', projectsForNotifications.value, projectsForNotificationsLater.value, eventsToday.value)
-      if(eventsToday.value.length!=0){
-        dismiss()
-        console.log('ыпып')
+    onUnmounted(() => {
+      if (eventsToday.value.length != 0) {
+        dismiss();
       }
-      if(projectsForNotificationsLater.value.length!=0){
-        dismiss1()
-        console.log('проекты позже')
+      if (projectsForNotificationsLater.value.length != 0) {
+        dismiss1();
       }
-      if(projectsForNotifications.value.length!=0){
-        dismiss1()
-        console.log('проекты напом')
+      if (projectsForNotifications.value.length != 0) {
+        dismiss1();
       }
-    })
+    });
 
     const clickLeftBtn = () => {
-          const idx = projectsForNotifications.value.findIndex((elem) => elem == clickProject.value)
-          projectsForNotifications.value.splice(idx, 1)
-          confirmReminderDeadline(clickProject.value, 'done')
-          modal.value = false
-    }
+      const idx = projectsForNotifications.value.findIndex(
+        (elem) => elem == clickProject.value
+      );
+      projectsForNotifications.value.splice(idx, 1);
+      confirmReminderDeadline(clickProject.value, "done");
+      modal.value = false;
+    };
 
     const clickRightBtn = () => {
-          const idx = projectsForNotifications.value.findIndex((elem) => elem == clickProject.value)
-          projectsForNotifications.value.splice(idx, 1)
-          confirmReminderDeadline(clickProject.value, 'remindLater')
-          modal.value = false
-    }
-
-    // const confirmView = (item) => {
-    //         $q.dialog({
-    //             title: 'Подтверждение',
-    //             message: `<span class="text-body1">Напомнить завтра?</span>`,
-    //             cancel: true,
-    //             html: true,
-    //             persistent: true
-    //         }).onOk(() => {
-    //             const idx = projectsForNotificationsLater.value.findIndex((elem) => elem == item)
-    //             projectsForNotifications.value.splice(idx, 1)
-    //             confirmReminderDeadline(item, 'remindLater')
-    //         }).onOk(() => {
-    //             // console.log('>>>> second OK catcher')
-    //         }).onCancel(() => {
-    //             const idx = projectsForNotificationsLater.value.findIndex((elem) => elem == item)
-    //             projectsForNotifications.value.splice(idx, 1)
-    //             confirmReminderDeadline(item, 'done')
-    //         }).onDismiss(() => {
-    //             // console.log('I am triggered on both OK and Cancel')
-    //         })
-    //     }
+      const idx = projectsForNotifications.value.findIndex(
+        (elem) => elem == clickProject.value
+      );
+      projectsForNotifications.value.splice(idx, 1);
+      confirmReminderDeadline(clickProject.value, "remindLater");
+      modal.value = false;
+    };
 
     // Напоминания о дедлайнах после входа в систему
-    const getProjectsStore = computed(()=> store.state.projects.projects) 
-    const projectsForNotifications = ref([])
-    const projectsForNotificationsLater = ref([])
-    const confirmReminderDeadline = async (item, status) => await store.dispatch('projects/editReminderStatusDeadline', {
-          selectedProject: item, 
-          reminderStatus: status,
-          id: item.id    
-      })
+    const getProjectsStore = computed(() => store.state.projects.projects);
+    const projectsForNotifications = ref([]);
+    const projectsForNotificationsLater = ref([]);
+    const confirmReminderDeadline = async (item, status) =>
+      await store.dispatch("projects/editReminderStatusDeadline", {
+        selectedProject: item,
+        reminderStatus: status,
+        id: item.id,
+      });
 
     // Напоминания из календаря после входа в систему
     // После авторизации проверяем события в календаре
-    const getEventsStore = computed(()=> store.state.calendar.events) 
-    const todayDate = new Date().toLocaleDateString().slice(0, 10)
-    const nowTime = new Date().toLocaleTimeString().slice(0,-3)
-    const eventsToday = ref([])
-    const confirmReminder = async (item) => await store.dispatch('calendar/editReminderStatusEvent', {
-          selectedEvent: {
-            title: item.title,
-            id: item.id, 
-            details: item.details,
-            date: item.date,
-            time: item.time,
-            bgcolor: item.bgcolor,
-          }, 
-          reminderStatus: 'done',
-          id: item.eventId       
-      })
+    const getEventsStore = computed(() => store.state.calendar.events);
+    const todayDate = new Date().toLocaleDateString().slice(0, 10);
+    const nowTime = new Date().toLocaleTimeString().slice(0, -3);
+    const eventsToday = ref([]);
+    const confirmReminder = async (item) =>
+      await store.dispatch("calendar/editReminderStatusEvent", {
+        selectedEvent: {
+          title: item.title,
+          id: item.id,
+          details: item.details,
+          date: item.date,
+          time: item.time,
+          bgcolor: item.bgcolor,
+        },
+        reminderStatus: "done",
+        id: item.eventId,
+      });
 
-    const auth = store.getters['authenticate.isAuthenticated']
-    onMounted(async ()=>{
-     const auth = store.getters['authenticate.isAuthenticated']
-     console.log('route', route.path)
-     if(route.path!="/help"){
-        await store.dispatch('calendar/loadEvents')
-        await store.dispatch('projects/loadProjects')
-        await store.dispatch('customers/loadCustomers')
-    }
-     
+    const auth = store.getters["authenticate.isAuthenticated"];
+    onMounted(async () => {
+      const auth = store.getters["authenticate.isAuthenticated"];
+      console.log("route", route.path);
+      if (route.path != "/help") {
+        await store.dispatch("calendar/loadEvents");
+        await store.dispatch("projects/loadProjects");
+        await store.dispatch("customers/loadCustomers");
+      }
+
       getEventsStore.value.forEach((item) => {
-          const dateFormat = new Date(item.date).toLocaleDateString().slice(0, 10)
-          if (dateFormat == todayDate && item.time > nowTime){
-            eventsToday.value.push(item)
-          }
-      })
+        const dateFormat = new Date(item.date)
+          .toLocaleDateString()
+          .slice(0, 10);
+        if (dateFormat == todayDate && item.time > nowTime) {
+          eventsToday.value.push(item);
+        }
+      });
       getProjectsStore.value.forEach((item) => {
-          if (getNumberOfDays(today, item.projectDeadline) == 2 && item.reminderStatus == "no" && item.projectStatus != "Завершен"){
-            projectsForNotifications.value.push(item)
-            remindColor = "blue"
-          }
-          if (getNumberOfDays(today, item.projectDeadline) == 1 && item.reminderStatus == "remindLater"  && item.projectStatus != "Завершен"){
-            projectsForNotificationsLater.value.push(item)
-          }
-      })
-      eventsToday.value.forEach((item)=>{
-        if(item.reminderStatus != 'done'){
+        if (
+          getNumberOfDays(today, item.projectDeadline) == 2 &&
+          item.reminderStatus == "no" &&
+          item.projectStatus != "Завершен"
+        ) {
+          projectsForNotifications.value.push(item);
+          remindColor = "blue";
+        }
+        if (
+          getNumberOfDays(today, item.projectDeadline) == 1 &&
+          item.reminderStatus == "remindLater" &&
+          item.projectStatus != "Завершен"
+        ) {
+          projectsForNotificationsLater.value.push(item);
+        }
+      });
+      eventsToday.value.forEach((item) => {
+        if (item.reminderStatus != "done") {
           setTimeout(() => {
-            getNotifications(item)
+            getNotifications(item);
           }, 2500);
-         }
-      })
-      projectsForNotifications.value.forEach((item)=>{
-        if(item.reminderStatus != 'done'){
+        }
+      });
+      projectsForNotifications.value.forEach((item) => {
+        if (item.reminderStatus != "done") {
           setTimeout(() => {
-            remindColor = 'blue-grey-10'
-            getNotificationsProjects(item)
+            remindColor = "blue-grey-10";
+            getNotificationsProjects(item);
           }, 4000);
-         }
-      })
-      projectsForNotificationsLater.value.forEach((item)=>{
-        if(item.reminderStatus == 'remindLater'){
+        }
+      });
+      projectsForNotificationsLater.value.forEach((item) => {
+        if (item.reminderStatus == "remindLater") {
           setTimeout(() => {
-            remindColor = 'brown-13'
-            getNotificationsProjects(item)
+            remindColor = "brown-13";
+            getNotificationsProjects(item);
           }, 4000);
-         }
-      })
-    })
+        }
+      });
+    });
 
     const openNotifications = () => {
-      console.log('массив событий на сегодня', eventsToday.value)
-      projectsForNotifications.value.forEach((item)=>{
-        if(item.reminderStatus != 'done'){
-          remindColor = 'blue-grey-10'
-          getNotificationsProjects(item)
-         }
-      })
-      projectsForNotificationsLater.value.forEach((item)=>{
-        if(item.reminderStatus != 'done'){
-          remindColor = 'brown-13'
-          getNotificationsProjects(item)
-         }
-      })
-      
-      eventsToday.value.forEach((item)=>{
-        if(item.reminderStatus != 'done'){
-          getNotifications(item)
-         }
-      })
-      counterNotify.value = 0
-    }
+      console.log("массив событий на сегодня", eventsToday.value);
+      projectsForNotifications.value.forEach((item) => {
+        if (item.reminderStatus != "done") {
+          remindColor = "blue-grey-10";
+          getNotificationsProjects(item);
+        }
+      });
+      projectsForNotificationsLater.value.forEach((item) => {
+        if (item.reminderStatus != "done") {
+          remindColor = "brown-13";
+          getNotificationsProjects(item);
+        }
+      });
+
+      eventsToday.value.forEach((item) => {
+        if (item.reminderStatus != "done") {
+          getNotifications(item);
+        }
+      });
+      counterNotify.value = 0;
+    };
 
     return {
       counterNotify,
@@ -447,32 +427,32 @@ export default defineComponent({
       leftDrawerOpen,
       router,
       clickRightBtn,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       miniState,
       modal,
       clickLeftBtn,
       logout: () => {
-          store.dispatch('authenticate/logout')
-          router.push('/auth')
+        store.dispatch("authenticate/logout");
+        router.push("/auth");
       },
 
-      drawerClick (e) {
+      drawerClick(e) {
         // if in "mini" state and user
         // click on drawer, we switch it to "normal" mode
         if (miniState.value) {
-          miniState.value = false
+          miniState.value = false;
 
           // notice we have registered an event with capture flag;
           // we need to stop further propagation as this click is
           // intended for switching drawer to "normal" mode only
-          e.stopPropagation()
+          e.stopPropagation();
         }
-      }
-    }
-  }
-})
+      },
+    };
+  },
+});
 </script>
 <style lang="sass">
 .q-notifications__list--top

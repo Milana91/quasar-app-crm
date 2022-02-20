@@ -28,7 +28,6 @@ export default defineComponent({
     // отследить изменения в БД
     const updateEvents = onValue(events, (snapshot) => {
       const data = snapshot.val()
-      console.log('снимок', data)
       // Проверить, нужно ли показывать уведомление (показывать только не активному пользователю, кот вносил изм)
       if(route.path=="/calendar" && calendarShowUpdate.value == true && calendarActiveUser.value == false){
           Notify.create({
@@ -56,7 +55,6 @@ export default defineComponent({
 
     const updateProjects = onValue(projects, (snapshot) => {
       const data = snapshot.val()
-      console.log('снимок проектов', data)
     // Проверить, нужно ли показывать уведомление (показывать только не активному пользователю, кот вносил изм)
       if(route.path=="/projects" && projectsShowUpdate.value == true && projectsActiveUser.value == false){
         Notify.create({
@@ -83,7 +81,6 @@ export default defineComponent({
 
     const updateServices = onValue(services, (snapshot) => {
       const data = snapshot.val()
-      console.log('снимок услуг', data)
     // Проверить, нужно ли показывать уведомление (показывать только не активному пользователю, кот вносил изм)
       if(route.path=="/services" && servicesShowUpdate.value == true && servicesActiveUser.value == false){
         Notify.create({
@@ -110,7 +107,6 @@ export default defineComponent({
 
     const updateCustomers = onValue(customers, (snapshot) => {
       const data = snapshot.val()
-      console.log('снимок клиентов', data)
     // Проверить, нужно ли показывать уведомление (показывать только не активному пользователю, кот вносил изм)
       if(route.path=="/customers" && customersShowUpdate.value == true && customersActiveUser.value == false){
         Notify.create({
@@ -130,11 +126,6 @@ export default defineComponent({
       store.commit('customers/setShowConfirmationVal', true)
     })
 
-  
-    onMounted(() => {
-      console.log(store.getters['authenticate/isAuthenticated'])
-    })
-    
 
     return {
       // layout зависит от текущего маршрута (переданных в него метаданных) 
