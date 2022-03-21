@@ -219,17 +219,32 @@ export default defineComponent({
   },
   methods: {
     getCurrentDay(day) {
-      const newDay = new Date(this.CURRENT_DAY);
-      newDay.setDate(day);
+      console.log('this day', day)
+      let newDay = new Date(this.CURRENT_DAY);
+      newDay = new Date(day);
       const tm = parseDate(newDay);
+      console.log('клик tm', newDay)
       return tm.date;
     },
+    getFormatDate(clickDate) {
+      const arr = clickDate.split("-")
+      const month = arr[1]
+      const day = arr[2]
+      const year = arr[0]
+      const formDate = [year, month, day].join(', ')
+
+      // console.log("новая дата", formDate)
+      const d = new Date(year, month, day)
+      console.log('дата события', formDate)
+      return formDate
+    },
     addEvent() {
+            this.getFormatDate(this.clickDate)
       this.$store.dispatch("calendar/createEvent", {
         title: this.title,
         id: this.eventsArrLength + 1,
         details: this.details,
-        date: this.getCurrentDay(this.numberOfDay),
+        date: this.getCurrentDay(this.getFormatDate(this.clickDate)),
         time: this.time,
         bgcolor: this.bgcolor,
         reminderStatus: "no",
@@ -238,6 +253,7 @@ export default defineComponent({
       this.details = "";
       this.time = "";
       this.bgcolor = "";
+      console.log('svsvsv', this.getCurrentDay(this.numberOfDay))
     },
     badgeClasses(event, type) {
       return {
@@ -279,12 +295,14 @@ export default defineComponent({
       // сравнить екущий месяц с месяцем выбранной даты
       this.numberOfDay = data.scope.timestamp.day;
       this.clickDate = data.scope.timestamp.date;
-      if (
-        parseInt(new Date().getMonth() + 1) ==
-        parseInt(this.clickDate.split("-")[1])
-      ) {
+      console.log('дата клика', this.clickDate)
+      console.log('день клика', this.numberOfDay)
+      // if (
+      //   parseInt(new Date().getMonth() + 1) ==
+      //   parseInt(this.clickDate.split("-")[1])
+      // ) {
         this.modal = true;
-      }
+      // }
       this.getClickDateEvent();
     },
     onClickEvent(event) {
@@ -344,6 +362,8 @@ export default defineComponent({
     },
     getClickDateEvent() {
       const eventsArr = this.events;
+      console.log("Соыбтия", eventsArr);
+      console.log("this.clickEvents", this.clickEvents);
       eventsArr.forEach((item) => {
         if (item.date == this.clickDate) {
           this.clickEvents.push(item);

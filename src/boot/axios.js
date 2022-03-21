@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import axios from 'axios'
+import { store } from 'quasar/wrappers'
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -11,7 +12,7 @@ const api = axios.create({ baseURL: process.env.VUE_APP_FB_URL })
 
 
 
-export default boot(({ app, router }) => {
+export default boot(({ app, router, store }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios
@@ -24,6 +25,8 @@ export default boot(({ app, router }) => {
 
   api.interceptors.response.use(null, error => {  
     if(error.response.status === 401) {
+        // router.push('/auth?message=auth')
+        store.commit('authenticate/removeToken')
         router.push('/auth?message=auth')
     }
     return Promise.reject(error);

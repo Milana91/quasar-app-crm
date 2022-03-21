@@ -2,21 +2,39 @@ import { getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { error } from "src/utils/error";
 import { Quasar } from "quasar";
 import { Notify } from "quasar";
+import { computed } from "vue";
 
-
-export function getToken({ commit }) {
+export function getToken({ commit, dispatch }) {
   const auth = getAuth();
   const user = auth.currentUser;
+  // // проверить, существует ли пользователь в AllowedUids
+  // dispatch("users/getUidVals", null, {root:true}).then(() => {
+  //   const getUIDS = computed(() =>
+  //     store.state.users.uidVals
+  //     // .forEach((userUid) => {
+  //     //   if(user.uid == userUid){
+  //     //     return true
+  //     //   }
+  //     //   return false
+  //     // })
+  //   )
+  //   console.log('uids', getUIDS)
+  // })
+  // && getUIDS == true
   if (user !== null) {
     user
       .getIdToken(true)
       .then(function (idToken) {
         console.log(idToken);
         commit("setToken", idToken);
+        commit("setUid", user.uid);
       })
       .catch(function (error) {
         console.log(error);
       });
+  } 
+  else {
+    console.log('not token');
   }
 }
 
@@ -44,6 +62,7 @@ export function signIn({ commit, dispatch }, payload) {
       await dispatch("getToken").then(() => {
         setTimeout(() => {
           commit("loaded")
+          this.$router.push('/home')
         }, 4000);
       })
     })

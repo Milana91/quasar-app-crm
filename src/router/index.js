@@ -28,37 +28,30 @@ export default route(function (/* { store, ssrContext } */) {
   })
 
   // проверяем, есть ли у страниц требование "быть авторизованным"
-    Router.beforeEach((to, from, next) => {
-    const requiredAuth = to.meta.auth
+  //   Router.beforeEach((to, from, next) => {
+  //   const requiredAuth = to.meta.auth
 
-    const toggleClassBody = () => {
-        if(to.path == '/' || to.path == '/auth' ) {
-          document.body.className = 'home';
-        }
-        else {
-          document.body.className = 'other';
-        }
-      }
-    toggleClassBody()
-    // если для перехода у роута есть требование авторизации и пользователь авторизован, осуществляем переход
-    
-    if (to.path == '/' && store().getters['authenticate/isAuthenticated']){
-      console.log('переход', store().getters['authenticate/isAuthenticated'])  
-      Router.push('/home')}  
-    // else if (to.path == '/help'){ 
-    //   Router.push('/help')
-    // }
-    else if (requiredAuth && store().getters['authenticate/isAuthenticated']){
-      console.log('переход', store().getters['authenticate/isAuthenticated'])  
-      next()
-      } else if (requiredAuth && !store().getters['authenticate/isAuthenticated'] && to.path != '/help') {
-        console.log('ошибка', store().getters['authenticate/isAuthenticated']) 
-        Notify.create('Пожалуйста, войдите в систему')
-        next('/auth?message=auth')
-      } else {
-        next()
-      }
-  })
+  //   // если для перехода у роута есть требование авторизации и пользователь авторизован, осуществляем переход
+  //   // const token = store().dispatch('authenticate/getToken')
+  //   // console.log('есть', token)
+  //   // && to.path == '/home'
+  //   if (to.path == '/' && store().getters['authenticate/isAuthenticated']){
+  //     console.log('переход', store().getters['authenticate/isAuthenticated'])  
+  //     Router.push('/home')}  
+  //   // else if (to.path == '/help'){ 
+  //   //   Router.push('/help')
+  //   // }
+  //   else if (requiredAuth && store().getters['authenticate/isAuthenticated']){
+  //     console.log('переход', store().getters['authenticate/isAuthenticated'])  
+  //     next()
+  //     } else if (requiredAuth && !store().getters['authenticate/isAuthenticated'] && to.path != '/help') {
+  //       console.log('ошибка', store().getters['authenticate/isAuthenticated']) 
+  //       Notify.create('Пожалуйста, войдите в систему')
+  //       next('/auth?message=auth')
+  //     } else {
+  //       next()
+  //     }
+  // })
 
   return Router
 })

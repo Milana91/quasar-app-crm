@@ -115,6 +115,11 @@ const linksList = [
     icon: "record_voice_over",
     link: "/help",
   },
+  {
+    title: "Пользователи",
+    icon: "account_circle",
+    link: "/users",
+  },
 ];
 
 import { defineComponent, ref, onMounted, computed, onUnmounted } from "vue";
@@ -340,7 +345,7 @@ export default defineComponent({
     const auth = store.getters["authenticate.isAuthenticated"];
     onMounted(async () => {
       const auth = store.getters["authenticate.isAuthenticated"];
-      console.log("route", route.path);
+     
       if (route.path != "/help") {
         await store.dispatch("calendar/loadEvents");
         await store.dispatch("projects/loadProjects");

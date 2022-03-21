@@ -17,12 +17,14 @@ export async function createUser ({state, commit, dispatch, rootGetters}, userDa
     await dispatch('getUidVals')
     const copyStore = JSON.parse(JSON.stringify(state.uidVals))
     const uidVals = copyStore
-    uidVals.push( { [uidNum] : true} );
+    uidVals.push(uidNum)
+    // uidVals.push( {[uidNum] : true} )
     console.log('получилось', uidVals)
     const obj = uidVals.reduce((newObj, item) => {
-      newObj[item] = item
+      newObj[item] = true
       return newObj
     }, {})
+    console.log('ZFszg', obj)
     console.log('новый пользователь', user)
     const userInfo = {email: user.email, name: userData.userName, role: 'manager', uid: uidNum}
     const {data} = await api.post(`/users.json?auth=${token}`, userInfo)
@@ -49,6 +51,7 @@ export async function loadUsers({ commit, rootGetters}) {
       const token = rootGetters['authenticate/token']
       const {data} = await api.get(`/users.json?auth=${token}`)
       const users = Object.keys(data).map(id => ({...data[id], id}))
+      console.log('юзеры', users)
       commit('setUsers', users)
   } catch (e) {
       console.log(e)
@@ -58,7 +61,7 @@ export async function loadUsers({ commit, rootGetters}) {
   }
 }
 
-export async function getUidVals({ state, commit, rootGetters}) {
+export async function getUidVals({ state, commit, rootGetters }) {
   try {
       const token = rootGetters['authenticate/token']
       const {data} = await api.get(`/allowedUids.json?auth=${token}`)
@@ -73,9 +76,22 @@ export async function getUidVals({ state, commit, rootGetters}) {
   }
 }
 
-
-export function deleteUser ({commit, dispatch, rootGetters}, userData) {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  console.log("удалить", user)
+export async function getUserRole({state, commit, rootGetters}){
+  try{
+    const token = rootGetters['authenticate/token']
+    const {data} = await api.get(`/users.json?auth=${token}`)
+    console.log('роли польз', data)
+  } catch(e){
+    console.log(e)
+      Notify.create({
+          message: error(e)
+      })   
+  }
 }
+
+
+// export async function removeUser ({commit, dispatch, rootGetters}, userData) {
+//   const auth = getAuth()
+//   const user = auth.currentUser
+//   console.log("удалить", user)
+// }

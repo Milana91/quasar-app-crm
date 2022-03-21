@@ -4,6 +4,10 @@ export function setToken (state, idToken) {
         console.log(state.token)
 }
 
+export function setUid (state, userUid) {
+        state.currentUid =  userUid
+}
+
 export function removeToken(state) {
         state.token = null
         localStorage.removeItem('jwt-token')    

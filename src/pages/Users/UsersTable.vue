@@ -35,12 +35,12 @@
           <q-td key="role" :props="props">
             {{ props.row.role }}
           </q-td>
-          <q-td key="actions" :props="props">
-            <div class="row q-gutter-sm justify-center">
+          <!-- <q-td key="actions" :props="props">
+            <div class="row q-gutter-sm justify-center"> -->
               <!-- <AppButton color="blue" label="Редактировать" @clickAction="showDialog = true, editItem(props.row)" size=sm no-caps></AppButton> -->
-              <AppButton v-if="props.row.role!='admin'" color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
+              <!-- <AppButton v-if="props.row.role!='admin'" color="red" label="Удалить"  @clickAction="confirm(props.row)" size=sm no-caps></AppButton>
             </div>
-          </q-td>
+          </q-td> -->
         </q-tr>
       </template>
     </q-table>
@@ -153,7 +153,7 @@ export default {
       search,
     }
   },
-  components: { AppSearch, AppTableLoader, AppButton}
+  components: { AppSearch, AppTableLoader}
 }
 </script>
 

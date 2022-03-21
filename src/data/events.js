@@ -3,8 +3,11 @@ import { parseDate, } from '@quasar/quasar-ui-qcalendar/src/index.js'
 const CURRENT_DAY = new Date()
 function getCurrentDay (day) {
   const newDay = new Date(CURRENT_DAY)
-  newDay.setDate(day)
+  console.log('day', day)
+  console.log('newDay', newDay)
+  console.log('newDay-нов', newDay)
   const tm = parseDate(newDay)
+  console.log('tm', tm)
   return tm.date
 }
 

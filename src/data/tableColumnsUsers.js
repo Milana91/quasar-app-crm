@@ -26,11 +26,11 @@ export const tableColumnsUsers = [
         sortable: true,
         sortOrder: 'ad'
     },
-    { 
-        name: 'actions',
-        align: 'center', 
-        label: 'Действия', 
-        field: 'actions',
-        sortable: true 
-    }
+    // { 
+    //     name: 'actions',
+    //     align: 'center', 
+    //     label: 'Действия', 
+    //     field: 'actions',
+    //     sortable: true 
+    // }
 ]
